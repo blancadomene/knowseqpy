@@ -5,3 +5,4 @@ DELETE_test.py
 test_fixtures
 BreastCountFiles/
 breast_cancer_notebook.ipynb
+external_data

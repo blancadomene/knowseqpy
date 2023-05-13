@@ -2,13 +2,13 @@ import unittest
 
 import pandas as pd
 
-from read_dge import read_dge
+from get_genes_annotation import get_genes_annotation
 
 
-class ReadDGE(unittest.TestCase):
+class GetGenesAnnotation(unittest.TestCase):
 
-    def test_valid_read_cpm(self):
-        golden_cpm = pd.read_csv("test_fixtures/golden/cpms_breast.csv", index_col=0)
+    def test_valid_get_genes_annotation(self):
+        golden_annotation = pd.read_csv("test_fixtures/GRCh38Annotation.csv", index_col=0)
 
         data = pd.read_csv("test_fixtures/data_info_breast.csv", sep=",", dtype="str")
         count_files = data["Path"] + "/" + data["Run"] + ".count"

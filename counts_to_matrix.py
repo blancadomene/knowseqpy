@@ -36,8 +36,8 @@ def counts_to_matrix(file_name: str, sep: str = ",", ext: str = ""):
     # Read digital gene expression (DGE) count files and remove unwanted rows.
     # Unwanted rows are the ones which column-wise sum is < 1, and also the ones in rows_to_skip
     counts = read_dge(count_files)
-    counts_per_million = cpm()
     counts.drop("ENSG00000000003.13", inplace=True)  # TODO remove
+    counts_per_million = cpm(counts)
 
     keep = counts_per_million[counts_per_million > 1]
     counts = counts[keep.sum(axis=1) >= 1]

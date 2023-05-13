@@ -16,13 +16,11 @@ class CountToMatrix(unittest.TestCase):
         golden_counts_matrix = pd.read_csv("test_fixtures/golden/golden_counts_matrix_breast.csv", index_col=0)
         counts_matrix, labels = counts_to_matrix("test_fixtures/data_info_breast.tsv", sep="\t", ext=".count")
 
-        self.assertTrue(golden_counts_matrix.equals(counts_matrix))
+        pd.testing.assert_frame_equal(golden_counts_matrix, counts_matrix, check_dtype=False, check_like=True)
 
     def test_valid_csv(self):
         golden_counts_matrix = pd.read_csv("test_fixtures/golden/golden_counts_matrix_breast.csv", index_col=0)
         counts_matrix, labels = counts_to_matrix("test_fixtures/data_info_breast.csv", ext=".count")
-
-        # self.assertTrue(golden_counts_matrix.equals(counts_matrix))
 
         # Check that both dataframes contain the same data, but ignoring the dtype and order of rows and columns
         pd.testing.assert_frame_equal(golden_counts_matrix, counts_matrix, check_dtype=False, check_like=True)

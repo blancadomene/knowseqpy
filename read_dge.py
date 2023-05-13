@@ -2,19 +2,19 @@ import pandas as pd
 
 
 # TODO ask if we only use x$counts, since I only implemented that part
+# TODO: change labels type (should not be str but a vector of strings)
 def read_dge(count_files: pd.Series, path: str = None, labels: str = None):
     """
-    Returns a dataframe with the merged information of all count files.
-    Reads and collates a set of count data files, each file containing counts for one library.
+    Reads and merges a set of text files containing gene expression counts.
 
-    :param count_files: pandas series CSV or TSV file containing the name and path to each of the count files.
-    The expected columns are Run, Path and Class.
-    :param path: The separator character of the csvFile or tsvFile.
-    :param labels:
+    :param count_files: Pandas Series of filenames that contain sample information.
+    :param path: string giving the directory containing the files. Set to None by default (current working directory).
+    :param labels: names to associate with the files. Set to None by default (file names).
 
-    :return: Matrix with the ensembl ID in the rows and all the samples of each count files in the columns.
+    :return: Pandas Dataframe, containing a row for each unique tag found in the input files and a column for each
+    input file.
 
-    :raises FileNotFoundError: If file_name doesn't exist.count_files
+    :raises Exception: If row names are not unique within the row-names.
     """
 
     # Assign path and labels if given
