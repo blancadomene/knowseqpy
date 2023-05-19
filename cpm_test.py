@@ -5,7 +5,7 @@ import pandas as pd
 from read_dge import read_dge
 from cpm import cpm
 
-class ReadDGE(unittest.TestCase):
+class cpm_test(unittest.TestCase):
 
     def test_valid_read_cpm(self):
         golden_cpm = pd.read_csv("test_fixtures/golden/cpms_breast.csv", index_col=0)

@@ -5,7 +5,7 @@ import pandas as pd
 from counts_to_matrix import counts_to_matrix
 
 
-class CountToMatrix(unittest.TestCase):
+class counts_to_matrix_test(unittest.TestCase):
     def test_file_not_exists(self):
         self.assertRaises(FileNotFoundError, counts_to_matrix, "/file/doesnt/exist")
 

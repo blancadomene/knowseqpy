@@ -5,7 +5,7 @@ import pandas as pd
 from read_dge import read_dge
 
 
-class ReadDGE(unittest.TestCase):
+class read_dge_test(unittest.TestCase):
 
     def test_valid_read_dge(self):
         golden_read_dge = pd.read_csv("test_fixtures/golden/read_dge_counts_breast.csv", index_col=0)
