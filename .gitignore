@@ -2,7 +2,10 @@
 .ipynb_checkpoints
 __pycache__/
 DELETE_test.py
-test_fixtures
+test_fixtures/BreastCountFiles
+test_fixtures/golden/cpms_breast.csv
+test_fixtures/golden/golden_counts_matrix_breast.csv
+read_dge_counts_breast.csv
 BreastCountFiles
 breast_cancer_notebook.ipynb
 external_data
