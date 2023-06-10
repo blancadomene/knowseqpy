@@ -9,6 +9,15 @@ def calculate_gene_expression_values(counts_matrix: pd.DataFrame,
                                      not_human: bool = False,
                                      not_human_gene_length_csv: str = "",
                                      ensembl_id: bool = True):
+    """
+        Extracts the gene annotations from an online database using BioMart.
+
+        :param counts_matrix: DataFrame containing the gene counts, with gene IDs as index
+        :param Ensembl_ID: Boolean flag indicating whether the counts_matrix index contains Ensembl IDs (True) or gene symbols (False)
+
+        :return: DataFrame containing gene annotations, including Ensembl gene ID, gene symbol and the percentage gene GC content
+        """
+
     assert isinstance(genes_names, bool), "genesNames parameter can only takes the values TRUE or FALSE."
     assert isinstance(counts_matrix, pd.DataFrame), "The class of countsMatrix parameter must be DataFrame."
     assert isinstance(annotation, pd.DataFrame), "The class of annotation parameter must be DataFrame."
@@ -72,3 +81,7 @@ def calculate_gene_expression_values(counts_matrix: pd.DataFrame,
         expression_matrix = expression_matrix - expression_matrix.min().min() + 1
 
     return expression_matrix
+
+
+
+

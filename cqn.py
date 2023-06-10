@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import statsmodels.formula.api as smf
-from patsy import dmatrix
+
 from sklearn.preprocessing import quantile_transform
 
 
