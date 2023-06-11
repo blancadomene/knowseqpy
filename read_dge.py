@@ -1,3 +1,5 @@
+import logging
+
 import pandas as pd
 
 
@@ -48,10 +50,10 @@ def read_dge(count_files: pd.Series, path: str = None, labels: str = None):
     [res.join(pd.read_csv(sample, sep=r"\t", index_col=0, names=(sample.split("/")[-1],), engine="python"), how="outer")
      for sample in samples["files"]]
     """
-    # Alert user if htseq-style meta genes found
 
+    # Alert user if htseq-style meta genes found
     meta_tags = counts[counts.index.str.startswith("_")].index
     if len(meta_tags):
-        print("Meta tags detected: " + str(meta_tags.values))  # TODO log
+        logging.info(f"Meta tags detected: {meta_tags.values}")
 
     return counts

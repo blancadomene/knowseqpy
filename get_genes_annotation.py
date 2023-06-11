@@ -1,10 +1,11 @@
+import io
 import os
 from typing import List
+
 import pandas as pd
 import requests
-import io
 
-EXTERNAL_DATA_PATH = "./external_data"
+EXTERNAL_DATA_PATH = os.path.normpath(os.path.join(os.getcwd(), "../external_data"))
 ENSEMBL_URL = "http://www.ensembl.org/biomart/martservice"
 GRCH37_ENSEMBL_URL = "https://grch37.ensembl.org/biomart/martservice"
 

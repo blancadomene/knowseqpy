@@ -3,9 +3,9 @@
 __pycache__/
 DELETE_test.py
 test_fixtures/BreastCountFiles
-test_fixtures/golden/cpms_breast.csv
+test_fixtures/golden/cpm_breast.csv
 test_fixtures/golden/golden_counts_matrix_breast.csv
 read_dge_counts_breast.csv
-BreastCountFiles
+tests/BreastCountFiles
 breast_cancer_notebook.ipynb
 external_data

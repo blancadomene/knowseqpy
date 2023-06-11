@@ -1,3 +1,5 @@
+import logging
+
 import pandas as pd
 
 from cpm import cpm
@@ -21,17 +23,19 @@ def counts_to_matrix(file_name: str, sep: str = ",", ext: str = ""):
     :raises FileNotFoundError: If file_name doesn't exist.
     :raises Exception: If input file doesn't contain the expected columns.
     """
-
-    data = pd.read_csv(file_name, sep=sep, dtype="str")
+    try:
+        data = pd.read_csv(file_name, sep=sep, dtype="str")
+    except FileNotFoundError:
+        raise FileNotFoundError(f"File {file_name} not found.")
 
     # Check that the expected columns are in the dataset
     for expected_col in ["Run", "Path", "Class"]:
         if expected_col not in data.columns:
-            raise Exception("Couldn't find expected column: " + expected_col)
+            raise Exception(f"Couldn't find expected column: {expected_col}")
 
     # Build count files' path
     count_files = data["Path"] + "/" + data["Run"] + ext
-    print("\nMerging " + str(len(data)) + " counts files...\n")  # TODO log
+    logging.info(f"Merging {len(data)} counts files...")
 
     # Read digital gene expression (DGE) count files and remove unwanted rows.
     # Unwanted rows are the ones which column-wise sum is < 1, and also the ones in rows_to_skip
