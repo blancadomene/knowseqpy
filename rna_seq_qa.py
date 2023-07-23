@@ -26,7 +26,7 @@ def RNAseqQA(expressionMatrix, outdir="SamplesQualityAnalysis", toPNG=True, toPD
     found_outliers = [-1]
     removed_outliers = []
 
-    print("Running Distances Outliers Detection test...")
+    print("Running Distances Outliers Detection tests...")
     distance_matrix = pd.DataFrame(squareform(pdist(expressionMatrix.T, 'cityblock')) / len(expressionMatrix),
                                    columns=expressionMatrix.columns, index=expressionMatrix.columns)
     distance_sum = distance_matrix.sum()
@@ -45,7 +45,7 @@ def RNAseqQA(expressionMatrix, outdir="SamplesQualityAnalysis", toPNG=True, toPD
 
     print("Done!")
 
-    print("Running Kolmogorov-Smirnov test...")
+    print("Running Kolmogorov-Smirnov tests...")
     ks = expressionMatrix.apply(lambda x: ks_2samp(x, expressionMatrix.values.flatten())[0], axis=1)
 
     ks_data = pd.DataFrame({'x': ks, 'y': np.arange(len(ks))})
@@ -57,7 +57,7 @@ def RNAseqQA(expressionMatrix, outdir="SamplesQualityAnalysis", toPNG=True, toPD
 
     print("Done!")
 
-    print("Running MAD Outliers Detection test...")
+    print("Running MAD Outliers Detection tests...")
     rowExpression = expressionMatrix.mean(axis=1)
 
     outliersMA = []

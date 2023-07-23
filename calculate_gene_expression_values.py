@@ -1,3 +1,5 @@
+import logging
+
 import pandas as pd
 import os
 
@@ -32,7 +34,7 @@ def calculate_gene_expression_values(counts_matrix: pd.DataFrame,
         gene_length = pd.read_csv("path_to_Genes_length_Homo_Sapiens.csv")
         gene_length = gene_length.drop(columns=['column_3', 'column_4'])
 
-    print("Calculating gene expression values...\n")
+    logging.info("Calculating gene expression values...\n")
 
     if ensembl_id:
         my_gc_not = annotation.set_index('ensembl_gene_id')['percentage_gene_gc_content']
