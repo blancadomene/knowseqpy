@@ -1,9 +1,10 @@
+import os
 import logging
 
 import pandas as pd
 
-from cpm import cpm
-from read_dge import read_dge
+from knowseq.normalization import cpm
+from knowseq.read_dge import read_dge
 
 
 # TODO: remove intermediate CSV and the hardcoded part (from DELETE_TEST)
@@ -31,16 +32,16 @@ def counts_to_matrix(file_name: str, sep: str = ",", ext: str = ""):
     # Check that the expected columns are in the dataset
     for expected_col in ["Run", "Path", "Class"]:
         if expected_col not in data.columns:
-            raise Exception(f"Couldn't find expected column: {expected_col}")
+            raise ValueError(f"Couldn't find expected column: {expected_col}")
 
     # Build count files' path
-    count_files = data["Path"] + "/" + data["Run"] + ext
+    count_files = data.apply(lambda row: os.path.join(row['Path'], row['Run']) + ext, axis=1)
     logging.info(f"Merging {len(data)} counts files...")
 
     # Read digital gene expression (DGE) count files and remove unwanted rows.
     # Unwanted rows are the ones which column-wise sum is < 1, and also the ones in rows_to_skip
     counts = read_dge(count_files)
-    counts.drop("ENSG00000000003.13", inplace=True)  # TODO remove
+    counts.drop("ENSG00000000003.13", inplace=True)  # TODO remove, used for testing purposes
     counts_per_million = cpm(counts)
 
     keep = counts_per_million[counts_per_million > 1]
@@ -49,6 +50,6 @@ def counts_to_matrix(file_name: str, sep: str = ",", ext: str = ""):
     counts.drop(rows_to_skip, inplace=True)
 
     # Truncate row-names (ex: ENSG00000000005.5 to ENSG00000000005)
-    counts.index = [row_name.split(".")[0] for row_name in counts.index.values]
+    counts.index = [row_name.split(".")[0] for row_name in counts.index]
 
     return counts, data["Class"]  # TODO only return counts, data[Class] is already in provided name

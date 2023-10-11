@@ -3,7 +3,7 @@ import unittest
 
 import pandas as pd
 
-from get_genes_annotation import get_genes_annotation
+from knowseq.get_genes_annotation import get_genes_annotation
 
 
 class GetGenesAnnotationTest(unittest.TestCase):
@@ -28,7 +28,7 @@ class GetGenesAnnotationTest(unittest.TestCase):
         filter = "external_gene_name"
         reference_genome = 37
 
-        result = get_genes_annotation(values, filter=filter, referenceGenome=reference_genome)
+        result = get_genes_annotation(values, filter=filter, reference_genome=reference_genome)
         self.assertIsInstance(result, pd.DataFrame)
 
         # We reset the index since we don't care about it

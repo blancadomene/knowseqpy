@@ -3,7 +3,7 @@ import unittest
 import os
 import pandas as pd
 
-from counts_to_matrix import counts_to_matrix
+from knowseq.counts_to_matrix import counts_to_matrix
 
 
 class CountsToMatrixTest(unittest.TestCase):
@@ -32,6 +32,6 @@ class CountsToMatrixTest(unittest.TestCase):
         # Check that both dataframes contain the same data, but ignoring the dtype and order of rows and columns
         pd.testing.assert_frame_equal(self.golden_matrix, counts_matrix, check_dtype=False, check_like=True)
 
-
+    # TODO: test FileNotFoundError
 if __name__ == '__main__':
     unittest.main()

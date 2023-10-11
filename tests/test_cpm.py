@@ -3,8 +3,8 @@ import unittest
 import os
 import pandas as pd
 
-from cpm import cpm
-from read_dge import read_dge
+from knowseq.normalization import cpm
+from knowseq.read_dge import read_dge
 
 
 class CpmTest(unittest.TestCase):
@@ -28,7 +28,7 @@ class CpmTest(unittest.TestCase):
         # Check that both dataframes contain the same data, but ignoring the dtype and order of rows and columns
         pd.testing.assert_frame_equal(self.golden_cpm, res_cpm, check_dtype=False, check_like=True, check_exact=False,
                                       atol=0.1, rtol=0.1)
-
+    # TODO: test nonnumerical values: raise ValueError(f"Dataframe col {col} contains non-numeric values.")
 
 if __name__ == '__main__':
     unittest.main()

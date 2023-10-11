@@ -3,7 +3,7 @@ import unittest
 import os
 import pandas as pd
 
-from calculate_gene_expression_values import calculate_gene_expression_values
+from knowseq.calculate_gene_expression_values import calculate_gene_expression_values
 
 
 class CalculateGeneExpressionValuesTest(unittest.TestCase):
