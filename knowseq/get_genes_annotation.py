@@ -1,4 +1,5 @@
 import io
+import logging
 import os
 from typing import List
 
@@ -11,19 +12,27 @@ GRCH37_ENSEMBL_URL = "https://grch37.ensembl.org/biomart/martservice"
 
 
 def get_genes_annotation(values: List[str],
-                         attributes: List[str] = ["ensembl_gene_id", "external_gene_name", "percentage_gene_gc_content", "entrezgene_id"],
-                         filter: str = "ensembl_gene_id",
-                         not_hsapiens: bool = False,
-                         not_human_dataset: str = "",
+                         attributes: List[str] = ["ensembl_gene_id",
+                                                  "external_gene_name",
+                                                  "percentage_gene_gc_content",
+                                                  "entrezgene_id"],
+                         attribute_filter: str = "ensembl_gene_id",
+                         # not_hsapiens: bool = False,
+                         not_hsapiens_dataset: str = None,
                          reference_genome: int = 38) -> pd.DataFrame:
     """
     Retrieves gene annotations from the Ensembl biomart database.
 
-    :param values: A list of genes that can contain Ensembl IDs, gene names, or the string "allGenome" to indicate all genes.
-    :param attributes: A list of desired attributes or information to retrieve from Ensembl biomart. Default is ['ensembl_gene_id', 'external_gene_name', 'percentage_gene_gc_content', 'entrezgene_id'].
-    :param filter: An attribute used as a filter to return the rest of the attributes. Default is 'ensembl_gene_id'.
-    :param not_hsapiens: Indicates whether to retrieve human annotations (False) or annotations from a different species available in BiomaRt (True). Default is False.
-    :param not_human_dataset: The dataset identification for non-human annotations (if not_hsapiens is True). Default is an empty string.
+    :param values: A list of genes that can contain Ensembl IDs, gene names, or the string "allGenome"
+        to indicate all genes.
+    :param attributes: A list of desired attributes or information to retrieve from Ensembl biomart.
+        Default is ['ensembl_gene_id', 'external_gene_name', 'percentage_gene_gc_content', 'entrezgene_id'].
+    :param attribute_filter: An attribute used as a filter to return the rest of the attributes.
+        Default is 'ensembl_gene_id'.
+    :param not_hsapiens_dataset: Indicates whether to retrieve human annotations (False) or annotations from a different
+        species available in BiomaRt (True). Default is False.
+    :param not_hsapiens_dataset: The dataset identification for non-human annotations.
+        Default is None.
     :param reference_genome: The reference genome to use. It must be 37 or 38. Default is 38.
 
     :return: A DataFrame containing the requested gene annotations.
@@ -32,47 +41,45 @@ def get_genes_annotation(values: List[str],
     :raises ValueError: If an error occurs during the query, or the query result is empty or contains an error message.
 
     Examples:
-        >>> myAnnotation = get_genes_annotation(["KRT19", "BRCA1"], filter="external_gene_name", not_hsapiens=False)
+        >>> myAnnotation = get_genes_annotation(["KRT19", "BRCA1"], attribute_fFilter="external_gene_name")
     """
     if not isinstance(attributes, list) or not all(isinstance(attr, str) for attr in attributes):
         raise ValueError("The 'attributes' parameter must be a list of attribute names.")
     if not isinstance(values, list) or not all(isinstance(value, str) for value in values):
         raise ValueError("The 'values' parameter must be a list of gene IDs.")
-    if not isinstance(filter, str):
+    if not isinstance(attribute_filter, str):
         raise ValueError("The 'filter' parameter must be a string.")
-    if not isinstance(not_hsapiens, bool):
-        raise ValueError("The 'not_hsapiens' parameter can only take the values True or False.")
     if reference_genome not in [37, 38]:
         raise ValueError("The 'reference_genome' parameter must be 37 or 38.")
 
-    if filter not in attributes:
-        attributes += [filter]
+    if attribute_filter not in attributes:
+        attributes += [attribute_filter]
 
     base = ENSEMBL_URL
-    if not_hsapiens:
-        if not_human_dataset == "" or not isinstance(not_human_dataset, str):
-            raise ValueError("The 'not_human_dataset' parameter must be a non-empty string.")
-        dataset_name = not_human_dataset
-        filename = f"{not_human_dataset}.csv"
+    if not_hsapiens_dataset:
+        if not_hsapiens_dataset == "" or not isinstance(not_hsapiens_dataset, str):
+            raise ValueError("The 'not_hsapiens_dataset' parameter must be a non-empty string.")
+        dataset_name = not_hsapiens_dataset
+        filename = f"{not_hsapiens_dataset}.csv"
     else:
-        print("Getting annotation of the Homo Sapiens...\n")
+        logging.info("Getting annotation of the Homo Sapiens...\n")
         if reference_genome == 38:
-            print("Using reference genome 38.")
+            logging.info("Using reference genome 38.")
             my_annotation = pd.read_csv(f"{EXTERNAL_DATA_PATH}/GRCh38Annotation.csv")
-            if filter in my_annotation.columns and set(attributes).issubset(my_annotation.columns):
-                my_annotation = my_annotation[my_annotation[filter].isin(values)]
+            if attribute_filter in my_annotation.columns and set(attributes).issubset(my_annotation.columns):
+                my_annotation = my_annotation[my_annotation[attribute_filter].isin(values)]
                 my_annotation = my_annotation[attributes]
                 return my_annotation
             else:
                 dataset_name = 'hsapiens_gene_ensembl'
                 filename = f"{dataset_name}.csv"
         else:
-            print("Using reference genome 37.")
+            logging.info("Using reference genome 37.")
             base = GRCH37_ENSEMBL_URL
             dataset_name = 'hsapiens_gene_ensembl'
             filename = f"{dataset_name}.csv"
 
-    print(f"Downloading annotation {dataset_name}...")
+    logging.info(f"Downloading annotation {dataset_name}...")
     act_values = values.copy()
     max_values = min(len(values), 900)
     my_annotation = pd.DataFrame()
@@ -84,7 +91,7 @@ def get_genes_annotation(values: List[str],
                 f'<Dataset name="{dataset_name}" interface="default">'
 
         if len(values) > 1 or values != "allGenome":
-            query += f'<Filter name="{filter}" value="'
+            query += f'<Filter name="{attribute_filter}" value="'
             query += ",".join(act_values[:max_values])
             query += '" />'
 
@@ -111,7 +118,7 @@ def get_genes_annotation(values: List[str],
         max_values = min(900, len(act_values))
 
     if len(values) > 1 or values != "allGenome":
-        my_annotation = my_annotation[my_annotation[filter].isin(values)]
+        my_annotation = my_annotation[my_annotation[attribute_filter].isin(values)]
 
     if filename:
         my_annotation.to_csv(f"{EXTERNAL_DATA_PATH}/{filename}", index=False)
