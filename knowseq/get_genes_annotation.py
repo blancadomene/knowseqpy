@@ -43,14 +43,6 @@ def get_genes_annotation(values: List[str],
     Examples:
         >>> myAnnotation = get_genes_annotation(["KRT19", "BRCA1"], attribute_fFilter="external_gene_name")
     """
-    if not isinstance(attributes, list) or not all(isinstance(attr, str) for attr in attributes):
-        raise ValueError("The 'attributes' parameter must be a list of attribute names.")
-    if not isinstance(values, list) or not all(isinstance(value, str) for value in values):
-        raise ValueError("The 'values' parameter must be a list of gene IDs.")
-    if not isinstance(attribute_filter, str):
-        raise ValueError("The 'filter' parameter must be a string.")
-    if reference_genome not in [37, 38]:
-        raise ValueError("The 'reference_genome' parameter must be 37 or 38.")
 
     if attribute_filter not in attributes:
         attributes += [attribute_filter]

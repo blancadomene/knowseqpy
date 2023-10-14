@@ -16,7 +16,6 @@ def cpm(counts_df: pd.DataFrame) -> pd.DataFrame:
 
     # Ensure the DataFrame only contains numerical values and no nulls
     counts_df = counts_df.dropna()
-    # counts_df = counts_df.select_dtypes(include=[np.number])  # TODO: delete? this code removes non-numerical rows
     for col in counts_df.columns:
         if counts_df[col].apply(pd.to_numeric, errors='coerce').isna().sum() > 0:
             raise ValueError(f"Dataframe col {col} contains non-numeric values.")

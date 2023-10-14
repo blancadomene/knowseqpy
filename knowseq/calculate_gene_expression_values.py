@@ -1,9 +1,10 @@
 import logging
 
-import pandas as pd
 import os
+import pandas as pd
 
 from cqn import cqn
+
 
 def calculate_gene_expression_values(counts_matrix: pd.DataFrame,
                                      annotation: pd.DataFrame,
@@ -12,18 +13,18 @@ def calculate_gene_expression_values(counts_matrix: pd.DataFrame,
                                      not_human_gene_length_csv: str = "",
                                      ensembl_id: bool = True):
     """
-        Extracts the gene annotations from an online database using BioMart.
+    Calculates the gene expression values by using a matrix of counts from RNA-seq.
 
-        :param counts_matrix: DataFrame containing the gene counts, with gene IDs as index
-        :param Ensembl_ID: Boolean flag indicating whether the counts_matrix index contains Ensembl IDs (True) or gene symbols (False)
+    :param counts_matrix: The original counts matrix with gene Ensembl ID in the rows and samples in the columns.
+    :param annotation: A DataFrame containing Ensembl IDs, gene names, and gene gc content.
+    :param genes_names: Indicates if the row names of the expression matrix are gene names (True) or Ensembl IDs (False). Defaults to True.
+    :param not_human: Indicates whether the gene length file is for human (False) or another species (True). Defaults to False.
+    :param not_human_gene_length_csv: Path to the CSV file containing gene lengths for the species if not_human is True.
+    :param ensembl_id: Indicates whether the counts matrix contains Ensembl IDs (True) or gene names (False). Defaults to True.
 
-        :return: DataFrame containing gene annotations, including Ensembl gene ID, gene symbol and the percentage gene GC content
-        """
 
-    assert isinstance(genes_names, bool), "genesNames parameter can only takes the values TRUE or FALSE."
-    assert isinstance(counts_matrix, pd.DataFrame), "The class of countsMatrix parameter must be DataFrame."
-    assert isinstance(annotation, pd.DataFrame), "The class of annotation parameter must be DataFrame."
-    assert isinstance(not_human, bool), "notHuman parameter can only takes the values TRUE or FALSE."
+    :return: DataFrame containing gene annotations, including Ensembl gene ID, gene symbol and the percentage gene GC content
+    """
 
     if not_human:
         assert os.path.exists(
@@ -41,23 +42,23 @@ def calculate_gene_expression_values(counts_matrix: pd.DataFrame,
         my_gc_not = my_gc_not.loc[counts_matrix.index]
         my_genes = counts_matrix.index.intersection(annotation['ensembl_gene_id'])
 
-        mylength = gene_length.set_index('Gene_stable_ID').loc[my_genes, 'length']
-        mylength = mylength.dropna()
-        my_genes = mylength.index
+        my_length = gene_length.set_index('Gene_stable_ID').loc[my_genes, 'length']
+        my_length = my_length.dropna()
+        my_genes = my_length.index
 
-        rownames = annotation.set_index('ensembl_gene_id').loc[my_genes, 'external_gene_name']
+        row_names = annotation.set_index('ensembl_gene_id').loc[my_genes, 'external_gene_name']
 
         my_gc_not = my_gc_not.loc[my_genes]
 
         # Call to cqn
-        cqn_result = cqn(counts_matrix.loc[my_genes].values, my_gc_not.values, mylength.values)
+        cqn_result = cqn(counts_matrix.loc[my_genes].values, my_gc_not.values, my_length.values)
         cqn_values = cqn_result['y'] + cqn_result['offset']
         expression_matrix = pd.DataFrame(cqn_values, index=counts_matrix.loc[my_genes].index,
                                          columns=counts_matrix.columns)
         expression_matrix = expression_matrix - expression_matrix.min().min() + 1
 
         if genes_names:
-            expression_matrix.index = rownames
+            expression_matrix.index = row_names
 
     else:
         annotation = annotation.loc[annotation['external_gene_name'].drop_duplicates().index]
@@ -67,23 +68,19 @@ def calculate_gene_expression_values(counts_matrix: pd.DataFrame,
         my_gc_not = my_gc_not.loc[counts_matrix.index]
         my_genes = counts_matrix.index.intersection(annotation['external_gene_name'])
 
-        mylength = gene_length.set_index('Gene_name').loc[my_genes, 'length']
-        mylength = mylength.dropna()
-        my_genes = mylength.index
+        my_length = gene_length.set_index('Gene_name').loc[my_genes, 'length']
+        my_length = my_length.dropna()
+        my_genes = my_length.index
 
-        rownames = annotation.set_index('external_gene_name').loc[my_genes, 'external_gene_name']
+        row_names = annotation.set_index('external_gene_name').loc[my_genes, 'external_gene_name']
 
         my_gc_not = my_gc_not.loc[my_genes]
 
         # Call to cqn
-        cqn_result = cqn(counts_matrix.loc[my_genes].values, my_gc_not.values, mylength.values)
+        cqn_result = cqn(counts_matrix.loc[my_genes].values, my_gc_not.values, my_length.values)
         cqn_values = cqn_result['y'] + cqn_result['offset']
         expression_matrix = pd.DataFrame(cqn_values, index=counts_matrix.loc[my_genes].index,
                                          columns=counts_matrix.columns)
         expression_matrix = expression_matrix - expression_matrix.min().min() + 1
 
     return expression_matrix
-
-
-
-

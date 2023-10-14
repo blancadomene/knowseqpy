@@ -57,9 +57,6 @@ class GetGenesAnnotationTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             get_genes_annotation(values, attributes, at_filter, not_human_dataset, reference_genome)
 
-        # TODO: Add more tests cases for other parameters if needed
-        # TODO: test not_human dataset
-
 
 if __name__ == "__main__":
     unittest.main()

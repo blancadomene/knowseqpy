@@ -8,14 +8,12 @@ from knowseq.read_dge import read_dge
 
 
 # TODO: remove intermediate CSV and the hardcoded part (from DELETE_TEST)
-# TODO: change counts_to_matrix name
-# TODO: modify doc
 def counts_to_matrix(file_name: str, sep: str = ",", ext: str = ""):
     """
     Returns a dataframe with the merged information of all count files.
 
     :param file_name: CSV-like file containing the name and path to each of the count files.
-    The expected columns are Run, Path and Class.
+        The expected columns are Run, Path and Class.
     :param sep: The separator character of the file_name content. Set to "," by default.
     :param ext: The extension of the count file. Set to "" by default.
 
@@ -41,7 +39,6 @@ def counts_to_matrix(file_name: str, sep: str = ",", ext: str = ""):
     # Read digital gene expression (DGE) count files and remove unwanted rows.
     # Unwanted rows are the ones which column-wise sum is < 1, and also the ones in rows_to_skip
     counts = read_dge(count_files)
-    counts.drop("ENSG00000000003.13", inplace=True)  # TODO remove, used for testing purposes
     counts_per_million = cpm(counts)
 
     rows_to_keep = counts_per_million[counts_per_million > 1]
