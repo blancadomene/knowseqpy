@@ -7,7 +7,7 @@ from knowseq.calculate_gene_expression_values import calculate_gene_expression_v
 
 
 class CalculateGeneExpressionValuesTest(unittest.TestCase):
-    def set_up(self):
+    def setUp(self):
         dge_path = os.path.normpath(os.path.join(os.getcwd(), "test_fixtures/golden/counts_matrix.csv"))
         self.counts_matrix = pd.read_csv("test_fixtures/input/counts_matrix.csv", index_col=0)
         dge_path = os.path.normpath(os.path.join(os.getcwd(), "test_fixtures/golden/counts_matrix.csv"))
