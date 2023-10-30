@@ -34,5 +34,6 @@ class CalculateGeneExpressionValuesTest(unittest.TestCase):
         result = calculate_gene_expression_values(self.counts_matrix, self.annotation, genes_names, not_human,
                                                   ensembl_id=ensembl_id)
         pd.testing.assert_frame_equal(result, expected_output)
+
     if __name__ == '__main__':
         unittest.main()

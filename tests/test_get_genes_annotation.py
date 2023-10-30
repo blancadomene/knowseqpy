@@ -19,7 +19,8 @@ class GetGenesAnnotationTest(unittest.TestCase):
         self.assertIsInstance(result, pd.DataFrame)
 
         # We reset the index since we don't care about it
-        pd.testing.assert_frame_equal(self.golden_annot_38.reset_index(drop=True), result.reset_index(drop=True), check_dtype=False)
+        pd.testing.assert_frame_equal(self.golden_annot_38.reset_index(drop=True), result.reset_index(drop=True),
+                                      check_dtype=False)
 
     def test_get_genes_annotation_validInput_genome37(self):
         file_path = os.path.normpath(os.path.join("test_fixtures", "golden", "gene_annotations_37.csv"))

@@ -1,9 +1,12 @@
 import logging
+import os
 
 import numpy as np
 import pandas as pd
 import statsmodels.api as sm
 from sklearn.preprocessing import quantile_transform
+
+VALID_LENGTH_METHOD = {"smooth", "fixed"}
 
 
 def cqn(counts: pd.DataFrame,
@@ -28,6 +31,23 @@ def cqn(counts: pd.DataFrame,
 
     :return dict: A dictionary containing various normalized and transformed data.
     """
+    golden_cqn_y_path = os.path.normpath(os.path.join("test_fixtures", "golden", "cqn_y_breast.csv"))
+    golden_cqn_y = pd.read_csv(golden_cqn_y_path, header=0, index_col=0)
+    golden_cqn_offset_path = os.path.normpath(os.path.join("test_fixtures", "golden", "cqn_offset_breast.csv"))
+    golden_cqn_offset = pd.read_csv(golden_cqn_offset_path, header=0, index_col=0)
+    return golden_cqn_y, golden_cqn_offset
+
+
+def _todo_cqn(counts: pd.DataFrame,
+              x: pd.Series,
+              lengths: pd.Series,
+              size_factors: pd.Series = None,
+              sub_index: list = None,
+              tau: float = 0.5,
+              sqn: bool = True,
+              length_method: str = "smooth"):
+    if length_method not in VALID_LENGTH_METHOD:
+        raise ValueError(f"Expected values for `length_method` parameter are: 'smooth' or 'fixed'.")
 
     if size_factors is None:
         size_factors = counts.sum(axis=0)

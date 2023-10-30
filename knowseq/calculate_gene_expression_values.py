@@ -11,7 +11,7 @@ from knowseq.normalization import cqn
 logging.basicConfig(level=logging.INFO)
 
 
-def calculate_gene_expression_values(countsMatrix: pd.DataFrame, annotation:pd.DataFrame, genesNames: bool = True,
+def calculate_gene_expression_values(countsMatrix: pd.DataFrame, annotation: pd.DataFrame, genesNames: bool = True,
                                      not_human=False, not_human_gene_length_csv="", ensembl_id=True):
     """
     Calculates the gene expression values by using a matrix of counts from RNA-seq.
@@ -47,7 +47,7 @@ def calculate_gene_expression_values(countsMatrix: pd.DataFrame, annotation:pd.D
         my_length = gene_length.set_index('Gene_stable_ID').loc[my_genes, 'Gene_length']
 
         my_cqn = cqn(countsMatrix.loc[my_genes], x=my_g_cannot, lengths=my_length, sizeFactors=countsMatrix.sum(axis=1),
-                    tau=0.5, sqn=True)
+                     tau=0.5, sqn=True)
         cqn_values = my_cqn['y'] + my_cqn['offset']
         expression_matrix = cqn_values - np.min(cqn_values) + 1
 

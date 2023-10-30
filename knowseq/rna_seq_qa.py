@@ -82,4 +82,3 @@ def RNAseqQA(expressionMatrix, outdir="SamplesQualityAnalysis", toPNG=True, toPD
         removed_outliers += found_outliers
 
         return {'matrix': expressionMatrix, 'outliers': removed_outliers}
-
