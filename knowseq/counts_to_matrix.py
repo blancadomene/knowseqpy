@@ -1,5 +1,5 @@
-import os
 import logging
+import os
 
 import pandas as pd
 
@@ -12,15 +12,18 @@ def counts_to_matrix(file_name: str, sep: str = ",", ext: str = ""):
     """
     Returns a dataframe with the merged information of all count files.
 
-    :param file_name: CSV-like file containing the name and path to each of the count files.
-        The expected columns are Run, Path and Class.
-    :param sep: The separator character of the file_name content. Set to "," by default.
-    :param ext: The extension of the count file. Set to "" by default.
+    Args:
+        file_name: CSV-like file containing the name and path to each of the count files.
+                   The expected columns are Run, Path and Class.
+        sep: The separator character of the file_name content. Set to "," by default.
+        ext: The extension of the count file. Set to "" by default.
 
-    :return: Pandas dataframe with the ensemble ID in the rows and all the samples of each count files in the columns.
+    Returns:
+        Pandas dataframe with the ensemble ID in the rows and all the samples of each count files in the columns.
 
-    :raises FileNotFoundError: If file_name doesn't exist.
-    :raises Exception: If input file doesn't contain the expected columns.
+    Raises:
+        FileNotFoundError: If file_name doesn't exist.
+        Exception: If input file doesn't contain the expected columns.
     """
     try:
         data_info = pd.read_csv(file_name, sep=sep, dtype="str")

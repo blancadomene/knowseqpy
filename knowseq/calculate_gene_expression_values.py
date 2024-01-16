@@ -14,7 +14,7 @@ def calculate_gene_expression_values(counts_matrix: pd.DataFrame, annotation: pd
     """
     Calculates the gene expression values by using a matrix of counts from RNA-seq.
 
-    Parameters:
+    Args:
         counts_matrix (pd.DataFrame): The counts matrix with genes in rows and samples in columns.
         annotation (pd.DataFrame): A DataFrame containing gene annotations.
         genes_names (bool): Whether to use gene names instead of Ensembl IDs.

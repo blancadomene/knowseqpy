@@ -12,7 +12,6 @@ class RnaSeqQaTest(unittest.TestCase):
         self.golden_qa = pd.read_csv(qa_path, index_col=0, header=0)
 
     def test_rna_seq_qa(self):
-        import csv
         gene_expression_path = os.path.normpath(
             os.path.join("test_fixtures", "golden", "gene_expression_matrix_breast.csv"))
         gene_expression = pd.read_csv(gene_expression_path, header=0, index_col=0)

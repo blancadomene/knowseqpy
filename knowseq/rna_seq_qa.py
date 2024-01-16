@@ -13,12 +13,12 @@ def rna_seq_qa(expression_df: pd.DataFrame, output_dir: str = "SamplesQualityAna
     TODO: This function in R generates different plots over expression data in order.
           We want to return as a stats dict (min, max, etc) in case we want to plot using a separate func
 
-    Parameters:
-    expression_df: A DataFrame that contains the gene expression values.
-    output_dir: The output directory to store the analysis results.
+    Args:
+        expression_df: A DataFrame that contains the gene expression values.
+        output_dir: The output directory to store the analysis results.
 
     Returns:
-    dict: A dictionary containing found outliers for each realized test or corrected data if to_removal is True.
+        dict: A dictionary containing found outliers for each realized test or corrected data if to_removal is True.
     """
     # TODO: Check if there are NA values (manually removed them from the golden while testing)
     # TODO: Improve performance

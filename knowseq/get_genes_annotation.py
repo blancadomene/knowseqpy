@@ -23,22 +23,24 @@ def get_genes_annotation(values: List[str],
     """
     Retrieves gene annotations from the Ensembl biomart database.
 
-    :param values: A list of genes that can contain Ensembl IDs, gene names, or the string "allGenome"
-        to indicate all genes.
-    :param attributes: A list of desired attributes or information to retrieve from Ensembl biomart.
-        Default is ['ensembl_gene_id', 'external_gene_name', 'percentage_gene_gc_content', 'entrezgene_id'].
-    :param attribute_filter: An attribute used as a filter to return the rest of the attributes.
-        Default is 'ensembl_gene_id'.
-    :param not_hsapiens_dataset: Indicates whether to retrieve human annotations (False) or annotations from a different
-        species available in BiomaRt (True). Default is False.
-    :param not_hsapiens_dataset: The dataset identification for non-human annotations.
-        Default is None.
-    :param reference_genome: The reference genome to use. It must be 37 or 38. Default is 38.
+    Args:
+        values: A list of genes that can contain Ensembl IDs, gene names, or the string "allGenome"
+                to indicate all genes.
+        attributes: A list of desired attributes or information to retrieve from Ensembl biomart.
+                    Default is ['ensembl_gene_id', 'external_gene_name', 'percentage_gene_gc_content', 'entrezgene_id'].
+        attribute_filter: An attribute used as a filter to return the rest of the attributes.
+                          Default is 'ensembl_gene_id'.
+        not_hsapiens_dataset: Indicates whether to retrieve human annotations (False) or annotations from a different
+                              species available in BiomaRt (True). Default is False.
+        not_hsapiens_dataset: The dataset identification for non-human annotations. Default is None.
+        reference_genome: The reference genome to use. It must be 37 or 38. Default is 38.
 
-    :return: A DataFrame containing the requested gene annotations.
+    Returns:
+        A DataFrame containing the requested gene annotations.
 
-    :raises ValueError: If invalid input is provided for the parameters.
-    :raises ValueError: If an error occurs during the query, or the query result is empty or contains an error message.
+    Raises:
+        ValueError: If invalid input is provided for the parameters.
+        ValueError: If an error occurs during the query, or the query result is empty or contains an error message.
 
     Examples:
         >>> myAnnotation = get_genes_annotation(["KRT19", "BRCA1"], attribute_fFilter="external_gene_name")

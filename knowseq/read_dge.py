@@ -11,14 +11,17 @@ def read_dge(count_files: pd.Series, path: str = None, labels: str = None):
     """
     Reads and merges a set of text files containing gene expression counts.
 
-    :param count_files: Pandas Series of filenames that contain sample information.
-    :param path: string giving the directory containing the files. Set to None by default (current working directory).
-    :param labels: names to associate with the files. Set to None by default (file names).
+    Args:
+        count_files: Pandas Series of filenames that contain sample information.
+        path: String giving the directory containing the files. Set to None by default (current working directory).
+        labels: Names to associate with the files. Set to None by default (file names).
 
-    :return: Pandas Dataframe, containing a row for each unique tag found in the input files and a column for each
-    input file.
+    Returns:
+        Pandas Dataframe, containing a row for each unique tag found in the input files and a column for each
+        input file.
 
-    :raises Exception: If row names are not unique within the row-names.
+    Raises:
+        Exception: If row names are not unique within the row-names.
     """
 
     # Assign path and labels if given
