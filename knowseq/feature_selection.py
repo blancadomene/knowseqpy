@@ -30,8 +30,8 @@ def feature_selection(data, labels, vars_selected, mode="mrmr", disease="", max_
 
     if mode == "mrmr":
         """logger.info("Calculating the ranking of the most relevant genes using mRMR algorithm...")
-        x_aligned = data[vars_selected].reset_index(drop=True)
-        return mrmr_classif(X=x_aligned, y=labels, K=max_genes)"""
+        data_aligned = data[vars_selected].reset_index(drop=True)
+        return mrmr_classif(X=data_aligned, y=labels, K=max_genes)"""
         fs_ranking_path = os.path.normpath(
             os.path.join("test_fixtures", "golden", "fs_ranking_mrmr_breast.csv"))
 

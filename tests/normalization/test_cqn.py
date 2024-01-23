@@ -8,15 +8,15 @@ from knowseq.normalization import cqn
 
 class CqnTest(unittest.TestCase):
     def setUp(self):
-        golden_cqn_path = os.path.normpath(os.path.join("test_fixtures", "golden", "cqn_breast.csv"))
+        golden_cqn_path = os.path.normpath(os.path.join("../test_fixtures", "golden", "cqn_breast.csv"))
         self.golden_cqn = pd.read_csv(golden_cqn_path, index_col=0)
 
     def test_cqn_values(self):
-        counts_matrix_path = os.path.normpath(os.path.join("test_fixtures", "golden", "counts_matrix_breast.csv"))
+        counts_matrix_path = os.path.normpath(os.path.join("../test_fixtures", "golden", "counts_matrix_breast.csv"))
         counts_matrix = pd.read_csv(counts_matrix_path, header=0, index_col=0)
-        annotation_path = os.path.normpath(os.path.join("test_fixtures", "annotation_breast.csv"))
+        annotation_path = os.path.normpath(os.path.join("../test_fixtures", "annotation_breast.csv"))
         annotation = pd.read_csv(annotation_path, header=0, index_col="ensembl_gene_id")
-        gene_length_path = os.path.normpath(os.path.join("..", "external_data", "genes_length_homo_sapiens.csv"))
+        gene_length_path = os.path.normpath(os.path.join("../..", "external_data", "genes_length_homo_sapiens.csv"))
         gene_length = pd.read_csv(gene_length_path, header=0, index_col="Gene_stable_ID")
 
         # Remove duplicates from annotation (we will only need (ensembl_gene_id,percentage_gene_gc_content) pairs)
