@@ -9,8 +9,10 @@ from sklearn.preprocessing import StandardScaler
 
 
 # TODO: change loocv variable name?
-#   Parameter names, descriptions, etc
-def knn_classifier(data, labels, vars_selected, num_fold=10, loocv=False):
+#  Parameter names, descriptions, etc
+#  optimal k should not be 1
+#  should return mean of all values?
+def knn(data, labels, vars_selected, num_fold=10, loocv=False):
     """
     Conduct k-NN classification with cross-validation.
 
@@ -34,13 +36,14 @@ def knn_classifier(data, labels, vars_selected, num_fold=10, loocv=False):
 
     logging.info("Tuning the optimal K...") # TODO: quitar?
 
-    if not loocv:
-        cv = RepeatedStratifiedKFold(n_splits=num_fold, n_repeats=3)
-        results = _tune_k(data, label_codes, cv)
-    else:
+    # TODO loocv quitar?
+    if loocv:
         logging.info("Running Leave One Out Cross-Validation...")
-        loo = LeaveOneOut()
-        results = _tune_k(data, label_codes, loo)
+        cv_strategy = LeaveOneOut()
+    else:
+        cv_strategy = RepeatedStratifiedKFold(n_splits=num_fold, n_repeats=3)
+
+    results = _tune_k(data, label_codes, cv_strategy)
 
     logging.info("Classification completed successfully.")
     results["unique_labels"] = unique_labels
@@ -74,10 +77,17 @@ def _tune_k(data, label_codes, cv=5):
     cv_results = grid_search.cv_results_
     y_pred = grid_search.best_estimator_.predict(data)
 
+    conf_mat = confusion_matrix(label_codes, y_pred)
+    tn = conf_mat[0][0]
+    fp = conf_mat[0][1]
+    specificity = tn / (tn + fp) if (tn + fp) > 0 else 0
+
     return {
         'model': grid_search.best_estimator_,
-        'confusion_matrix': confusion_matrix(label_codes, y_pred),
+        'confusion_matrix': conf_mat,
         'accuracy': grid_search.best_score_,
+        'specificity': specificity,
+        "sensitivity": 1.0, # TODO
         'precision': cv_results['mean_test_precision'][best_index],
         'recall': cv_results['mean_test_recall'][best_index],
         'f1_score': cv_results['mean_test_f1_score'][best_index],
