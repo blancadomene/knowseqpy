@@ -1,6 +1,6 @@
 import pandas as pd
 
-
+logger = logging.getLogger(__name__)
 # TODO: Ask if I should remove non-numerical cols or just raise an exception and let the the user check that out
 def cpm(counts_df: pd.DataFrame) -> pd.DataFrame:
     """

@@ -20,8 +20,8 @@ class KnnClassifierTest(unittest.TestCase):
 
         knn_res = knn(golden_degs_df, quality_labels, fs_ranking_list)
 
-        plot_boxplot()
-        plot_confusion_matrix(knn_res["confusion_matrix"], class_labels=knn_res["unique_labels"].tolist())
+        plot_boxplot(golden_degs_df, quality_labels, fs_ranking_list, top_n_features=3, to_png=False)
+        plot_confusion_matrix(knn_res["confusion_matrix"], labels=knn_res["unique_labels"].tolist())
         plot_samples_heatmap(golden_degs_df, quality_labels, fs_ranking_list, top_n_features=4, to_png=False)
 
         # Check that both dataframes contain the same data, but ignoring the dtype and order of rows and columns

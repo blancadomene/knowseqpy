@@ -8,7 +8,7 @@ from sklearn.preprocessing import quantile_transform
 
 VALID_LENGTH_METHOD = {"smooth", "fixed"}
 
-
+logger = logging.getLogger(__name__)
 def cqn(counts: pd.DataFrame,
         x: pd.Series,
         lengths: pd.Series,

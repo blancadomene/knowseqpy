@@ -2,12 +2,16 @@
 Common utility functions for working with CSV files and data structures.
 """
 import csv
+import logging
 import os
+from typing import Any
 
 import pandas as pd
 
+logger = logging.getLogger(__name__)
 
-def csv_to_dataframe(path_components: list[str], index_col=None, header=None, **kwargs) -> pd.DataFrame:
+
+def csv_to_dataframe(path_components: list[str], index_col=None, header=None, **kwargs: Any) -> pd.DataFrame:
     """
     Loads a CSV file into a pandas DataFrame.
 
@@ -25,6 +29,7 @@ def csv_to_dataframe(path_components: list[str], index_col=None, header=None, **
         pd.errors.ParserError: If there is an issue with CSV parsing.
     """
     filepath = os.path.normpath(os.path.join(*path_components))
+    logger.info("Loading CSV file from %s into a dataframe", filepath)
     return pd.read_csv(filepath, index_col=index_col, header=header, **kwargs)
 
 
@@ -39,7 +44,7 @@ def csv_to_list(path_components: list[str]) -> list:
         A list where each element is a row of the CSV.
     """
     filepath = os.path.normpath(os.path.join(*path_components))
-
+    logger.info("Loading CSV file from %s into a list", filepath)
     with open(filepath, newline="", encoding="utf-8") as f:
         reader = csv.reader(f)
         return list(reader)
