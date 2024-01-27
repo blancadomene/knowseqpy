@@ -1,1 +1,1 @@
-from .test_knn_classifier import *
+from .test_knn import *

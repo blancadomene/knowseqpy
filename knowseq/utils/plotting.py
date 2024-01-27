@@ -9,27 +9,24 @@ import plotly.express as px
 import plotly.figure_factory as ff
 import plotly.graph_objects as go
 
-# TODO: Remove to_png? And maybe only check png_filename not empty
-#  Can"t export right now anyways bc of the use of deprecated setDaemon API in Kaleido (freezes execution)
-
+# TODO: Can't export to png bc of the use of deprecated setDaemon API in Kaleido (freezes execution).
+#       Opened issue: https://github.com/plotly/Kaleido/issues/171
+# TODO: Revise all plots from R (prob missing some)
 logger = logging.getLogger(__name__)
 
 
 def plot_boxplot(data: pd.DataFrame, labels: pd.Series, fs_ranking: list, top_n_features: int = 5,
-                 to_png: bool = False, png_filename: str = "genes_boxplot.png"):
+                 png_filename: str = None):
     """
     Plots a boxplot of the top N features from the feature selection ranking.
 
     Args:
-    data: The input data to plot.
-    labels: List of labels for the data.
-    fs_ranking: List of feature names ordered by ranking.
-    top_n_features: Number of top features to include in the boxplot.
-    to_png: Whether to export the plot to a PNG file.
-    png_filename: Filename for the exported PNG file.
-
-    Returns:
-    None
+        data: Data containing samples in rows and features in columns.
+        labels: Labels for the samples.
+        fs_ranking: List of feature names ordered by ranking.
+        top_n_features: Number of top features to include in the boxplot. Defaults to 5.
+        png_filename: Filename for the exported PNG file.
+                      If not None, the plot is exported with the given name. Defaults to None.
     """
 
     top_fs_ranking = fs_ranking[:top_n_features]
@@ -47,37 +44,37 @@ def plot_boxplot(data: pd.DataFrame, labels: pd.Series, fs_ranking: list, top_n_
     fig.update_traces(quartilemethod="linear")
     fig.update_layout(title_text="Genes Boxplot", xaxis_title="Samples", yaxis_title="Expression")
 
-    if to_png:
+    if png_filename:
         fig.write_image(png_filename)
 
     fig.show()
 
 
-def plot_confusion_matrix(conf_matrix: np.ndarray, labels: list, to_png: bool = False, png_filename: str = "confusion_matrix.png"):
+def plot_confusion_matrix(conf_matrix: np.ndarray, unique_labels: list, png_filename: str = None):
     """
     Plots a confusion matrix of classified samples.
 
     Args:
         conf_matrix (array-like): The confusion matrix to be plotted.
-        labels: List of class labels.
-        to_png: Whether to export the plot to a PNG file.
+        unique_labels: Labels for the samples.
         png_filename: Filename for the exported PNG file.
+                      If not None, the plot is exported with the given name. Defaults to None.
     """
-    fig = ff.create_annotated_heatmap(z=conf_matrix, x=labels, y=labels, colorscale="blues")
+    fig = ff.create_annotated_heatmap(z=conf_matrix, x=unique_labels, y=unique_labels, colorscale="blues")
     fig.update_layout(
         title="Confusion Matrix",
         xaxis_title="Predicted Labels",
         yaxis_title="True Labels",
         xaxis={"side": "bottom"}
     )
-    if to_png:
+    if png_filename:
         fig.write_image(png_filename)
 
     fig.show()
 
 
-def plot_samples_heatmap(data: pd.DataFrame, labels: pd.Series, fs_ranking: list, top_n_features: int,
-                         to_png: bool = False, png_filename: str = "samples_heatmap.png"):
+def plot_samples_heatmap(data: pd.DataFrame, labels: pd.Series, fs_ranking: list, top_n_features: int = 5,
+                         png_filename: str = None):
     """
     Plots a heatmap of the top N features from the feature selection ranking.
 
@@ -85,9 +82,9 @@ def plot_samples_heatmap(data: pd.DataFrame, labels: pd.Series, fs_ranking: list
         data: Data containing samples in rows and features in columns.
         labels: Labels for the samples.
         fs_ranking: List of feature names ordered by ranking.
-        top_n_features: Number of top features to include in the heatmap.
-        to_png: Whether to export the plot to a PNG file.
+        top_n_features: Number of top features to include in the heatmap. Defaults to 5.
         png_filename: Filename for the exported PNG file.
+                      If not None, the plot is exported with the given name. Defaults to None.
     """
     top_fs_ranking = fs_ranking[:top_n_features]
     top_data = data[top_fs_ranking]
@@ -114,7 +111,7 @@ def plot_samples_heatmap(data: pd.DataFrame, labels: pd.Series, fs_ranking: list
         autosize=True
     )
 
-    if to_png:
+    if png_filename:
         fig.write_image(png_filename)
 
     fig.show()

@@ -17,8 +17,8 @@ def csv_to_dataframe(path_components: list[str], index_col=None, header=None, **
 
     Args:
         path_components: List of components in the file path.
-        index_col: Column(s) to use as the row labels (index).
-        header: Row number(s) to use as the column names.
+        index_col: Column(s) to use as the row labels (index). Defaults to None.
+        header: Row number(s) to use as the column names. Defaults to None.
         **kwargs: Additional keyword arguments to pass to pandas.read_csv().
 
     Returns:
@@ -57,7 +57,7 @@ def get_nested_value(data_dict: dict, keys: list, default: str = None):
     Args:
         data_dict: The data structure to access.
         keys: Sequence of keys to access the nested element.
-        default: Default value to return if any key is not found.
+        default: Default string value to return if any key is not found. Defaults to None.
 
     Returns:
         The value from the nested data structure or the default value if not found.

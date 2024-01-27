@@ -8,6 +8,7 @@ from knowseq.utils.plotting import plot_samples_heatmap, plot_confusion_matrix, 
 class KnnClassifierTest(unittest.TestCase):
     def setUp(self):
         pass
+
     def test_kenn_classifier(self):
         golden_degs_df = csv_to_dataframe(path_components=["../test_fixtures", "golden", "degs_matrix_breast.csv"],
                                           index_col=0, header=0).transpose()
@@ -20,13 +21,11 @@ class KnnClassifierTest(unittest.TestCase):
 
         knn_res = knn(golden_degs_df, quality_labels, fs_ranking_list)
 
-        plot_boxplot(golden_degs_df, quality_labels, fs_ranking_list, top_n_features=3, to_png=False)
-        plot_confusion_matrix(knn_res["confusion_matrix"], labels=knn_res["unique_labels"].tolist())
-        plot_samples_heatmap(golden_degs_df, quality_labels, fs_ranking_list, top_n_features=4, to_png=False)
+        plot_boxplot(golden_degs_df, quality_labels, fs_ranking_list, top_n_features=3)
+        plot_confusion_matrix(knn_res["confusion_matrix"], unique_labels=knn_res["unique_labels"].tolist())
+        plot_samples_heatmap(golden_degs_df, quality_labels, fs_ranking_list, top_n_features=4)
 
-        # Check that both dataframes contain the same data, but ignoring the dtype and order of rows and columns
-        """pd.testing.assert_frame_equal(self.golden_cqn, cqn_values, check_dtype=False, check_like=True,
-                                      check_exact=False, atol=0.1, rtol=0.1)"""
+        # TODO: assert
 
 
 if __name__ == '__main__':

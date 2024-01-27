@@ -1,6 +1,10 @@
+import logging
+
 import pandas as pd
 
 logger = logging.getLogger(__name__)
+
+
 # TODO: Ask if I should remove non-numerical cols or just raise an exception and let the the user check that out
 def cpm(counts_df: pd.DataFrame) -> pd.DataFrame:
     """
@@ -8,10 +12,12 @@ def cpm(counts_df: pd.DataFrame) -> pd.DataFrame:
     gene expression (normalizes only for sequencing depth). Calculated by dividing the mapped reads count by a per
     million scaling factor of total mapped reads.
 
-    :param counts_df: A pandas DataFrame containing the mapped reads counts for each gene.
+    Args:
+        counts_df: A pandas DataFrame containing the mapped reads counts for each gene.
                    Assumes all columns are numeric and there are no null values.
 
-    :return: A pandas DataFrame with the normalized gene expression.
+    Returns:
+        A pandas DataFrame with the normalized gene expression.
     """
 
     # Ensure the DataFrame only contains numerical values and no nulls
@@ -20,6 +26,4 @@ def cpm(counts_df: pd.DataFrame) -> pd.DataFrame:
         if counts_df[col].apply(pd.to_numeric, errors='coerce').isna().sum() > 0:
             raise ValueError(f"Dataframe col {col} contains non-numeric values.")
 
-    # TODO: Consider using counts.to_numpy() or other solutions for potentially faster computation
-    normalized_counts = (counts_df * 1e6) / counts_df.sum()
-    return normalized_counts
+    return (counts_df * 1e6) / counts_df.sum()

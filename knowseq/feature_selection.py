@@ -4,6 +4,7 @@ import os
 import pandas as pd
 from mrmr import mrmr_classif
 
+logger = logging.getLogger(__name__)
 
 def feature_selection(data, labels, vars_selected, mode="mrmr", disease="", max_genes=None):
     """
@@ -23,7 +24,6 @@ def feature_selection(data, labels, vars_selected, mode="mrmr", disease="", max_
     Raises:
         ValueError: If input data types or dimensions are invalid.
     """
-    logger = logging.getLogger(__name__)
 
     if max_genes is None:
         max_genes = len(vars_selected)
