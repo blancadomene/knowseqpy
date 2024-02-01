@@ -1,6 +1,7 @@
 """
 Unit tests for the `common` module in the `knowseq` package.
 """
+import logging
 import os
 import unittest
 from unittest import mock
@@ -12,6 +13,8 @@ from knowseq.utils.common import csv_to_dataframe, csv_to_list, get_nested_value
 
 
 class CommonTest(unittest.TestCase):
+    def setUp(self):
+        logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(module)s - %(message)s")
 
     @mock.patch("pandas.read_csv")
     def test_load_csv_to_dataframe(self, mock_read_csv):

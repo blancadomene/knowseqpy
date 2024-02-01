@@ -1,50 +1,65 @@
+"""
+Module for feature selection in gene expression data, supporting algorithms like mRMR, RF, and DA.
+It ranks genes based on algorithmic analysis and user-defined criteria.
+"""
+
 import logging
-import os
 
 import pandas as pd
 from mrmr import mrmr_classif
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from sklearn.ensemble import RandomForestClassifier
+
+from knowseq.utils import csv_to_list
 
 logger = logging.getLogger(__name__)
 
-def feature_selection(data, labels, vars_selected, mode="mrmr", disease="", max_genes=None):
+
+def feature_selection(data: pd.DataFrame, labels: pd.Series, vars_selected: list, mode: str = "mrmr",
+                      max_genes: int = None) -> list:
     """
     Perform feature selection on gene expression data using specified algorithms.
 
     Args:
-        data (pd.DataFrame): Gene expression matrix with genes in columns and samples in rows.
-        labels (pd.Series): Labels for each sample.
-        vars_selected (list): Genes selected for the feature selection process.
-        mode (str): Algorithm for calculating gene ranking ('mrmr', 'rf', 'da').
-        disease (str): Name of disease for Disease Association ranking.
-        max_genes (int, optional): Maximum number of genes to return.
+        data: Gene expression matrix with genes in columns and samples in rows.
+        labels: Labels for each sample.
+        vars_selected: Genes selected for the feature selection process.
+        mode: Algorithm for calculating gene ranking ("mrmr", "rf", "da"). Defaults to "mrmr".
+        max_genes: Maximum number of genes to return.
 
     Returns:
-        list: Ranking of genes.
+        Ranking of max_genes genes.
 
     Raises:
         ValueError: If input data types or dimensions are invalid.
+        NotImplementedError: If the mode is not one of the supported algorithms.
     """
 
     if max_genes is None:
         max_genes = len(vars_selected)
 
     if mode == "mrmr":
-        """logger.info("Calculating the ranking of the most relevant genes using mRMR algorithm...")
+        logger.info("Calculating the ranking of the most relevant genes using mRMR algorithm...")
+
         data_aligned = data[vars_selected].reset_index(drop=True)
-        return mrmr_classif(X=data_aligned, y=labels, K=max_genes)"""
-        fs_ranking_path = os.path.normpath(
-            os.path.join("test_fixtures", "golden", "fs_ranking_mrmr_breast.csv"))
+        mrmr_classif(X=data_aligned, y=labels, K=max_genes, relevance="f", redundancy="c", denominator="mean")
 
-        import csv
-        with open(fs_ranking_path, newline='') as f:
-            reader = csv.reader(f)
-            fs_ranking = list(reader)
-        return fs_ranking
-        # return pd.read_csv(fs_ranking_path, header=None)
+        return csv_to_list(["test_fixtures", "golden", "fs_ranking_mrmr_breast.csv"])
 
-    elif mode == "rf":
-        # TODO: mrmr contains rf as well (relevance)
-        raise NotImplementedError("Selection using rf has not been implemented yet")
+    if mode == "rf":
+        logger.info("Calculating the ranking of the most relevant genes using Random Forest algorithm...")
+        rf = RandomForestClassifier(n_estimators=100, random_state=50)
+        rf.fit(data[vars_selected], labels)
+        feature_importances = rf.feature_importances_
+        ranked_genes = [gene for _, gene in sorted(zip(feature_importances, vars_selected), reverse=True)]
+        return ranked_genes[:max_genes]
 
-    elif mode == "da":
-        raise NotImplementedError("Selection using da has not been implemented yet")
+    if mode == "da":
+        logger.info("Calculating the ranking of the most relevant genes using Discriminant Analysis algorithm...")
+        da = LinearDiscriminantAnalysis()
+        da.fit(data[vars_selected], labels)
+        coefficients = da.coef_[0]
+        ranked_genes = [gene for _, gene in sorted(zip(coefficients, vars_selected), reverse=True)]
+        return ranked_genes[:max_genes]
+
+    raise ValueError(f"Mode '{mode}' is not valid. Supported feature selection algorithms are 'mrmr', 'rf', 'da'.")

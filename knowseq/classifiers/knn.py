@@ -13,15 +13,15 @@ from sklearn.preprocessing import StandardScaler
 logger = logging.getLogger(__name__)
 
 
-def knn(data: pd.DataFrame, labels, vars_selected, num_fold: int = 10, loocv: bool = False):
+def knn(data: pd.DataFrame, labels: pd.Series, vars_selected: list, num_fold: int = 10, loocv: bool = False) -> dict:
     """
     Conducts k-NN classification.
 
     Args:
-        data (DataFrame or ndarray): The expression matrix with genes in columns and samples in rows.
-        labels (array-like): Labels for each sample.
-        vars_selected (list): Selected genes for classification. Can be DEGs or a custom list.
-        num_fold: Number of folds for cross-validation. Default is 10.
+        data: The expression matrix with genes in columns and samples in rows.
+        labels: Labels for each sample.
+        vars_selected: Selected genes for classification. Can be DEGs or a custom list.
+        num_fold: Number of folds for cross-validation. Defaults to 10.
         loocv: If True, use Leave-One-Out cross-validation. Otherwise, use KFold. Defaults to False.
 
     Returns:
@@ -58,13 +58,13 @@ def knn(data: pd.DataFrame, labels, vars_selected, num_fold: int = 10, loocv: bo
     return results
 
 
-def _knn_model_evaluation(data: pd.DataFrame, label_codes, cv: BaseCrossValidator):
+def _knn_model_evaluation(data: pd.DataFrame, label_codes: np.array, cv: BaseCrossValidator) -> dict:
     """
     Tunes the best k value for the k-NN classifier using grid search with the provided cross-validation strategy
 
     Args:
         data: The expression matrix.
-        cv (obj): Cross-validation strategy.
+        cv: Cross-validation strategy.
         label_codes (array-like): label_codes for each sample.
 
     Returns:

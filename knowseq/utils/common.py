@@ -50,7 +50,7 @@ def csv_to_list(path_components: list[str]) -> list:
         return list(reader)
 
 
-def get_nested_value(data_dict: dict, keys: list, default: str = None):
+def get_nested_value(data_dict: dict, keys: list, default: str = None) -> Any:
     """
     Access nested elements in a data structure.
 

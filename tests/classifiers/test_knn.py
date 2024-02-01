@@ -1,3 +1,4 @@
+import logging
 import unittest
 
 from knowseq.classifiers import knn
@@ -7,7 +8,7 @@ from knowseq.utils.plotting import plot_samples_heatmap, plot_confusion_matrix, 
 
 class KnnClassifierTest(unittest.TestCase):
     def setUp(self):
-        pass
+        logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(module)s - %(message)s")
 
     def test_kenn_classifier(self):
         golden_degs_df = csv_to_dataframe(path_components=["../test_fixtures", "golden", "degs_matrix_breast.csv"],
