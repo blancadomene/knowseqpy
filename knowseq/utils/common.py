@@ -50,7 +50,37 @@ def csv_to_list(path_components: list[str]) -> list:
         return list(reader)
 
 
-def get_nested_value(data_dict: dict, keys: list, default: str = None) -> Any:
+def dataframe_to_feather(data: pd.DataFrame, path_components: list[str], **kwargs: Any) -> None:
+    """
+    Saves a pandas DataFrame to a Feather file.
+
+    Args:
+        data: pandas DataFrame with data.
+        path_components: List of components in the file path.
+        **kwargs: Additional keyword arguments to pass to pandas.DataFrame.to_feather().
+    """
+    filepath = os.path.normpath(os.path.join(*path_components))
+    data.to_feather(filepath, **kwargs)
+    logger.info("Exporting Dataframe to Feather file at %s", filepath)
+
+
+def feather_to_dataframe(path_components: list, **kwargs: Any) -> pd.DataFrame:
+    """
+    Loads a Feather file into a pandas DataFrame.
+
+    Args:
+        path_components: List of components in the file path.
+        **kwargs: Additional keyword arguments to pass to pandas.read_feather().
+
+    Returns:
+        pandas DataFrame containing the Feather file data.
+    """
+    filepath = os.path.normpath(os.path.join(*path_components))
+    logger.info("Loading Feather file from %s into a dataframe", filepath)
+    return pd.read_feather(filepath, **kwargs)
+
+
+def get_nested_value(data_dict: dict, keys: list[str], default: str = None) -> Any:
     """
     Access nested elements in a data structure.
 

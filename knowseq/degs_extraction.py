@@ -1,25 +1,29 @@
 import logging
-import sys
+import os
+import subprocess
 
 import pandas as pd
+from patsy.highlevel import dmatrix
 from sklearn.model_selection import KFold
-from statsmodels.formula.api import ols
-from statsmodels.stats.anova import anova_lm
+
+from knowseq.utils import dataframe_to_feather, feather_to_dataframe
 
 logger = logging.getLogger(__name__)
 
 
+# TODO: CV?
+# TODO: Add notes about Rscript path
 def degs_extraction(data: pd.DataFrame, labels: pd.Series, max_genes: int = float("inf"), p_value: float = 0.05,
-                    lfc: float = 1.0, cv: bool = False, k_folds: int = 5) -> list[dict]:
+                    lfc: float = 1.0, cv: bool = False, k_folds: int = 5) -> list[pd.DataFrame]:
     """
     Performs the analysis to extract Differentially Expressed Genes (DEGs) among classes to compare.
 
     Args:
         data: DataFrame containing genes in rows and samples in columns.
         labels: Series containing labels for each sample in data.
-        p_value: P-value threshold for determining DEGs. Defaults to 0.05.
-        lfc: Log Fold Change threshold for determining DEGs. Defautls to 1.0.
-        max_genes: Maximum number of genes as output. # TODO: Defaults to ?
+        p_value: p-value threshold for determining DEGs. Defaults to 0.05.
+        lfc: Log Fold Change threshold for determining DEGs. Defaults to 1.0.
+        max_genes: Maximum number of genes as output. Defaults to all genes.
         cv: If True, runs Cross-Validation DEGs extraction. Defaults to False.
         k_folds: Number of folds for Cross-Validation. Defaults to 5.
 
@@ -27,12 +31,10 @@ def degs_extraction(data: pd.DataFrame, labels: pd.Series, max_genes: int = floa
         Dictionary containing DEGs analysis results.
     """
 
-    # TODO label_codes = pd.factorize(labels)
     labels = labels.astype("category")
 
     cv_datasets = []
     if cv:
-        # TODO: test CV
         logger.info("Applying DEGs extraction with Cross-Validation")
         kf = KFold(n_splits=k_folds, shuffle=True, random_state=42)
         for _, test_index in kf.split(data):
@@ -57,59 +59,82 @@ def degs_extraction(data: pd.DataFrame, labels: pd.Series, max_genes: int = floa
     return cv_degs_results
 
 
-def _biclass_analysis(data: pd.DataFrame, labels: pd.Series, p_value: float, lfc: float, max_genes: int) -> dict:
+def _biclass_analysis(data: pd.DataFrame, labels: pd.Series, p_value: float, lfc: float,
+                      max_genes: int) -> pd.DataFrame:
     """
-    Performs biclass DEGs analysis using ANOVA.
+    Performs biclass DEGs analysis by calling an R script for lmFit and eBayes.
 
     Args:
-        data: Expression data.
-        labels: Labels for each sample.
-        p_value: p-value threshold.
-        lfc: Log Fold Change threshold.
-        max_genes: Maximum number of genes.
+        data: DataFrame containing genes in rows and samples in columns.
+        labels: Series containing labels for each sample in data.
+        p_value: p-value threshold for determining DEGs.
+        lfc: Log Fold Change threshold for determining DEGs.
+        max_genes: Maximum number of genes as output.
 
     Returns:
         Analysis results including DEGs table and matrix.
     """
-    data_with_labels = data.copy().T
-    data_with_labels["sample_class"] = labels.values
-    # al reves?
-    # predictors = ["Q('{}')".format(col) for col in data.columns]  # Wrap each column name with Q()
-    # formula = " + ".join(predictors) + " ~ sample_class"
-    formula = " + ".join(data_with_labels.columns[:-1]) + " ~ sample_class"
 
-    sys.setrecursionlimit(1000000)
+    degs_table = run_limma_deg_analysis(data, labels, p_value, lfc, max_genes)
 
-    model = ols(formula, data=data_with_labels).fit()
-    anova_results = anova_lm(model, typ=2)
+    # TODO: Note: Test this additional processing
+    if max_genes != float("inf") and len(degs_table) > max_genes:
+        degs_table = degs_table.head(max_genes)
 
-    significant_genes = anova_results[anova_results['PR(>F)'] <= p_value]
-
-    # Calculate Log Fold Change
-    mean_diff = data_with_labels.groupby("class").mean().diff().iloc[-1].abs()
-    significant_genes_lfc = mean_diff[mean_diff >= lfc]
-
-    significant_genes = significant_genes.loc[significant_genes_lfc.index]
-
-    # Limit to specified number of genes
-    if len(significant_genes) > max_genes:
-        significant_genes = significant_genes.head(max_genes)
-
-    return {
-        'DEGs_Table': significant_genes,
-        'DEGs_Matrix': data_with_labels.loc[significant_genes.index]
-    }
+    return degs_table
 
 
-""" golden_degs_labels = csv_to_dataframe(
-    path_components=["test_fixtures", "golden", "qa_labels_breast.csv"], index_col=0, header=0)
-golden_degs_matrix = csv_to_dataframe(
-    path_components=["test_fixtures", "golden", "degs_matrix_breast.csv"], index_col=0, header=0)
+def run_limma_deg_analysis(data, labels, p_value, lfc, max_genes) -> pd.DataFrame:
+    """Runs differential expression analysis using R's limma package.
 
-return {
-    'DEGs_Table': golden_degs_labels,
-    'DEGs_Matrix': golden_degs_matrix
-}"""
+    Args:
+        data: A pandas DataFrame containing gene expression data.
+        labels: Series containing labels for each sample in data.
+        p_value: p-value threshold for determining DEGs.
+        lfc: Log Fold Change threshold for determining DEGs.
+        max_genes: Maximum number of genes as output.
+
+    Returns:
+        A pandas DataFrame containing the limma top_table results.
+    """
+
+    labels = labels.astype("category")
+
+    transposed_data = data.copy().T
+    transposed_data["sample_class"] = labels.values
+    design_matrix = dmatrix(formula_like="1 + C(sample_class)", data=transposed_data, return_type="dataframe").astype(
+        int)
+
+    script_path = os.path.dirname(os.path.abspath(__file__))
+    expression_data_path = os.path.join(script_path, "r_scripts", "expression_data.feather")
+    design_matrix_path = os.path.join(script_path, "r_scripts", "design_matrix.feather")
+    limma_results_path = os.path.join(script_path, "r_scripts", "limma_results.feather")
+
+    dataframe_to_feather(data, [script_path, "r_scripts", "expression_data.feather"])
+    dataframe_to_feather(design_matrix, [script_path, "r_scripts", "design_matrix.feather"])
+
+    command = [
+        "Rscript",
+        os.path.join(script_path, "r_scripts", "LimmaDEGsExtractionWorkflow.R"),
+        expression_data_path,
+        design_matrix_path,
+        limma_results_path,
+        str(p_value),
+        str(lfc),
+        str(max_genes)
+    ]
+
+    subprocess.run(command, check=True)
+
+    results = feather_to_dataframe([script_path, "r_scripts", "limma_results.feather"])
+    results.set_index("row_name", inplace=True)
+    results.index.name = None
+
+    os.remove(expression_data_path)
+    os.remove(design_matrix_path)
+    os.remove(limma_results_path)
+
+    return results
 
 
 def _multiclass_analysis():
