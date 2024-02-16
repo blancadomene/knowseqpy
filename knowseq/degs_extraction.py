@@ -1,3 +1,10 @@
+"""
+This module is designed to facilitate the extraction of differentially expressed genes (DEGs) from
+gene expression data. It leverages both Python and R to perform comprehensive DEGs analysis, allowing
+users to identify significant changes in gene expression across different conditions or classes. The
+module supports both biclass and (planned) multiclass analysis, integrating with the R `limma` package
+for statistical analysis.
+"""
 import logging
 import os
 import subprocess
@@ -11,7 +18,7 @@ from knowseq.utils import dataframe_to_feather, feather_to_dataframe
 logger = logging.getLogger(__name__)
 
 
-# TODO: CV?
+# TODO: Cross validation (CV)
 # TODO: Add notes about Rscript path
 def degs_extraction(data: pd.DataFrame, labels: pd.Series, max_genes: int = float("inf"), p_value: float = 0.05,
                     lfc: float = 1.0, cv: bool = False, k_folds: int = 5) -> list[pd.DataFrame]:
@@ -46,10 +53,10 @@ def degs_extraction(data: pd.DataFrame, labels: pd.Series, max_genes: int = floa
 
     # Perform DEGs analysis for each dataset
     cv_degs_results = []
-    for data, labels in cv_datasets:
+    for cv_data, cv_labels in cv_datasets:
         if len(labels.cat.categories) == 2:
             logger.info("Two classes detected, applying biclass analysis")
-            cv_degs_results.append(_biclass_analysis(data, labels, p_value, lfc, max_genes))
+            cv_degs_results.append(_biclass_analysis(cv_data, cv_labels, p_value, lfc, max_genes))
         elif len(labels.cat.categories) > 2:
             logger.info("More than two classes detected, applying multiclass analysis")
             cv_degs_results.append(_multiclass_analysis())
@@ -96,6 +103,9 @@ def run_limma_deg_analysis(data, labels, p_value, lfc, max_genes) -> pd.DataFram
 
     Returns:
         A pandas DataFrame containing the limma top_table results.
+
+    Raises:
+        RuntimeError: If external R script execution fails.
     """
 
     labels = labels.astype("category")
@@ -124,7 +134,11 @@ def run_limma_deg_analysis(data, labels, p_value, lfc, max_genes) -> pd.DataFram
         str(max_genes)
     ]
 
-    subprocess.run(command, check=True)
+    try:
+        subprocess.run(command, check=True)
+    except subprocess.CalledProcessError as e:
+        logger.error("R script execution failed: %s", {e})
+        raise RuntimeError("Failed to execute DEGs extraction R script.") from e
 
     results = feather_to_dataframe([script_path, "r_scripts", "limma_results.feather"])
     results.set_index("row_name", inplace=True)

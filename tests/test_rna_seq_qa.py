@@ -1,20 +1,21 @@
-import os
+import logging
 import unittest
 
 import pandas as pd
 
 from knowseq.rna_seq_qa import rna_seq_qa
+from knowseq.utils import csv_to_dataframe
 
 
 class RnaSeqQaTest(unittest.TestCase):
     def setUp(self):
-        qa_path = os.path.normpath(os.path.join("test_fixtures", "golden", "qa_matrix_breast.csv"))
-        self.golden_qa = pd.read_csv(qa_path, index_col=0, header=0)
+        logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(module)s - %(message)s")
+        self.golden_qa = csv_to_dataframe(
+            path_components=["test_fixtures", "golden", "qa_matrix_breast.csv"], index_col=0, header=0)
 
     def test_rna_seq_qa(self):
-        gene_expression_path = os.path.normpath(
-            os.path.join("test_fixtures", "golden", "gene_expression_matrix_breast.csv"))
-        gene_expression = pd.read_csv(gene_expression_path, header=0, index_col=0)
+        gene_expression = csv_to_dataframe(
+            path_components=["test_fixtures", "golden", "gene_expression_matrix_breast.csv"], index_col=0, header=0)
 
         res_qa, _ = rna_seq_qa(gene_expression)
         pd.testing.assert_frame_equal(res_qa, self.golden_qa, check_dtype=False, check_like=True,
