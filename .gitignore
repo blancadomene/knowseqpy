@@ -1,7 +1,7 @@
 .idea
 .ipynb_checkpoints
 __pycache__/
-DELETE_example_pipeline.py
+example_pipeline.py
 tests/test_fixtures/BreastCountFiles
 tests/test_fixtures/golden/cpm_breast.csv
 tests/test_fixtures/golden/golden_counts_matrix_breast.csv

@@ -1,15 +1,18 @@
+import logging
 import unittest
 
 import os
 import pandas as pd
 
 from knowseq.counts_to_matrix import counts_to_matrix
+from knowseq.utils import csv_to_dataframe
 
 
 class CountsToMatrixTest(unittest.TestCase):
     def setUp(self):
-        golden_matrix_path = os.path.normpath(os.path.join("test_fixtures", "golden", "counts_matrix_breast.csv"))
-        self.golden_matrix = pd.read_csv(golden_matrix_path, index_col=0)
+        logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(module)s - %(message)s")
+        self.golden_matrix = csv_to_dataframe(
+            path_components=["test_fixtures", "golden", "counts_matrix_breast.csv"], index_col=0, header=0)
 
     def test_file_not_exists(self):
         file_path = os.path.normpath(os.path.join("file", "doesnt", "exist.csv"))
@@ -33,5 +36,5 @@ class CountsToMatrixTest(unittest.TestCase):
         pd.testing.assert_frame_equal(self.golden_matrix, counts_matrix, check_dtype=False, check_like=True)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

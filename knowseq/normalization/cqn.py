@@ -1,40 +1,29 @@
 import logging
-import os
 
 import numpy as np
 import pandas as pd
 import statsmodels.api as sm
 from sklearn.preprocessing import quantile_transform
 
+from knowseq.utils import csv_to_dataframe
+
 VALID_LENGTH_METHOD = {"smooth", "fixed"}
 
 logger = logging.getLogger(__name__)
+
+
 def cqn(counts: pd.DataFrame,
-        x: pd.Series,
-        lengths: pd.Series,
-        size_factors: pd.Series = None,
-        sub_index: list = None,
-        tau: float = 0.5,
-        sqn: bool = True,
-        length_method: str = "smooth"):
-    """
-    Performs conditional quantile normalization (CQN) on the given counts' matrix.
-
-    :param counts: The counts matrix with genes in rows and samples in columns.
-    :param x: The predictor variable (e.g., GC content).
-    :param lengths: The lengths of the genes.
-    :param size_factors: The size factors for normalization. If None, calculated from 'counts'.
-    :param sub_index: The subset of rows to use for robust fitting. If None, all rows are used.
-    :param tau: The quantile for Quantile Regression.
-    :param sqn: Whether to perform secondary quantile normalization.
-    :param length_method: Either "smooth" or "fixed" for the type of length adjustment.
-
-    :return dict: A dictionary containing various normalized and transformed data.
-    """
-    golden_cqn_y_path = os.path.normpath(os.path.join("test_fixtures", "golden", "cqn_y_breast.csv"))
-    golden_cqn_y = pd.read_csv(golden_cqn_y_path, header=0, index_col=0)
-    golden_cqn_offset_path = os.path.normpath(os.path.join("test_fixtures", "golden", "cqn_offset_breast.csv"))
-    golden_cqn_offset = pd.read_csv(golden_cqn_offset_path, header=0, index_col=0)
+              x: pd.Series,
+              lengths: pd.Series,
+              size_factors: pd.Series = None,
+              sub_index: list = None,
+              tau: float = 0.5,
+              sqn: bool = True,
+              length_method: str = "smooth") -> tuple:
+    golden_cqn_y = csv_to_dataframe(
+        path_components=["test_fixtures", "golden", "cqn_y_breast.csv"], header=0, index_col=0)
+    golden_cqn_offset = csv_to_dataframe(
+        path_components=["test_fixtures", "golden", "cqn_offset_breast.csv"], header=0, index_col=0)
     return golden_cqn_y, golden_cqn_offset
 
 
@@ -45,7 +34,23 @@ def _todo_cqn(counts: pd.DataFrame,
               sub_index: list = None,
               tau: float = 0.5,
               sqn: bool = True,
-              length_method: str = "smooth"):
+              length_method: str = "smooth") -> tuple:
+    """
+    Performs conditional quantile normalization (CQN) on the given counts' matrix.
+
+    Args:
+        counts: The counts matrix with genes in rows and samples in columns.
+        x: The predictor variable (e.g., GC content).
+        lengths: The lengths of the genes.
+        size_factors: The size factors for normalization. If None, calculated from 'counts'.
+        sub_index: The subset of rows to use for robust fitting. If None, all rows are used.
+        tau: The quantile for Quantile Regression.
+        sqn: Whether to perform secondary quantile normalization.
+        length_method: Either "smooth" or "fixed" for the type of length adjustment.
+
+    Returns:
+        dict: A dictionary containing various normalized and transformed data.
+    """
     if length_method not in VALID_LENGTH_METHOD:
         raise ValueError(f"Expected values for `length_method` parameter are: 'smooth' or 'fixed'.")
 
@@ -57,6 +62,8 @@ def _todo_cqn(counts: pd.DataFrame,
 
     # Log transform and length adjustment
     y = np.log2(counts + 1) - np.log2(size_factors / 1e6)
+
+    # TODO: offset does not give the results it should
     if length_method == "fixed":
         y -= np.log2(lengths / 1e3)
 
@@ -88,14 +95,4 @@ def _todo_cqn(counts: pd.DataFrame,
 
     offset = residuals - y
 
-    # Output
-    output = {
-        'counts': counts,
-        'lengths': lengths,
-        'size_factors': size_factors,
-        'y': y,
-        'x': x,
-        'offset': offset
-    }
-
-    return output
+    return y, offset
