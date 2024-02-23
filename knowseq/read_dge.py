@@ -1,53 +1,77 @@
+"""
+This module is designed to handle the processing and analysis of gene expression count data,
+primarily sourced from RNA sequencing experiments. It provides functionality to read count data from
+text files, merge multiple samples into a comprehensive pandas DataFrame, and perform basic preprocessing
+such as normalization and identification of metadata tags.
+"""
+
 import logging
 import os
+from concurrent.futures import ProcessPoolExecutor
 
 import pandas as pd
 
 logger = logging.getLogger(__name__)
 
 
-# TODO ask if we only use x$counts, since I only implemented that part
-# TODO: change labels type (should not be str but a vector of strings)
-# TODO: parallel reading? concurrent.futures
-def read_dge(count_files: pd.Series, path: str = None, labels: str = None):
+def read_dge(data_info: pd.DataFrame, counts_path: str, ext: str = ".count", labels: pd.Series = None) -> pd.DataFrame:
     """
     Reads and merges a set of text files containing gene expression counts.
 
     Args:
-        count_files: Pandas Series of filenames that contain sample information.
-        path: String giving the directory containing the files. Set to None by default (current working directory).
-        labels: Names to associate with the files. Set to None by default (file names).
+        data_info: Pandas DataFrame of filenames that contain sample information.
+        counts_path: The directory path where `.count` files are stored. Each file contains gene expression data
+                     in count format for a sample identified by Internal.ID.
+        ext: The extension of the count file.
+        labels: Custom labels to associate with the files. Defaults to filenames if None.
 
     Returns:
-        Pandas Dataframe, containing a row for each unique tag found in the input files and a column for each
-        input file.
+        A pandas DataFrame, containing a row for each unique gene identifier found in the input files and
+        a column for each sample, with expression counts as values.
 
     Raises:
-        Exception: If row names are not unique within the row-names.
+        Exception: If row names (gene identifiers) are not unique within any file.
     """
+    count_files = [os.path.join(counts_path, f"{row['Internal.ID']}{ext}") for _, row in data_info.iterrows()]
+    labels = labels if labels is not None else data_info["Internal.ID"] + ext
 
-    # Assign path and labels if given
-    samples_data_list = [os.path.join(path, str(file)) for file in count_files] if path else count_files
-    samples_data = pd.Series(samples_data_list)
+    logger.info("Merging %s counts files into a pandas DataFrame...", {len(count_files)})
 
-    samples_labels = labels if labels else count_files.apply(lambda file: str(file).split(".")[0])
-    samples = pd.DataFrame(samples_data.array, index=samples_labels, columns=["files"])
+    with ProcessPoolExecutor() as executor:
+        results = list(executor.map(_read_count_file, count_files))
 
-    # TODO: improve performance
-    # Collate counts for unique tags
-    counts = pd.DataFrame()
-    for sample in samples["files"]:
-        file_name = os.path.basename(sample)
-        file_data = pd.read_csv(sample, sep=r"\t", index_col=0, names=(file_name,), engine="python", dtype="Int64")
-        if file_data.index.has_duplicates:
-            raise Exception("There are duplicated row names in files param. Row names must be unique.")
-        counts = counts.join(file_data, how="outer")
+    counts_df = pd.concat(results, axis=1)
+    counts_df.columns = labels
+    counts_df.columns.name = None
 
-    counts = counts.fillna(0)  # TODO: find a way of replacing NaN while joining
+    # Replace NaN with 0 for absent counts
+    counts_df.fillna(0, inplace=True)
 
-    # Alert user if htseq-style meta genes found
-    meta_tags = counts[counts.index.str.startswith("_")].index
-    if len(meta_tags):
-        logging.info(f"Meta tags detected: {meta_tags.values}")
+    # Detect and log any meta tags
+    meta_tags_idx = counts_df.index[counts_df.index.str.startswith("_")]
+    if meta_tags_idx.any():
+        logger.info("Meta tags detected: %s", meta_tags_idx.values)
 
-    return counts
+    return counts_df
+
+
+def _read_count_file(sample_path: str) -> pd.DataFrame:
+    """
+    Reads a single gene expression count file.
+
+    Args:
+        sample_path: The file path to read.
+
+    Returns:
+        A pandas DataFrame with the gene expression counts from the file.
+
+    Raises:
+        ValueError: If row names are not unique within the file.
+    """
+    file_name = os.path.basename(sample_path)
+    file_data = pd.read_csv(sample_path, sep='\t', index_col=0, names=[file_name], engine='python', dtype='Int64')
+    if file_data.index.has_duplicates:
+        err_msg = f"Duplicated row names in {file_name}. Row names must be unique."
+        logger.error(err_msg)
+        raise ValueError(err_msg)
+    return file_data

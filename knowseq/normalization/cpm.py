@@ -39,7 +39,7 @@ def cpm(counts_df: pd.DataFrame, remove_non_numeric: bool = True) -> pd.DataFram
     if not is_numeric.all():
         if remove_non_numeric:
             counts_df = counts_df.select_dtypes(include=["number"])
-            logger.info("Non-numeric columns removed.")
+            logger.info("Non-numeric columns removed")
         else:
             non_numeric_cols = list(counts_df.columns[~is_numeric])
             err_msg = (f"DataFrame contains non-numeric columns: {non_numeric_cols}. "
