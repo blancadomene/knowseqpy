@@ -10,9 +10,11 @@ from knowseqpy.utils import csv_to_dataframe
 
 class GetGenesAnnotationTest(unittest.TestCase):
     def setUp(self):
-        golden_annot_38_path = os.path.normpath(os.path.join("test_fixtures", "golden", "gene_annotations_38.csv"))
-        self.golden_annot_38 = pd.read_csv(golden_annot_38_path, index_col=0)
-
+        logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(module)s - %(message)s")
+        self.golden_annot_37 = csv_to_dataframe(
+            path_components=["test_fixtures", "golden", "gene_annotations_37.csv"], index_col=0, header=0)
+        self.golden_annot_38 = csv_to_dataframe(
+            path_components=["test_fixtures", "golden", "gene_annotations_38.csv"], index_col=0, header=0)
 
     def test_get_genes_annotation_validInput_genome38(self):
         values = ["KRT19", "BRCA1"]
@@ -40,7 +42,7 @@ class GetGenesAnnotationTest(unittest.TestCase):
 
     # TODO: Add tests for non human
 
-    def test_get_genes_annotation_invalidInput_raisesValueError(self):
+    def test_get_genes_annotation_invalid_input_raises_ValueError(self):
         # Test with invalid values input
         values = "KRT19"  # Not a list
         attributes = ["ensembl_gene_id", "external_gene_name", "percentage_gene_gc_content", "entrezgene_id"]

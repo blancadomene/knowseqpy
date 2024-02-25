@@ -7,6 +7,7 @@ import os
 from datetime import datetime
 
 from knowseqpy.counts_to_matrix import counts_to_matrix
+from knowseqpy.get_genes_annotation import get_genes_annotation
 
 
 def main():
@@ -28,6 +29,7 @@ def main():
     # Number of samples per class
     print(labels.value_counts())
 
+    get_genes_annotation(["KRT19", "BRCA1"], attribute_filter="external_gene_name")
 
 if __name__ == '__main__':
     main()

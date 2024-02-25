@@ -1,7 +1,13 @@
+"""
+This module provides functionality to retrieve gene annotations from the Ensembl biomart database. It supports querying
+for specific genes or the entire genome, with customizable attributes and filters. Annotations can be fetched for both
+human and non-human species, accommodating different reference genomes (GRCh37, GRCh38). Results are returned as pandas
+DataFrames, facilitating further data analysis and manipulation.
+"""
+
 import io
 import logging
 import os
-from typing import List
 
 import pandas as pd
 import requests
@@ -10,15 +16,11 @@ EXTERNAL_DATA_PATH = os.path.normpath(os.path.join(os.getcwd(), "../external_dat
 ENSEMBL_URL = "http://www.ensembl.org/biomart/martservice"
 GRCH37_ENSEMBL_URL = "https://grch37.ensembl.org/biomart/martservice"
 
+logger = logging.getLogger(__name__)
 
-def get_genes_annotation(values: List[str],
-                         attributes: List[str] = ["ensembl_gene_id",
-                                                  "external_gene_name",
-                                                  "percentage_gene_gc_content",
-                                                  "entrezgene_id"],
-                         attribute_filter: str = "ensembl_gene_id",
-                         not_hsapiens_dataset: str = None,
-                         reference_genome: int = 38) -> pd.DataFrame:
+
+def get_genes_annotation(values: list[str], attributes: list[str] = None, attribute_filter: str = "ensembl_gene_id",
+                         not_hsapiens_dataset: str = None, reference_genome: int = 38) -> pd.DataFrame:
     """
     Retrieves gene annotations from the Ensembl biomart database.
 
@@ -29,8 +31,6 @@ def get_genes_annotation(values: List[str],
                     Default is ['ensembl_gene_id', 'external_gene_name', 'percentage_gene_gc_content', 'entrezgene_id'].
         attribute_filter: An attribute used as a filter to return the rest of the attributes.
                           Default is 'ensembl_gene_id'.
-        not_hsapiens_dataset: Indicates whether to retrieve human annotations (False) or annotations from a different
-                              species available in BiomaRt (True). Default is False.
         not_hsapiens_dataset: The dataset identification for non-human annotations. Default is None.
         reference_genome: The reference genome to use. It must be 37 or 38. Default is 38.
 
@@ -40,80 +40,120 @@ def get_genes_annotation(values: List[str],
     Raises:
         ValueError: If invalid input is provided for the parameters.
         ValueError: If an error occurs during the query, or the query result is empty or contains an error message.
-
-    Examples:
-        >>> myAnnotation = get_genes_annotation(["KRT19", "BRCA1"], attribute_fFilter="external_gene_name")
     """
+    if not attributes:
+        attributes = ["ensembl_gene_id", "external_gene_name", "percentage_gene_gc_content", "entrezgene_id"]
 
     if attribute_filter not in attributes:
         attributes += [attribute_filter]
 
-    base = ENSEMBL_URL
+    base_url, dataset_name, filename = _resolve_dataset_details(not_hsapiens_dataset, reference_genome)
+
+    annotation_list = []
+    current_batch_values = values.copy()
+    max_values_per_query = min(len(values), 900)
+
+    while current_batch_values:
+        batch_values = current_batch_values[:max_values_per_query]
+        query = _build_query(dataset_name, attributes, attribute_filter, batch_values, max_values_per_query)
+        annotation_list.append(_fetch_annotation(query, base_url, attributes))
+        current_batch_values = current_batch_values[max_values_per_query:]
+
+    annotation_df = pd.concat(annotation_list, ignore_index=True) if annotation_list else pd.DataFrame()
+
+    if not annotation_df.empty:
+        annotation_df.to_csv(f"{EXTERNAL_DATA_PATH}/{filename}", index=False)
+
+    return annotation_df
+
+
+def _resolve_dataset_details(not_hsapiens_dataset: str, reference_genome: int) -> (str, str, str):
+    """
+    Determines the dataset name and base URL based on the provided parameters.
+
+    Args:
+        not_hsapiens_dataset: The dataset identification for non-human annotations.
+        reference_genome: The reference genome to use.
+
+    Returns:
+        A tuple containing the base URL, the dataset name, and the filename.
+    """
     if not_hsapiens_dataset:
         if not_hsapiens_dataset == "" or not isinstance(not_hsapiens_dataset, str):
-            raise ValueError("The 'not_hsapiens_dataset' parameter must be a non-empty string.")
+            err_msg = "The 'not_hsapiens_dataset' parameter must be a non-empty string."
+            logger.error(err_msg)
+            raise ValueError(err_msg)
         dataset_name = not_hsapiens_dataset
-        filename = f"{not_hsapiens_dataset}.csv"
+        base_url = ENSEMBL_URL
     else:
-        logging.info("Getting annotation of the Homo Sapiens...\n")
         if reference_genome == 38:
-            logging.info("Using reference genome 38.")
-            my_annotation = pd.read_csv(f"{EXTERNAL_DATA_PATH}/GRCh38Annotation.csv")
-            if attribute_filter in my_annotation.columns and set(attributes).issubset(my_annotation.columns):
-                my_annotation = my_annotation[my_annotation[attribute_filter].isin(values)]
-                my_annotation = my_annotation[attributes]
-                return my_annotation
-            else:
-                dataset_name = 'hsapiens_gene_ensembl'
-                filename = f"{dataset_name}.csv"
-        else:
-            logging.info("Using reference genome 37.")
-            base = GRCH37_ENSEMBL_URL
+            logger.info("Using reference genome 38")
+            base_url = ENSEMBL_URL
             dataset_name = 'hsapiens_gene_ensembl'
-            filename = f"{dataset_name}.csv"
-
-    logging.info(f"Downloading annotation {dataset_name}...")
-    act_values = values.copy()
-    max_values = min(len(values), 900)
-    my_annotation = pd.DataFrame()
-
-    while len(act_values) > 0:
-        query = f'<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE Query>' \
-                f'<Query virtualSchemaName="default" formatter="CSV" header="0" uniqueRows="0" count="" ' \
-                f'datasetConfigVersion="0.6">' \
-                f'<Dataset name="{dataset_name}" interface="default">'
-
-        if len(values) > 1 or values != "allGenome":
-            query += f'<Filter name="{attribute_filter}" value="'
-            query += ",".join(act_values[:max_values])
-            query += '" />'
-
-        for attribute in attributes:
-            query += f'<Attribute name="{attribute}" />'
-        query += '</Dataset></Query>'
-
-        response = requests.get(f"{base}?query={query}")
-        act_my_annotation = pd.read_csv(io.StringIO(response.text), sep=",", header=None)
-        act_my_annotation.columns = attributes
-
-        if act_my_annotation.empty or "ERROR" in act_my_annotation.iloc[0, 0]:
-            raise ValueError("Error in query. Please check attributes and filter.")
-
-        if my_annotation.empty:
-            my_annotation = act_my_annotation
         else:
-            my_annotation = pd.concat([my_annotation, act_my_annotation], ignore_index=True)
+            logger.info("Using reference genome 37")
+            base_url = GRCH37_ENSEMBL_URL
+            dataset_name = 'hsapiens_gene_ensembl'
 
-        if len(act_values) <= max_values:
-            act_values = []
-        else:
-            act_values = act_values[max_values:]
-        max_values = min(900, len(act_values))
+    filename = f"{dataset_name}.csv"
+    return base_url, dataset_name, filename
 
-    if len(values) > 1 or values != "allGenome":
-        my_annotation = my_annotation[my_annotation[attribute_filter].isin(values)]
 
-    if filename:
-        my_annotation.to_csv(f"{EXTERNAL_DATA_PATH}/{filename}", index=False)
+def _build_query(dataset_name: str, attributes: list[str], attribute_filter: str,
+                 values: list[str], max_values: int) -> str:
+    """
+    Builds the query XML for the Ensembl biomart request.
 
-    return my_annotation
+    Args:
+        dataset_name: The name of the dataset to query.
+        attributes: A list of attributes to retrieve.
+        attribute_filter: The filter to apply to the query.
+        values: The values to filter by.
+        max_values: The maximum number of values to include in a single query.
+
+    Returns:
+        A string representing the XML query.
+    """
+    query = f"<?xml version='1.0' encoding='UTF-8'?><!DOCTYPE Query>" \
+            f"<Query virtualSchemaName='default' formatter='CSV' header='0' uniqueRows='0' count='' " \
+            f"datasetConfigVersion='0.6'> <Dataset name='{dataset_name}' interface='default'>"
+    if values or values != ["allGenome"]:
+        query += f"<Filter name='{attribute_filter}' value='" + ','.join(values[:max_values]) + "' />"
+    for attribute in attributes:
+        query += f"<Attribute name='{attribute}' />"
+    query += "</Dataset></Query>"
+    return query
+
+
+def _fetch_annotation(query: str, base_url: str, attributes: list[str]) -> pd.DataFrame:
+    """
+    Fetches the gene annotation based on the constructed query and parses it into a DataFrame.
+
+    Args:
+        query: The query XML string.
+        base_url: The base URL for the Ensembl biomart service.
+        attributes: The list of attributes to include in the DataFrame.
+
+    Returns:
+        A DataFrame containing the gene annotations.
+
+    Raises:
+        ValueError: If there's an error with the query or network issues occur.
+    """
+    try:
+        response = requests.get(f"{base_url}?query={query}", timeout=10)
+        if response.status_code == 200:
+            df = pd.read_csv(io.StringIO(response.text), sep=",", header=None)
+            df.columns = attributes
+            if df.empty or "ERROR" in df.iloc[0, 0]:
+                err_msg = "Error in query. Please check attributes and filter."
+                logger.error(err_msg)
+                raise ValueError(err_msg)
+            return df
+        err_msg = f"Failed to fetch data, HTTP status code: {str(response.status_code)}"
+        logger.error(err_msg)
+        raise ValueError(err_msg)
+    except requests.exceptions.RequestException as e:
+        err_msg = f"Network error occurred. Request failed: {e}"
+        logger.error(err_msg)
+        raise ValueError(err_msg) from e
