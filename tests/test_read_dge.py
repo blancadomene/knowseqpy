@@ -1,33 +1,55 @@
+import logging
+import os
 import unittest
 
-import os
+import numpy as np
 import pandas as pd
 
-from knowseq.read_dge import read_dge
+from knowseqpy.read_dge import read_dge
+from knowseqpy.utils import csv_to_dataframe
 
 
 class ReadDgeTest(unittest.TestCase):
     def setUp(self):
-        golden_dge_path = os.path.normpath(os.path.join("test_fixtures", "golden", "read_dge_counts_breast.csv"))
-        self.golden_dge = pd.read_csv(golden_dge_path, index_col=0)
+        logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(module)s - %(message)s")
+        self.script_path = os.path.dirname(os.path.abspath(__file__))
+        self.counts_path = os.path.join(self.script_path, "test_fixtures", "breast_count_files")
+        self.golden_dge = csv_to_dataframe(
+            path_components=["test_fixtures", "golden", "read_dge_counts_breast.csv"], index_col=0, header=0)
 
-    def test_valid_read_dge(self):
-        data_path = os.path.normpath(os.path.join("test_fixtures", "data_info_breast.csv"))
-        data = pd.read_csv(data_path, sep=",", dtype="str")
+    def test_read_dge(self):
+        info_path = os.path.join(self.script_path, "test_fixtures", "samples_info_breast.csv")
 
-        count_files = data.apply(lambda row: os.path.join(row["Path"], row["Run"] + ".count"), axis=1)
-        res_dge = read_dge(count_files, path=os.path.join("test_fixtures"))
+        data_info_df = pd.read_csv(info_path, sep=",", dtype="str", usecols=["Internal.ID", "Sample.Type"])
 
-        # Check that both dataframes contain the same data, but ignoring the dtype and order of rows and columns
+        res_dge = read_dge(data_info=data_info_df, counts_path=self.counts_path)
+
         pd.testing.assert_frame_equal(self.golden_dge, res_dge, check_dtype=False, check_like=True)
 
     def test_duplicated_row_names(self):
-        data_path = os.path.normpath(os.path.join("test_fixtures", "data_info_breast_duplicated_rows.csv"))
-        data = pd.read_csv(data_path, sep=",", dtype="str")
+        data_info_duplicated_df = pd.DataFrame({
+            "Internal.ID": ["test_duplicated_rows"],
+            "Sample.Type": ["Solid Tissue Normal"]
+        })
 
-        count_files = data.apply(lambda row: os.path.join(row["Path"], row["Run"] + ".count"), axis=1)
-        with self.assertRaises(Exception):
-            read_dge(count_files, path=os.path.join("test_fixtures"))
+        with self.assertRaises(ValueError):
+            read_dge(data_info=data_info_duplicated_df, counts_path=self.counts_path)
+
+    def test_missing_files(self):
+        data_info_missing_df = pd.DataFrame([{
+            "Internal.ID": "missing_file",
+            "Sample.Type": "Missing"
+        }])
+        with self.assertRaises(FileNotFoundError):
+            read_dge(data_info=data_info_missing_df, counts_path=self.counts_path)
+
+    def test_all_zeros(self):
+        data_info_df_zeros = pd.DataFrame([{
+            "Internal.ID": "test_all_zeros",
+            "Sample.Type": "Zero Count Test"
+        }])
+        res_dge = read_dge(data_info=data_info_df_zeros, counts_path=self.counts_path)
+        self.assertTrue(np.all(res_dge.values == 0))
 
 
 if __name__ == '__main__':

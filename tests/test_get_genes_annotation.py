@@ -1,15 +1,18 @@
+import logging
 import os
 import unittest
 
 import pandas as pd
 
-from knowseq.get_genes_annotation import get_genes_annotation
+from knowseqpy.get_genes_annotation import get_genes_annotation
+from knowseqpy.utils import csv_to_dataframe
 
 
 class GetGenesAnnotationTest(unittest.TestCase):
     def setUp(self):
         golden_annot_38_path = os.path.normpath(os.path.join("test_fixtures", "golden", "gene_annotations_38.csv"))
         self.golden_annot_38 = pd.read_csv(golden_annot_38_path, index_col=0)
+
 
     def test_get_genes_annotation_validInput_genome38(self):
         values = ["KRT19", "BRCA1"]

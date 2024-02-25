@@ -1,15 +1,18 @@
+import logging
 import os
 import unittest
 
 import pandas as pd
 
-from knowseq.normalization import cqn
+from knowseqpy.normalization import cqn
+from knowseqpy.utils import csv_to_dataframe
 
 
 class CqnTest(unittest.TestCase):
     def setUp(self):
-        golden_cqn_path = os.path.normpath(os.path.join("../test_fixtures", "golden", "cqn_breast.csv"))
-        self.golden_cqn = pd.read_csv(golden_cqn_path, index_col=0)
+        logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(module)s - %(message)s")
+        self.golden_cqn = csv_to_dataframe(
+            path_components=["../test_fixtures", "golden", "cqn_breast.csv"], index_col=0, header=0)
 
     def test_cqn_values(self):
         counts_matrix_path = os.path.normpath(os.path.join("../test_fixtures", "golden", "counts_matrix_breast.csv"))

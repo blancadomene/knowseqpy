@@ -1,11 +1,12 @@
 import logging
 import os
 import unittest
+from unittest.mock import patch
 
 import pandas as pd
 
-from knowseq.counts_to_matrix import counts_to_matrix
-from knowseq.utils import csv_to_dataframe
+from knowseqpy.counts_to_matrix import counts_to_matrix
+from knowseqpy.utils import csv_to_dataframe
 
 
 class CountsToMatrixTest(unittest.TestCase):
@@ -14,25 +15,24 @@ class CountsToMatrixTest(unittest.TestCase):
         self.golden_matrix = csv_to_dataframe(
             path_components=["test_fixtures", "golden", "counts_matrix_breast.csv"], index_col=0, header=0)
 
-    """def test_file_not_exists(self):
-        file_path = os.path.normpath(os.path.join("file", "doesnt", "exist.csv"))
-        self.assertRaises(FileNotFoundError, counts_to_matrix, file_path)
+    def test_file_not_exists(self):
+        info_path = os.path.normpath(os.path.join("file", "doesnt", "exist.csv"))
+        self.assertRaises(FileNotFoundError, counts_to_matrix, info_path, "some_other_path")
 
     def test_missing_cols_csv(self):
-        file_path = os.path.normpath(os.path.join("test_fixtures", "data_info_missing_cols"))
-        self.assertRaises(Exception, counts_to_matrix, file_path)
+        with patch('pandas.read_csv') as mock_read_csv:
+            mock_read_csv.return_value = pd.DataFrame({
+                "Wrong.Column": ["sample1"],
+                "Another.Wrong.Column": ["type1"]
+            })
 
-    def test_valid_tsv(self):
-        counts_path = os.path.normpath(os.path.join("test_fixtures", "data_info_breast.tsv"))
-        counts_matrix, labels = counts_to_matrix(counts_path, sep="\t", ext=".count")
-
-        pd.testing.assert_frame_equal(self.golden_matrix, counts_matrix, check_dtype=False, check_like=True)
-"""
+            with self.assertRaises(Exception):
+                counts_to_matrix(info_path='dummy_path.csv', counts_path='dummy_counts_path')
 
     def test_valid_csv(self):
         script_path = os.path.dirname(os.path.abspath(__file__))
         info_path = os.path.join(script_path, "test_fixtures", "samples_info_breast.csv")
-        counts_path = os.path.join(script_path, "test_fixtures", "BreastCountFiles")
+        counts_path = os.path.join(script_path, "test_fixtures", "breast_count_files")
         counts_matrix, labels = counts_to_matrix(info_path=info_path, counts_path=counts_path)
 
         pd.testing.assert_frame_equal(self.golden_matrix, counts_matrix, check_dtype=False)

@@ -1,9 +1,9 @@
 import logging
 import unittest
 
-from knowseq.classifiers import knn
-from knowseq.utils import csv_to_dataframe, csv_to_list
-from knowseq.utils.plotting import plot_samples_heatmap, plot_confusion_matrix, plot_boxplot
+from knowseqpy.classifiers import knn
+from knowseqpy.utils import csv_to_dataframe, csv_to_list
+from knowseqpy.utils.plotting import plot_samples_heatmap, plot_confusion_matrix, plot_boxplot
 
 
 class KnnClassifierTest(unittest.TestCase):

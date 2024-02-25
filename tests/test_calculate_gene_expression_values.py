@@ -3,8 +3,8 @@ import unittest
 
 import pandas as pd
 
-from knowseq.calculate_gene_expression_values import calculate_gene_expression_values
-from knowseq.utils import csv_to_dataframe
+from knowseqpy.calculate_gene_expression_values import calculate_gene_expression_values
+from knowseqpy.utils import csv_to_dataframe
 
 
 class CalculateGeneExpressionValuesTest(unittest.TestCase):

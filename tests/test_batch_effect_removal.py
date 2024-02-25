@@ -3,8 +3,8 @@ import unittest
 
 import pandas as pd
 
-from knowseq.batch_effect_removal import batch_effect_removal
-from knowseq.utils import csv_to_dataframe
+from knowseqpy.batch_effect_removal import batch_effect_removal
+from knowseqpy.utils import csv_to_dataframe
 
 
 class BatchEffectRemovalTest(unittest.TestCase):

@@ -3,8 +3,8 @@ import unittest
 
 import pandas as pd
 
-from knowseq.normalization import cpm
-from knowseq.utils import csv_to_dataframe
+from knowseqpy.normalization import cpm
+from knowseqpy.utils import csv_to_dataframe
 
 
 class CpmTest(unittest.TestCase):
@@ -27,9 +27,9 @@ class CpmTest(unittest.TestCase):
             cpm(non_numeric_dge, remove_non_numeric=False)
 
     def test_empty_dataframe(self):
-        result = cpm(pd.DataFrame())
+        res_cpm = cpm(pd.DataFrame())
 
-        pd.testing.assert_frame_equal(pd.DataFrame(), result)
+        pd.testing.assert_frame_equal(pd.DataFrame(), res_cpm)
 
     def test_all_zero_counts(self):
         zero_counts_df = pd.DataFrame({"Gene1": [0, 0], "Gene2": [0, 0]})
@@ -39,17 +39,17 @@ class CpmTest(unittest.TestCase):
 
     def test_dataframe_with_nan(self):
         nan_df = pd.DataFrame({"Gene1": [1000, None, 500], "Gene2": [None, 1200, 500]})
-        result = cpm(nan_df).reset_index(drop=True)
+        res_cpm = cpm(nan_df).reset_index(drop=True)
         expected_df = cpm(pd.DataFrame({"Gene1": [500, ], "Gene2": [500, ]})).reset_index(drop=True)
 
-        pd.testing.assert_frame_equal(expected_df, result)
+        pd.testing.assert_frame_equal(expected_df, res_cpm)
 
     def test_remove_non_numeric_true(self):
         mixed_df = pd.DataFrame({"Gene1": [1000, 1500], "Metadata": ["Sample1", "Sample2"], "Gene2": [800, 1200]})
-        result = cpm(mixed_df, remove_non_numeric=True)
+        res_cpm = cpm(mixed_df, remove_non_numeric=True)
         expected = cpm(pd.DataFrame({"Gene1": [1000, 1500], "Gene2": [800, 1200]}))
 
-        pd.testing.assert_frame_equal(expected, result)
+        pd.testing.assert_frame_equal(expected, res_cpm)
 
     def test_large_numbers(self):
         large_counts_df = pd.DataFrame({"Gene1": [1e9, 2e9], "Gene2": [1.5e9, 2.5e9]})

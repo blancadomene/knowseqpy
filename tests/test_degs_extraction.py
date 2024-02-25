@@ -4,8 +4,8 @@ import unittest
 
 import pandas as pd
 
-from knowseq.degs_extraction import degs_extraction
-from knowseq.utils import csv_to_dataframe
+from knowseqpy.degs_extraction import degs_extraction
+from knowseqpy.utils import csv_to_dataframe
 
 
 class DegsExtractionTest(unittest.TestCase):

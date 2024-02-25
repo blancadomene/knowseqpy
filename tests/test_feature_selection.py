@@ -3,8 +3,8 @@ import unittest
 
 import pandas as pd
 
-from knowseq.feature_selection import feature_selection
-from knowseq.utils import csv_to_dataframe
+from knowseqpy.feature_selection import feature_selection
+from knowseqpy.utils import csv_to_dataframe
 
 
 class FeatureSelectionTest(unittest.TestCase):

@@ -3,8 +3,8 @@ import unittest
 
 import pandas as pd
 
-from knowseq.rna_seq_qa import rna_seq_qa
-from knowseq.utils import csv_to_dataframe
+from knowseqpy.rna_seq_qa import rna_seq_qa
+from knowseqpy.utils import csv_to_dataframe
 
 
 class RnaSeqQaTest(unittest.TestCase):
