@@ -8,11 +8,14 @@ DataFrames, facilitating further data analysis and manipulation.
 import io
 import logging
 import os
+from pathlib import Path
 
 import pandas as pd
 import requests
 
-EXTERNAL_DATA_PATH = os.path.normpath(os.path.join(os.getcwd(), "../external_data"))
+from knowseqpy.utils import csv_to_dataframe
+
+EXTERNAL_DATA_PATH = os.path.join(str(Path(__file__).resolve().parents[1]), "external_data")
 ENSEMBL_URL = "http://www.ensembl.org/biomart/martservice"
 GRCH37_ENSEMBL_URL = "https://grch37.ensembl.org/biomart/martservice"
 
@@ -25,7 +28,7 @@ def get_genes_annotation(values: list[str], attributes: list[str] = None, attrib
     Retrieves gene annotations from the Ensembl biomart database.
 
     Args:
-        values: A list of genes that can contain Ensembl IDs, gene names, or the string "allGenome"
+        values: A list of genes that can contain Ensembl IDs, gene names, or "allGenome"
                 to indicate all genes.
         attributes: A list of desired attributes or information to retrieve from Ensembl biomart.
                     Default is ['ensembl_gene_id', 'external_gene_name', 'percentage_gene_gc_content', 'entrezgene_id'].
@@ -41,6 +44,17 @@ def get_genes_annotation(values: list[str], attributes: list[str] = None, attrib
         ValueError: If invalid input is provided for the parameters.
         ValueError: If an error occurs during the query, or the query result is empty or contains an error message.
     """
+    # Temporary condition to use the package's GRCh38 annotation. Can remove this once we clarify why
+    # external_data\GRCh38Annotation.csv yields different results for approx 360 IDs compared to the BioMart download.
+    if reference_genome == 38 and not_hsapiens_dataset is None:
+        annotation_df = csv_to_dataframe(path_components=[str(Path(__file__).resolve().parents[1]),
+                                                          "external_data", "GRCh38Annotation.csv"], header=0)
+        if list(values) == ["allGenome"]:
+            return annotation_df
+        # Filtered len(annotation_df) can be greater than len(values) since we usually have duplicated ensembl_gene_id
+        filtered_annotation_df = annotation_df[annotation_df[attribute_filter].isin(values)]
+        return filtered_annotation_df
+
     if not attributes:
         attributes = ["ensembl_gene_id", "external_gene_name", "percentage_gene_gc_content", "entrezgene_id"]
 
@@ -117,7 +131,7 @@ def _build_query(dataset_name: str, attributes: list[str], attribute_filter: str
     query = f"<?xml version='1.0' encoding='UTF-8'?><!DOCTYPE Query>" \
             f"<Query virtualSchemaName='default' formatter='CSV' header='0' uniqueRows='0' count='' " \
             f"datasetConfigVersion='0.6'> <Dataset name='{dataset_name}' interface='default'>"
-    if values or values != ["allGenome"]:
+    if "allGenome" not in values or len(values) > 1:
         query += f"<Filter name='{attribute_filter}' value='" + ','.join(values[:max_values]) + "' />"
     for attribute in attributes:
         query += f"<Attribute name='{attribute}' />"

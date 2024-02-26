@@ -12,7 +12,7 @@ from knowseqpy.get_genes_annotation import get_genes_annotation
 
 def main():
     logging.basicConfig(
-        level=logging.DEBUG,
+        level=logging.INFO,
         format="%(asctime)s - %(levelname)s - %(module)s - %(message)s",
         filename=f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_knowseq_logs.log",
         filemode="w"
@@ -29,7 +29,10 @@ def main():
     # Number of samples per class
     print(labels.value_counts())
 
-    get_genes_annotation(["KRT19", "BRCA1"], attribute_filter="external_gene_name")
+    gene_annotation = get_genes_annotation(values=counts_matrix.index)
+
+    print(gene_annotation)
+
 
 if __name__ == '__main__':
     main()
