@@ -11,13 +11,13 @@ class KnnClassifierTest(unittest.TestCase):
         logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(module)s - %(message)s")
 
     def test_kenn_classifier(self):
-        golden_degs_df = csv_to_dataframe(path_components=["../test_fixtures", "golden", "degs_matrix_breast.csv"],
+        golden_degs_df = csv_to_dataframe(path_components=["../test_fixtures", "golden_breast", "degs_matrix.csv"],
                                           index_col=0, header=0).transpose()
 
-        quality_labels = csv_to_dataframe(path_components=["../test_fixtures", "golden", "qa_labels_breast.csv"],
+        quality_labels = csv_to_dataframe(path_components=["../test_fixtures", "golden_breast", "qa_labels.csv"],
                                           header=None).iloc[:, 0]
 
-        fs_ranking = csv_to_list(path_components=["../test_fixtures", "golden", "fs_ranking_mrmr_breast.csv"])
+        fs_ranking = csv_to_list(path_components=["../test_fixtures", "golden_breast", "fs_ranking_mrmr.csv"])
         fs_ranking_list = [row[0] for row in fs_ranking if row]
 
         knn_res = knn(golden_degs_df, quality_labels, fs_ranking_list)

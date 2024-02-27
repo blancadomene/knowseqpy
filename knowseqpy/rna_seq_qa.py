@@ -23,7 +23,7 @@ def rna_seq_qa(expression_df: pd.DataFrame) -> [pd.DataFrame, list]:
     Returns:
         dict: A dictionary containing found outliers for each realized test or corrected data if to_removal is True.
     """
-    # TODO: Check if there are NA values (manually removed them from the golden while testing)
+    # TODO: Check if there are NA values (manually removed them from the golden_breast while testing)
 
     ks_outliers = _ks_outliers(expression_df)
     mad_outliers = _mad_outliers(expression_df)

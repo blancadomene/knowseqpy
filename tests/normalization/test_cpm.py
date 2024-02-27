@@ -11,11 +11,11 @@ class CpmTest(unittest.TestCase):
     def setUp(self):
         logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(module)s - %(message)s")
         self.golden_cpm = csv_to_dataframe(
-            path_components=["../test_fixtures", "golden", "cpm_breast.csv"], index_col=0, header=0)
+            path_components=["../test_fixtures", "golden_breast", "cpm.csv"], index_col=0, header=0)
 
     def test_cpm(self):
         golden_dge = csv_to_dataframe(
-            path_components=["../test_fixtures", "golden", "read_dge_counts_breast.csv"], index_col=0, header=0)
+            path_components=["../test_fixtures", "golden_breast", "read_dge_counts.csv"], index_col=0, header=0)
         res_cpm = cpm(golden_dge)
 
         pd.testing.assert_frame_equal(self.golden_cpm, res_cpm, check_exact=False, atol=0.1, rtol=0.1)

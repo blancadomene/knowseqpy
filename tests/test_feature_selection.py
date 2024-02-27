@@ -11,12 +11,12 @@ class FeatureSelectionTest(unittest.TestCase):
     def setUp(self):
         logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(module)s - %(message)s")
         self.fs_ranking_golden = csv_to_dataframe(
-            path_components=["test_fixtures", "golden", "fs_ranking_mrmr_breast.csv"])
+            path_components=["test_fixtures", "golden_breast", "fs_ranking_mrmr.csv"])
 
     def test_feature_selection(self):
-        golden_degs_matrix = csv_to_dataframe(path_components=["test_fixtures", "golden", "degs_matrix_breast.csv"],
+        golden_degs_matrix = csv_to_dataframe(path_components=["test_fixtures", "golden_breast", "degs_matrix.csv"],
                                               index_col=0, header=0).transpose()
-        quality_labels = csv_to_dataframe(["test_fixtures", "golden", "qa_labels_breast.csv"]).iloc[:, 0]
+        quality_labels = csv_to_dataframe(["test_fixtures", "golden_breast", "qa_labels.csv"]).iloc[:, 0]
 
         fs_ranking = feature_selection(data=golden_degs_matrix, labels=quality_labels, mode="da",
                                        vars_selected=golden_degs_matrix.columns.tolist())

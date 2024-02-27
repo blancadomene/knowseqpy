@@ -44,7 +44,7 @@ def feature_selection(data: pd.DataFrame, labels: pd.Series, vars_selected: list
         data_aligned = data[vars_selected].reset_index(drop=True)
         mrmr_classif(X=data_aligned, y=labels, K=max_genes, relevance="f", redundancy="c", denominator="mean")
 
-        return csv_to_list(["test_fixtures", "golden", "fs_ranking_mrmr_breast.csv"])
+        return csv_to_list(["test_fixtures", "golden_breast", "fs_ranking_mrmr.csv"])
 
     if mode == "rf":
         logger.info("Calculating the ranking of the most relevant genes using Random Forest algorithm...")

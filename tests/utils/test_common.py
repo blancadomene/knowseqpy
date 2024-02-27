@@ -21,7 +21,7 @@ class CommonTest(unittest.TestCase):
     def test_load_csv_to_dataframe(self, mock_read_csv):
         mock_read_csv.return_value = pd.DataFrame({"col1": [1, 2], "col2": [3, 4]})
 
-        path_components = ["test_fixtures", "golden", "cqn.csv"]
+        path_components = ["test_fixtures", "golden_breast", "cqn.csv"]
         df = csv_to_dataframe(path_components, index_col=0)
 
         self.assertIsInstance(df, pd.DataFrame)

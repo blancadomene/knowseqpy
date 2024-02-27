@@ -6,8 +6,10 @@ import logging
 import os
 from datetime import datetime
 
+from knowseqpy.calculate_gene_expression_values import calculate_gene_expression_values
 from knowseqpy.counts_to_matrix import counts_to_matrix
 from knowseqpy.get_genes_annotation import get_genes_annotation
+from knowseqpy.rna_seq_qa import rna_seq_qa
 
 
 def main():
@@ -24,14 +26,18 @@ def main():
     counts_path = os.path.join(script_path, "tests", "test_fixtures", "breast_count_files")
 
     # Execute counts to matrix conversion
-    counts_matrix, labels = counts_to_matrix(info_path=info_path, counts_path=counts_path)
+    counts_df, labels_ser = counts_to_matrix(info_path=info_path, counts_path=counts_path)
 
     # Number of samples per class
-    print(labels.value_counts())
+    print(labels_ser.value_counts())
 
-    gene_annotation = get_genes_annotation(values=counts_matrix.index)
+    gene_annotation_df = get_genes_annotation(values=counts_df.index)
 
-    print(gene_annotation)
+    print(gene_annotation_df)
+
+    gene_expression_df = calculate_gene_expression_values(counts_df, gene_annotation_df)
+
+    qa_df, qa_labels = rna_seq_qa(gene_expression_df)
 
 
 if __name__ == '__main__':

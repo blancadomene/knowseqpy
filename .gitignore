@@ -1,9 +1,5 @@
 .idea
 .ipynb_checkpoints
 __pycache__/
-tests/test_fixtures/BreastCountFiles
-tests/test_fixtures/golden/cpm_breast.csv
-tests/test_fixtures/golden/golden_counts_matrix_breast.csv
-read_dge_counts_breast.csv
-breast_cancer_notebook.ipynb
+tests/test_fixtures/golden_breast/cpm.csv
 external_data

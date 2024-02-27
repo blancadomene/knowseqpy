@@ -13,7 +13,7 @@ class CountsToMatrixTest(unittest.TestCase):
     def setUp(self):
         logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(module)s - %(message)s")
         self.golden_matrix = csv_to_dataframe(
-            path_components=["test_fixtures", "golden", "counts_matrix_breast.csv"], index_col=0, header=0)
+            path_components=["test_fixtures", "golden_breast", "counts_matrix.csv"], index_col=0, header=0)
 
     def test_file_not_exists(self):
         info_path = os.path.normpath(os.path.join("file", "doesnt", "exist.csv"))
@@ -32,7 +32,7 @@ class CountsToMatrixTest(unittest.TestCase):
     def test_valid_csv(self):
         script_path = os.path.dirname(os.path.abspath(__file__))
         info_path = os.path.join(script_path, "test_fixtures", "samples_info_breast.csv")
-        counts_path = os.path.join(script_path, "test_fixtures", "breast_count_files")
+        counts_path = os.path.join(script_path, "test_fixtures", "count_files_breast")
         counts_matrix, labels = counts_to_matrix(info_path=info_path, counts_path=counts_path)
 
         pd.testing.assert_frame_equal(self.golden_matrix, counts_matrix, check_dtype=False)

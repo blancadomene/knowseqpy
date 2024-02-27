@@ -12,12 +12,12 @@ class CqnTest(unittest.TestCase):
     def setUp(self):
         logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(module)s - %(message)s")
         self.golden_cqn = csv_to_dataframe(
-            path_components=["../test_fixtures", "golden", "cqn_breast.csv"], index_col=0, header=0)
+            path_components=["../test_fixtures", "golden_breast", "cqn.csv"], index_col=0, header=0)
 
     def test_cqn_values(self):
-        counts_matrix_path = os.path.normpath(os.path.join("../test_fixtures", "golden", "counts_matrix_breast.csv"))
+        counts_matrix_path = os.path.normpath(os.path.join("../test_fixtures", "golden_breast", "counts_matrix.csv"))
         counts_matrix = pd.read_csv(counts_matrix_path, header=0, index_col=0)
-        annotation_path = os.path.normpath(os.path.join("../test_fixtures", "annotation_breast.csv"))
+        annotation_path = os.path.normpath(os.path.join("../test_fixtures", "gene_annotation_breast.csv"))
         annotation = pd.read_csv(annotation_path, header=0, index_col="ensembl_gene_id")
         gene_length_path = os.path.normpath(os.path.join("../..", "external_data", "genes_length_homo_sapiens.csv"))
         gene_length = pd.read_csv(gene_length_path, header=0, index_col="Gene_stable_ID")

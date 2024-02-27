@@ -13,9 +13,9 @@ class ReadDgeTest(unittest.TestCase):
     def setUp(self):
         logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(module)s - %(message)s")
         self.script_path = os.path.dirname(os.path.abspath(__file__))
-        self.counts_path = os.path.join(self.script_path, "test_fixtures", "breast_count_files")
+        self.counts_path = os.path.join(self.script_path, "test_fixtures", "count_files_breast")
         self.golden_dge = csv_to_dataframe(
-            path_components=["test_fixtures", "golden", "read_dge_counts_breast.csv"], index_col=0, header=0)
+            path_components=["test_fixtures", "golden_breast", "read_dge_counts.csv"], index_col=0, header=0)
 
     def test_read_dge(self):
         info_path = os.path.join(self.script_path, "test_fixtures", "samples_info_breast.csv")

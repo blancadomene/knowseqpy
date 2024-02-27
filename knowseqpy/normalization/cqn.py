@@ -5,26 +5,9 @@ import pandas as pd
 import statsmodels.api as sm
 from sklearn.preprocessing import quantile_transform
 
-from knowseqpy.utils import csv_to_dataframe
-
 VALID_LENGTH_METHOD = {"smooth", "fixed"}
 
 logger = logging.getLogger(__name__)
-
-
-def cqn(counts: pd.DataFrame,
-              x: pd.Series,
-              lengths: pd.Series,
-              size_factors: pd.Series = None,
-              sub_index: list = None,
-              tau: float = 0.5,
-              sqn: bool = True,
-              length_method: str = "smooth") -> tuple:
-    golden_cqn_y = csv_to_dataframe(
-        path_components=["test_fixtures", "golden", "cqn_y_breast.csv"], header=0, index_col=0)
-    golden_cqn_offset = csv_to_dataframe(
-        path_components=["test_fixtures", "golden", "cqn_offset_breast.csv"], header=0, index_col=0)
-    return golden_cqn_y, golden_cqn_offset
 
 
 def _todo_cqn(counts: pd.DataFrame,
@@ -52,7 +35,9 @@ def _todo_cqn(counts: pd.DataFrame,
         dict: A dictionary containing various normalized and transformed data.
     """
     if length_method not in VALID_LENGTH_METHOD:
-        raise ValueError(f"Expected values for `length_method` parameter are: 'smooth' or 'fixed'.")
+        err_msg = "Expected values for `length_method` parameter are: 'smooth' or 'fixed'."
+        logger.error(err_msg)
+        raise ValueError(err_msg)
 
     if size_factors is None:
         size_factors = counts.sum(axis=0)
@@ -85,7 +70,6 @@ def _todo_cqn(counts: pd.DataFrame,
 
     logging.info("Quantile normalization completed.")
 
-    # Calculate residuals and offset
     residuals = y - fitted_df
 
     # Secondary Quantile Normalization (SQN) if needed

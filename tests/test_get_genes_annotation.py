@@ -12,7 +12,7 @@ class GetGenesAnnotationTest(unittest.TestCase):
     def setUp(self):
         logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(module)s - %(message)s")
         """self.golden_annotation_38 = csv_to_dataframe(
-            path_components=["test_fixtures", "golden", "gene_annotations_38.csv"], index_col=0, header=0)"""
+            path_components=["test_fixtures", "golden_breast", "gene_annotations_38.csv"], index_col=0, header=0)"""
 
     def test_get_genes_annotation_valid_input_genome38(self):
         values = ["KRT19", "BRCA1"]
