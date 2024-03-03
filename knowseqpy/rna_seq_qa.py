@@ -13,27 +13,27 @@ from scipy.stats import kstest, median_abs_deviation
 logger = logging.getLogger(__name__)
 
 
-def rna_seq_qa(expression_df: pd.DataFrame) -> [pd.DataFrame, list]:
+def rna_seq_qa(gene_expression_df: pd.DataFrame) -> [pd.DataFrame, list]:
     """
     Perform the quality analysis of an expression matrix.
 
     Args:
-        expression_df: A DataFrame that contains the gene expression values.
+        gene_expression_df: A DataFrame that contains the gene expression values.
 
     Returns:
         dict: A dictionary containing found outliers for each realized test or corrected data if to_removal is True.
     """
     # TODO: Check if there are NA values (manually removed them from the golden_breast while testing)
 
-    ks_outliers = _ks_outliers(expression_df)
-    mad_outliers = _mad_outliers(expression_df)
-    manhattan_outliers = _manhattan_distances_outliers(expression_df)
+    ks_outliers = _ks_outliers(gene_expression_df)
+    mad_outliers = _mad_outliers(gene_expression_df)
+    manhattan_outliers = _manhattan_distances_outliers(gene_expression_df)
 
     # Get common outliers at least between two of three methods
     common_outliers = set(ks_outliers) & set(mad_outliers) | set(ks_outliers) & set(manhattan_outliers) | set(
         mad_outliers) & set(manhattan_outliers)
 
-    return expression_df.drop(columns=list(common_outliers)), list(common_outliers)
+    return gene_expression_df.drop(columns=list(common_outliers)), list(common_outliers)
 
 
 def _ecdf_1d(data: np.ndarray) -> (np.ndarray, np.ndarray):
@@ -53,14 +53,14 @@ def _ecdf_1d(data: np.ndarray) -> (np.ndarray, np.ndarray):
     return x, y
 
 
-def _ks_outliers(expression_df: pd.DataFrame) -> list:
+def _ks_outliers(gene_expression_df: pd.DataFrame) -> list:
     """
     Identify outliers in an expression DataFrame using the Kolmogorov-Smirnov (KS) test. Applies the KS test to each
     sample in the DataFrame to compare the distribution of gene expression values against an empirical distribution
     function (ECDF) derived from the dataset.
 
     Args:
-        expression_df: DataFrame containing gene expression values with genes as rows and samples as columns.
+        gene_expression_df: DataFrame containing gene expression values with genes as rows and samples as columns.
 
     Returns:
         list: A list of sample indices considered outliers based on the KS test.
@@ -72,54 +72,54 @@ def _ks_outliers(expression_df: pd.DataFrame) -> list:
 
         return kstest(sample, cdf).statistic
 
-    flat_values = expression_df.values.flatten()
+    flat_values = gene_expression_df.values.flatten()
     x_ecdf, y_ecdf = _ecdf_1d(flat_values)
 
-    results = expression_df.apply(ks_statistic)
+    results = gene_expression_df.apply(ks_statistic)
     q3, q1 = np.percentile(results, [75, 25])
     threshold = q3 + 1.5 * (q3 - q1)
 
     return results[results > threshold].index.tolist()
 
 
-def _manhattan_distances_outliers(expression_df: pd.DataFrame) -> list:
+def _manhattan_distances_outliers(gene_expression_df: pd.DataFrame) -> list:
     """
     Identify outliers based on the Manhattan distances between samples in an expression DataFrame.
 
     Args:
-        expression_df: DataFrame containing gene expression values with genes as rows and samples as columns.
+        gene_expression_df: DataFrame containing gene expression values with genes as rows and samples as columns.
 
     Returns:
         list: A list of sample indices considered outliers based on their Manhattan distances to other samples.
     """
 
     # Transpose the matrix to have samples as rows and genes as columns, as `pdist` function expects them
-    expression_df_t = expression_df.transpose()
+    gene_expression_df_t = gene_expression_df.transpose()
 
     # Calculate the Manhattan distances between samples and normalize them by the number of genes
-    manhattan_distances = pdist(expression_df_t.values, metric='cityblock')
-    manhattan_distance_matrix = squareform(manhattan_distances) / expression_df_t.shape[1]
+    manhattan_distances = pdist(gene_expression_df_t.values, metric='cityblock')
+    manhattan_distance_matrix = squareform(manhattan_distances) / gene_expression_df_t.shape[1]
     distance_sum = np.sum(manhattan_distance_matrix, axis=0)
 
     q3, q1 = np.percentile(distance_sum, [75, 25])
     threshold = q3 + 1.5 * (q3 - q1)
 
-    return expression_df_t.index[distance_sum > threshold].tolist()
+    return gene_expression_df_t.index[distance_sum > threshold].tolist()
 
 
-def _mad_outliers(expression_df: pd.DataFrame) -> list:
+def _mad_outliers(gene_expression_df: pd.DataFrame) -> list:
     """
     Identify outliers in an expression DataFrame based on the Median Absolute Deviation (MAD).
 
     Args:
-        expression_df: DataFrame containing gene expression values with genes as rows and samples as columns.
+        gene_expression_df: DataFrame containing gene expression values with genes as rows and samples as columns.
 
     Returns:
         list: A list of sample indices considered outliers based on the MAD criterion.
     """
 
     outliers = []
-    row_expression = expression_df.iloc[:, 1:].mean()
+    row_expression = gene_expression_df.iloc[:, 1:].mean()
 
     # Calculate the median expression value across all genes for each sample, and identify outliers as
     # those samples whose expression is beyond 3 times the MAD from the median expression level

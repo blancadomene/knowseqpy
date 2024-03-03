@@ -16,10 +16,13 @@ class BatchEffectRemovalTest(unittest.TestCase):
     def test_rna_seq_qa(self):
         qa_matrix = csv_to_dataframe(
             path_components=["test_fixtures", "golden_breast", "qa_matrix.csv"], header=0, index_col=0)
-        quality_labels = csv_to_dataframe(
+        qa_labels = csv_to_dataframe(
             path_components=["test_fixtures", "golden_breast", "qa_labels.csv"]).iloc[:, 0]
 
-        res_qa = batch_effect_removal(qa_matrix, labels=quality_labels, method="sva")
+        qa_matrix.index.name = "external_gene_name"
+        qa_labels.name = "Sample.Type"
+
+        res_qa = batch_effect_removal(qa_matrix, labels=qa_labels, method="sva")
         pd.testing.assert_frame_equal(res_qa, self.golden_batch, check_dtype=False, check_like=True,
                                       check_exact=False, atol=0.1, rtol=0.1)
 

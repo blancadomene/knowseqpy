@@ -51,5 +51,5 @@ def counts_to_matrix(info_path: str, counts_path: str, sep: str = ",", ext: str 
     counts_filtered_df.index = [row_name.split(".")[0] for row_name in counts_filtered_df.index]
 
     labels_ser = data_info_df.set_index("Internal.ID")["Sample.Type"]
-
+    labels_ser.index = labels_ser.index.map(lambda x: f"{x}{ext}")
     return counts_filtered_df, labels_ser

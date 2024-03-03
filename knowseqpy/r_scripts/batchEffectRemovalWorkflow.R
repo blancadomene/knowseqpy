@@ -16,10 +16,15 @@ expressionMatrixPath <- args[1]
 labelsPath <- args[2]
 outputPath <- args[3]
 
+expressionMatrixPath <- 'C:\\Users\\blnc_\\Documents\\TFM-Thesis\\knowseqpy\\r_scripts\\expression_data.feather'
+labelsPath <- 'C:\\Users\\blnc_\\Documents\\TFM-Thesis\\knowseqpy\\r_scripts\\design_matrix.feather'
+outputPath <- 'C:\\Users\\blnc_\\Documents\\TFM-Thesis\\knowseqpy\\r_scripts\\batch_results.feather'
+
+
 expressionMatrix <- read_feather(expressionMatrixPath)
-expressionMatrix <- as.data.frame(tibble::column_to_rownames(expressionMatrix, var = "__index_level_0__"))
+expressionMatrix <- as.data.frame(tibble::column_to_rownames(expressionMatrix, var = "external_gene_name"))
 expressionMatrix <- as.matrix(expressionMatrix)
-labels <- read_feather(labelsPath)$`0`
+labels <- read_feather(labelsPath)$`Sample.Type`
 
 if(is.character(labels)){
   labels <- as.factor(labels)

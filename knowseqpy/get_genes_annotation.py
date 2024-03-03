@@ -53,6 +53,7 @@ def get_genes_annotation(values: list[str], attributes: list[str] = None, attrib
             return annotation_df
         # Filtered len(annotation_df) can be greater than len(values) since we usually have duplicated ensembl_gene_id
         filtered_annotation_df = annotation_df[annotation_df[attribute_filter].isin(values)]
+        filtered_annotation_df.set_index("ensembl_gene_id", inplace=True)
         return filtered_annotation_df
 
     if not attributes:

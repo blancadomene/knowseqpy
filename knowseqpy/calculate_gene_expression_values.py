@@ -7,6 +7,7 @@ to produce a DataFrame of gene expression values.
 import logging
 import os
 import subprocess
+from pathlib import Path
 
 import pandas as pd
 
@@ -35,7 +36,8 @@ def calculate_gene_expression_values(counts_df: pd.DataFrame, gene_annotation: p
     """
     if not_human_gene_length_csv == "":
         # Load default human gene length data
-        genes_length_path = os.path.normpath(os.path.join("..", "external_data", "genes_length_homo_sapiens.csv"))
+        genes_length_path = os.path.join(str(Path(__file__).resolve().parents[1]),
+                                         "external_data", "genes_length_homo_sapiens.csv")
         gene_length = pd.read_csv(genes_length_path, header=0, index_col="Gene_stable_ID")
     else:
         if os.path.exists(not_human_gene_length_csv):
