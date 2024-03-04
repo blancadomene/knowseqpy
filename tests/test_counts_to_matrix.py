@@ -5,8 +5,8 @@ from unittest.mock import patch
 
 import pandas as pd
 
-from knowseqpy.counts_to_matrix import counts_to_matrix
-from knowseqpy.utils import csv_to_dataframe
+from src.counts_to_matrix import counts_to_matrix
+from src.utils import csv_to_dataframe
 
 
 class CountsToMatrixTest(unittest.TestCase):

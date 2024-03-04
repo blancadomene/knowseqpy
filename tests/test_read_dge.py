@@ -5,8 +5,8 @@ import unittest
 import numpy as np
 import pandas as pd
 
-from knowseqpy.read_dge import read_dge
-from knowseqpy.utils import csv_to_dataframe
+from src.read_dge import read_dge
+from src.utils import csv_to_dataframe
 
 
 class ReadDgeTest(unittest.TestCase):

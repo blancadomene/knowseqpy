@@ -11,7 +11,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from knowseqpy.utils import dataframe_to_feather, feather_to_dataframe
+from src.utils import dataframe_to_feather, feather_to_dataframe
 
 logger = logging.getLogger(__name__)
 

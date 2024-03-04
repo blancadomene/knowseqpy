@@ -13,7 +13,7 @@ from pathlib import Path
 import pandas as pd
 import requests
 
-from knowseqpy.utils import csv_to_dataframe
+from src.utils import csv_to_dataframe
 
 EXTERNAL_DATA_PATH = os.path.join(str(Path(__file__).resolve().parents[1]), "external_data")
 ENSEMBL_URL = "http://www.ensembl.org/biomart/martservice"

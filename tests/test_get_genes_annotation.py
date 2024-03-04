@@ -4,8 +4,8 @@ import unittest
 
 import pandas as pd
 
-from knowseqpy.get_genes_annotation import get_genes_annotation
-from knowseqpy.utils import csv_to_dataframe
+from src.get_genes_annotation import get_genes_annotation
+from src.utils import csv_to_dataframe
 
 
 class GetGenesAnnotationTest(unittest.TestCase):

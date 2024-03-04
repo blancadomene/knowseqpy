@@ -10,7 +10,7 @@ from mrmr import mrmr_classif
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.ensemble import RandomForestClassifier
 
-from knowseqpy.utils import csv_to_list
+from src.utils import csv_to_list
 
 logger = logging.getLogger(__name__)
 

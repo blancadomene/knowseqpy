@@ -4,8 +4,8 @@ import unittest
 
 import pandas as pd
 
-from knowseqpy.normalization import cqn
-from knowseqpy.utils import csv_to_dataframe
+from src.normalization import cqn
+from src.utils import csv_to_dataframe
 
 
 class CqnTest(unittest.TestCase):

@@ -7,8 +7,8 @@ import logging
 
 import pandas as pd
 
-from knowseqpy.normalization import cpm
-from knowseqpy.read_dge import read_dge
+from src.normalization import cpm
+from src.read_dge import read_dge
 
 logger = logging.getLogger(__name__)
 

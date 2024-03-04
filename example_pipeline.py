@@ -6,16 +6,15 @@ import logging
 import os
 from datetime import datetime
 
-from knowseqpy.batch_effect_removal import batch_effect_removal
-from knowseqpy.calculate_gene_expression_values import calculate_gene_expression_values
-from knowseqpy.classifiers import knn
-from knowseqpy.counts_to_matrix import counts_to_matrix
-from knowseqpy.degs_extraction import degs_extraction
-from knowseqpy.feature_selection import feature_selection
-# from knowseqpy.feature_selection import feature_selection
-from knowseqpy.get_genes_annotation import get_genes_annotation
-from knowseqpy.rna_seq_qa import rna_seq_qa
-from knowseqpy.utils import plot_boxplot, plot_confusion_matrix, plot_samples_heatmap
+from src.batch_effect_removal import batch_effect_removal
+from src.calculate_gene_expression_values import calculate_gene_expression_values
+from src.classifiers import knn
+from src.counts_to_matrix import counts_to_matrix
+from src.degs_extraction import degs_extraction
+from src.feature_selection import feature_selection
+from src.get_genes_annotation import get_genes_annotation
+from src.rna_seq_qa import rna_seq_qa
+from src.utils import plot_boxplot, plot_confusion_matrix, plot_samples_heatmap
 
 
 def main():
