@@ -48,9 +48,9 @@ def main():
 
     batch_df = batch_effect_removal(qa_df, labels=qa_labels, method="sva")
 
-    degs_df = degs_extraction(batch_df, labels=qa_labels, lfc=3.5, p_value=0.001)[0]
-
-    fs_ranking = feature_selection(data=degs_df, labels=qa_labels, mode="mrmr", vars_selected=degs_df.columns.tolist())
+    degs_df = degs_extraction(batch_df, labels=qa_labels, lfc=3.5, p_value=0.001)[0].transpose()
+    fs_ranking = feature_selection(data=degs_df, labels=qa_labels, mode="da",
+                                   vars_selected=degs_df.columns.tolist())
 
     knn_res = knn(degs_df, qa_labels, fs_ranking)
 
