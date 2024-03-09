@@ -2,13 +2,14 @@
 Common utility functions for working with CSV files and data structures.
 """
 import csv
-import logging
 import os
 from typing import Any
 
 import pandas as pd
 
-logger = logging.getLogger(__name__)
+from src.log import get_logger
+
+logger = get_logger().getChild(__name__)
 
 
 def csv_to_dataframe(path_components: list[str], index_col=None, header=None, **kwargs: Any) -> pd.DataFrame:

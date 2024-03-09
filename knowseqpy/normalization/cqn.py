@@ -1,13 +1,13 @@
-import logging
-
 import numpy as np
 import pandas as pd
 import statsmodels.api as sm
 from sklearn.preprocessing import quantile_transform
 
+from src.log import get_logger
+
 VALID_LENGTH_METHOD = {"smooth", "fixed"}
 
-logger = logging.getLogger(__name__)
+logger = get_logger().getChild(__name__)
 
 
 def _todo_cqn(counts: pd.DataFrame,
@@ -56,7 +56,7 @@ def _todo_cqn(counts: pd.DataFrame,
     y_fit = y.loc[sub_index]
 
     # Quantile normalization using Quantile Regression from statsmodels
-    logging.info("Performing quantile normalization...")
+    logger.info("Performing quantile normalization...")
 
     fitted = []
     for col in y_fit.columns:
@@ -68,7 +68,7 @@ def _todo_cqn(counts: pd.DataFrame,
     fitted_df.columns = y_fit.columns
     fitted_df.index = y.index
 
-    logging.info("Quantile normalization completed.")
+    logger.info("Quantile normalization completed.")
 
     residuals = y - fitted_df
 

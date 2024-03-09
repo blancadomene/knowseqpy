@@ -1,7 +1,6 @@
 """
 This module contains functions for performing k-Nearest Neighbors (k-NN) classification and related utility functions.
 """
-import logging
 
 import numpy as np
 import pandas as pd
@@ -10,7 +9,9 @@ from sklearn.model_selection import BaseCrossValidator, GridSearchCV, LeaveOneOu
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import StandardScaler
 
-logger = logging.getLogger(__name__)
+from src.log import get_logger
+
+logger = get_logger().getChild(__name__)
 
 
 def knn(data: pd.DataFrame, labels: pd.Series, vars_selected: list, num_fold: int = 10, loocv: bool = False) -> dict:

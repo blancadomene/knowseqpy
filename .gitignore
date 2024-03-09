@@ -3,3 +3,5 @@
 __pycache__/
 tests/test_fixtures/golden_breast/cpm.csv
 external_data
+tests/htmlcov
+tests/.coverage

@@ -3,16 +3,15 @@ Module for feature selection in gene expression data, supporting algorithms like
 It ranks genes based on algorithmic analysis and user-defined criteria.
 """
 
-import logging
-
 import pandas as pd
 from mrmr import mrmr_classif
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.ensemble import RandomForestClassifier
 
+from src.log import get_logger
 from src.utils import csv_to_list
 
-logger = logging.getLogger(__name__)
+logger = get_logger().getChild(__name__)
 
 
 def feature_selection(data: pd.DataFrame, labels: pd.Series, vars_selected: list, mode: str = "mrmr",

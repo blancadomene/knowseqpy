@@ -1,7 +1,6 @@
 """
 Data Visualization Module using Plotly.
 """
-import logging
 
 import numpy as np
 import pandas as pd
@@ -9,10 +8,13 @@ import plotly.express as px
 import plotly.figure_factory as ff
 import plotly.graph_objects as go
 
+from src.log import get_logger
+
 # TODO: Can't export to png bc of the use of deprecated setDaemon API in Kaleido (freezes execution).
 #       Opened issue: https://github.com/plotly/Kaleido/issues/171
 # TODO: Revise all plots from R (prob missing some)
-logger = logging.getLogger(__name__)
+
+logger = get_logger().getChild(__name__)
 
 
 def plot_boxplot(data: pd.DataFrame, labels: pd.Series, fs_ranking: list, top_n_features: int = 5,

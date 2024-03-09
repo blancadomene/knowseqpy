@@ -4,19 +4,20 @@ Batch effects are systematic non-biological variations observed between batches 
 which can significantly skew the data analysis if not properly corrected. This module supports
 the Surrogate Variable Analysis (SVA) method and has a structure to incorporate the Combat method in the future.
 """
-import logging
 import os
 import subprocess
 
+import numpy as np
 import pandas as pd
 
+from src.log import get_logger
 from src.utils import dataframe_to_feather, feather_to_dataframe
 
-logger = logging.getLogger(__name__)
+logger = get_logger().getChild(__name__)
 
 
 def batch_effect_removal(expression_df: pd.DataFrame, labels: pd.Series, method: str = "sva",
-                         batch_groups: pd.Series = None):
+                         batch_groups: pd.Series = None) -> pd.DataFrame:
     """
     Corrects the batch effect in the expression matrix using the specified method. A batch effect is a source of
     variation in biological data that arises from differences in the handling, processing, or environment between
@@ -35,35 +36,36 @@ def batch_effect_removal(expression_df: pd.DataFrame, labels: pd.Series, method:
         ValueError: If input parameters are not as expected.
         RuntimeError: If external R script execution fails.
     """
-
-    if method == "combat":
-        raise NotImplementedError("Combat method has not been implemented yet")
-
     if method == "sva":
-        logger.info("Calculating sva model using R to correct batch effect")
-        script_path = os.path.dirname(os.path.abspath(__file__))
-        expression_data_path = os.path.join(script_path, "r_scripts", "expression_data.feather")
-        labels_path = os.path.join(script_path, "r_scripts", "design_matrix.feather")
-        batch_results_path = os.path.join(script_path, "r_scripts", "batch_results.feather")
-
-        dataframe_to_feather(expression_df, [script_path, "r_scripts", "expression_data.feather"])
-        dataframe_to_feather(labels.to_frame(), [script_path, "r_scripts", "design_matrix.feather"])
-
-        command = [
-            "Rscript",
-            os.path.join(script_path, "r_scripts", "batchEffectRemovalWorkflow.R"),
-            expression_data_path,
-            labels_path,
-            batch_results_path
-        ]
-        try:
-            subprocess.run(command, check=True)
-        except subprocess.CalledProcessError as e:
-            logger.error("R script execution failed: %s", {e})
-            raise RuntimeError("Failed to execute batch effect removal R script.") from e
-
+        return _sva(expression_df, labels)
+    elif method == "combat":
+        return _combat(expression_df, labels, batch_groups)
     else:
         raise ValueError("Unsupported method. Please use 'combat' or 'sva'.")
+
+
+def _sva(expression_df: pd.DataFrame, labels: pd.Series) -> pd.DataFrame:
+    logger.info("Calculating sva model using R to correct batch effect")
+    script_path = os.path.dirname(os.path.abspath(__file__))
+    expression_data_path = os.path.join(script_path, "r_scripts", "expression_data.feather")
+    labels_path = os.path.join(script_path, "r_scripts", "design_matrix.feather")
+    batch_results_path = os.path.join(script_path, "r_scripts", "batch_results.feather")
+
+    dataframe_to_feather(expression_df, [script_path, "r_scripts", "expression_data.feather"])
+    dataframe_to_feather(labels.to_frame(), [script_path, "r_scripts", "design_matrix.feather"])
+
+    command = [
+        "Rscript",
+        os.path.join(script_path, "r_scripts", "batchEffectRemovalWorkflow.R"),
+        expression_data_path,
+        labels_path,
+        batch_results_path
+    ]
+    try:
+        subprocess.run(command, check=True)
+    except subprocess.CalledProcessError as e:
+        logger.error("R script execution failed: %s", {e})
+        raise RuntimeError("Failed to execute batch effect removal R script.") from e
 
     results = feather_to_dataframe([script_path, "r_scripts", "batch_results.feather"])
     results.set_index("row_name", inplace=True)
@@ -74,3 +76,6 @@ def batch_effect_removal(expression_df: pd.DataFrame, labels: pd.Series, method:
     os.remove(batch_results_path)
 
     return results
+
+def _combat(expression_df: pd.DataFrame, labels: pd.Series, batch_groups: pd.Series = None) -> pd.DataFrame:
+    raise NotImplementedError("Combat method has not been implemented yet")

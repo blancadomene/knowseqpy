@@ -8,12 +8,6 @@ xPath <- args[2]
 annotationPath <- args[3]
 outputPath <- args[4]
 
-
-countsMatrixPath <- 'C:\\Users\\blnc_\\Documents\\TFM-Thesis\\knowseqpy\\r_scripts\\counts.feather'
-xPath <- 'C:\\Users\\blnc_\\Documents\\TFM-Thesis\\knowseqpy\\r_scripts\\x.feather'
-annotationPath <- 'C:\\Users\\blnc_\\Documents\\TFM-Thesis\\knowseqpy\\r_scripts\\length.feather'
-outputPath <- 'C:\\Users\\blnc_\\Documents\\TFM-Thesis\\knowseqpy\\r_scripts\\gene_results.feather'
-
 countsMatrix <- read_feather(countsMatrixPath)
 countsMatrix <- tibble::column_to_rownames(countsMatrix, var = "__index_level_0__")
 countsMatrix <- as.matrix(countsMatrix)

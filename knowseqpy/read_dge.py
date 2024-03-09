@@ -5,13 +5,14 @@ text files, merge multiple samples into a comprehensive pandas DataFrame, and pe
 such as normalization and identification of metadata tags.
 """
 
-import logging
 import os
 from concurrent.futures import ProcessPoolExecutor
 
 import pandas as pd
 
-logger = logging.getLogger(__name__)
+from .utils import get_logger
+
+logger = get_logger().getChild(__name__)
 
 
 def read_dge(data_info: pd.DataFrame, counts_path: str, ext: str = ".count", labels: pd.Series = None) -> pd.DataFrame:
@@ -42,6 +43,8 @@ def read_dge(data_info: pd.DataFrame, counts_path: str, ext: str = ".count", lab
 
     counts_df = pd.concat(results, axis=1)
     counts_df.columns = labels
+
+    # Set cols name to None since later in the pipeline gives problems if set
     counts_df.columns.name = None
 
     # Replace NaN with 0 for absent counts
@@ -69,9 +72,9 @@ def _read_count_file(sample_path: str) -> pd.DataFrame:
         ValueError: If row names are not unique within the file.
     """
     file_name = os.path.basename(sample_path)
-    file_data = pd.read_csv(sample_path, sep='\t', index_col=0, names=[file_name], engine='python', dtype='Int64')
+    file_data = pd.read_csv(sample_path, sep='\t', index_col=0, names=[file_name], engine="python", dtype="Int64")
     if file_data.index.has_duplicates:
-        err_msg = f"Duplicated row names in {file_name}. Row names must be unique."
-        logger.error(err_msg)
-        raise ValueError(err_msg)
+        err = f"Duplicated row names in {file_name}. Row names must be unique."
+        raise ValueError(err)
+
     return file_data

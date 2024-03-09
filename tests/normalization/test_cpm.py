@@ -3,8 +3,8 @@ import unittest
 
 import pandas as pd
 
-from src.normalization import cpm
-from src.utils import csv_to_dataframe
+from knowseqpy.normalization import cpm
+from knowseqpy.utils import csv_to_dataframe
 
 
 class CpmTest(unittest.TestCase):

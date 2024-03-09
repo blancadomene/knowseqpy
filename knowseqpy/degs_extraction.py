@@ -5,7 +5,6 @@ users to identify significant changes in gene expression across different condit
 module supports both biclass and (planned) multiclass analysis, integrating with the R `limma` package
 for statistical analysis.
 """
-import logging
 import os
 import subprocess
 
@@ -13,9 +12,10 @@ import pandas as pd
 from patsy.highlevel import dmatrix
 from sklearn.model_selection import KFold
 
+from src.log import get_logger
 from src.utils import dataframe_to_feather, feather_to_dataframe
 
-logger = logging.getLogger(__name__)
+logger = get_logger().getChild(__name__)
 
 
 # TODO: Cross validation (CV)

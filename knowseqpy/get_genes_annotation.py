@@ -6,20 +6,20 @@ DataFrames, facilitating further data analysis and manipulation.
 """
 
 import io
-import logging
 import os
 from pathlib import Path
 
 import pandas as pd
 import requests
 
+from src.log import get_logger
 from src.utils import csv_to_dataframe
 
 EXTERNAL_DATA_PATH = os.path.join(str(Path(__file__).resolve().parents[1]), "external_data")
 ENSEMBL_URL = "http://www.ensembl.org/biomart/martservice"
 GRCH37_ENSEMBL_URL = "https://grch37.ensembl.org/biomart/martservice"
 
-logger = logging.getLogger(__name__)
+logger = get_logger().getChild(__name__)
 
 
 def get_genes_annotation(values: list[str], attributes: list[str] = None, attribute_filter: str = "ensembl_gene_id",
@@ -51,6 +51,7 @@ def get_genes_annotation(values: list[str], attributes: list[str] = None, attrib
                                                           "external_data", "GRCh38Annotation.csv"], header=0)
         if list(values) == ["allGenome"]:
             return annotation_df
+
         # Filtered len(annotation_df) can be greater than len(values) since we usually have duplicated ensembl_gene_id
         filtered_annotation_df = annotation_df[annotation_df[attribute_filter].isin(values)]
         filtered_annotation_df.set_index("ensembl_gene_id", inplace=True)
@@ -98,20 +99,17 @@ def _resolve_dataset_details(not_hsapiens_dataset: str, reference_genome: int) -
             err_msg = "The 'not_hsapiens_dataset' parameter must be a non-empty string."
             logger.error(err_msg)
             raise ValueError(err_msg)
-        dataset_name = not_hsapiens_dataset
-        base_url = ENSEMBL_URL
-    else:
-        if reference_genome == 38:
-            logger.info("Using reference genome 38")
-            base_url = ENSEMBL_URL
-            dataset_name = 'hsapiens_gene_ensembl'
-        else:
-            logger.info("Using reference genome 37")
-            base_url = GRCH37_ENSEMBL_URL
-            dataset_name = 'hsapiens_gene_ensembl'
 
-    filename = f"{dataset_name}.csv"
-    return base_url, dataset_name, filename
+        return ENSEMBL_URL, not_hsapiens_dataset, f"{not_hsapiens_dataset}.csv"
+
+    if reference_genome == 38:
+        logger.info("Using reference genome 38")
+        dataset_name = 'hsapiens_gene_ensembl'
+        return ENSEMBL_URL, dataset_name, f"{dataset_name}.csv"
+
+    logger.info("Using reference genome 37")
+    dataset_name = 'hsapiens_gene_ensembl'
+    return GRCH37_ENSEMBL_URL, dataset_name, f"{dataset_name}.csv"
 
 
 def _build_query(dataset_name: str, attributes: list[str], attribute_filter: str,
@@ -132,10 +130,13 @@ def _build_query(dataset_name: str, attributes: list[str], attribute_filter: str
     query = f"<?xml version='1.0' encoding='UTF-8'?><!DOCTYPE Query>" \
             f"<Query virtualSchemaName='default' formatter='CSV' header='0' uniqueRows='0' count='' " \
             f"datasetConfigVersion='0.6'> <Dataset name='{dataset_name}' interface='default'>"
+
     if "allGenome" not in values or len(values) > 1:
         query += f"<Filter name='{attribute_filter}' value='" + ','.join(values[:max_values]) + "' />"
+
     for attribute in attributes:
         query += f"<Attribute name='{attribute}' />"
+
     query += "</Dataset></Query>"
     return query
 
@@ -155,20 +156,16 @@ def _fetch_annotation(query: str, base_url: str, attributes: list[str]) -> pd.Da
     Raises:
         ValueError: If there's an error with the query or network issues occur.
     """
-    try:
-        response = requests.get(f"{base_url}?query={query}", timeout=10)
-        if response.status_code == 200:
-            df = pd.read_csv(io.StringIO(response.text), sep=",", header=None)
-            df.columns = attributes
-            if df.empty or "ERROR" in df.iloc[0, 0]:
-                err_msg = "Error in query. Please check attributes and filter."
-                logger.error(err_msg)
-                raise ValueError(err_msg)
-            return df
-        err_msg = f"Failed to fetch data, HTTP status code: {str(response.status_code)}"
-        logger.error(err_msg)
-        raise ValueError(err_msg)
-    except requests.exceptions.RequestException as e:
-        err_msg = f"Network error occurred. Request failed: {e}"
-        logger.error(err_msg)
-        raise ValueError(err_msg) from e
+    response = requests.get(f"{base_url}?query={query}", timeout=10)
+
+    if response.status_code == 200:
+        df = pd.read_csv(io.StringIO(response.text), sep=",", header=None)
+        df.columns = attributes
+        if df.empty or "ERROR" in df.iloc[0, 0]:
+            err = "Error in query. Please check attributes and filter."
+            raise ValueError(err)
+
+        return df
+
+    err = f"Failed to fetch data, HTTP status code: {str(response.status_code)}"
+    raise ValueError(err)

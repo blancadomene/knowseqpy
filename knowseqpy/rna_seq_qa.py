@@ -3,14 +3,15 @@ This module provides functionalities for performing quality analysis on RNA sequ
 It includes methods for detecting outliers in gene expression data using various statistical techniques,
 such as the Kolmogorov-Smirnov test, Median Absolute Deviation, and Manhattan distance analysis.
 """
-import logging
 
 import numpy as np
 import pandas as pd
 from scipy.spatial.distance import pdist, squareform
 from scipy.stats import kstest, median_abs_deviation
 
-logger = logging.getLogger(__name__)
+from src.log import get_logger
+
+logger = get_logger().getChild(__name__)
 
 
 def rna_seq_qa(gene_expression_df: pd.DataFrame) -> [pd.DataFrame, list]:
