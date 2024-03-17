@@ -10,19 +10,22 @@ from scipy.spatial.distance import pdist, squareform
 from scipy.stats import kstest, median_abs_deviation
 
 from .utils import get_logger
+from .batch_effect import sva
 
 logger = get_logger().getChild(__name__)
 
 
-def rna_seq_qa(gene_expression_df: pd.DataFrame) -> [pd.DataFrame, list]:
+def rna_seq_qa(gene_expression_df: pd.DataFrame) -> tuple[pd.DataFrame, list]:
     """
-    Perform the quality analysis of an expression matrix.
+    Perform the quality analysis of an expression df.
 
     Args:
         gene_expression_df: A DataFrame that contains the gene expression values.
 
     Returns:
-        dict: A dictionary containing found outliers for each realized test or corrected data if to_removal is True.
+        tuple: A tuple where the first element is a DataFrame with outliers removed based on the
+               commonality between at least two of three methods (KS test, MAD, and Manhattan distances),
+               and the second element is a list containing the identifiers of the detected outliers.
     """
     # TODO: Check if there are NA values (manually removed them from the golden_breast while testing)
 

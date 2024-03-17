@@ -2,6 +2,8 @@
 This module contains functions for processing RNA-Seq gene expression count files, compiling gene count data from
 multiple files into a single DataFrame, using CPM and filtering out unwanted data based on specified criteria.
 """
+from pathlib import Path
+from typing import Union
 
 import pandas as pd
 
@@ -14,7 +16,7 @@ logger = get_logger().getChild(__name__)
 DEFAULT_ROWS_TO_SKIP = ["__no_feature", "__ambiguous", "__too_low_aQual", "__not_aligned", "__alignment_not_unique"]
 
 
-def counts_to_dataframe(info_path: str, counts_path: str, sep: str = ",", ext: str = ".count",
+def counts_to_dataframe(info_path: Union[str, Path], counts_path: Union[str, Path], sep: str = ",", ext: str = ".count",
                         rows_to_skip: list = None) -> tuple[pd.DataFrame, pd.Series]:
     """
     Merges the information of all count files found in `counts_path`, which ID correspond to the one found
