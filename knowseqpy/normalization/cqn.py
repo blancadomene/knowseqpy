@@ -3,7 +3,7 @@ import pandas as pd
 import statsmodels.api as sm
 from sklearn.preprocessing import quantile_transform
 
-from src.log import get_logger
+from knowseqpy.utils import get_logger
 
 VALID_LENGTH_METHOD = {"smooth", "fixed"}
 
@@ -32,12 +32,10 @@ def _todo_cqn(counts: pd.DataFrame,
         length_method: Either "smooth" or "fixed" for the type of length adjustment.
 
     Returns:
-        dict: A dictionary containing various normalized and transformed data.
+        tuple: A tuple containing various normalized and transformed data.
     """
     if length_method not in VALID_LENGTH_METHOD:
-        err_msg = "Expected values for `length_method` parameter are: 'smooth' or 'fixed'."
-        logger.error(err_msg)
-        raise ValueError(err_msg)
+        raise ValueError("Expected values for `length_method` parameter are: 'smooth' or 'fixed'.")
 
     if size_factors is None:
         size_factors = counts.sum(axis=0)

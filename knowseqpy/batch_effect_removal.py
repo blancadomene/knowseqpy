@@ -4,14 +4,13 @@ Batch effects are systematic non-biological variations observed between batches 
 which can significantly skew the data analysis if not properly corrected. This module supports
 the Surrogate Variable Analysis (SVA) method and has a structure to incorporate the Combat method in the future.
 """
-import os
 import subprocess
+import tempfile
+from pathlib import Path
 
-import numpy as np
 import pandas as pd
 
-from src.log import get_logger
-from src.utils import dataframe_to_feather, feather_to_dataframe
+from .utils import dataframe_to_feather, feather_to_dataframe, get_logger, get_project_directory
 
 logger = get_logger().getChild(__name__)
 
@@ -46,36 +45,31 @@ def batch_effect_removal(expression_df: pd.DataFrame, labels: pd.Series, method:
 
 def _sva(expression_df: pd.DataFrame, labels: pd.Series) -> pd.DataFrame:
     logger.info("Calculating sva model using R to correct batch effect")
-    script_path = os.path.dirname(os.path.abspath(__file__))
-    expression_data_path = os.path.join(script_path, "r_scripts", "expression_data.feather")
-    labels_path = os.path.join(script_path, "r_scripts", "design_matrix.feather")
-    batch_results_path = os.path.join(script_path, "r_scripts", "batch_results.feather")
+    with tempfile.TemporaryDirectory() as temp_dir:
+        expression_data_path = Path(temp_dir, "expression_data.feather")
+        labels_path = Path(temp_dir, "design_matrix.feather")
+        batch_results_path = Path(temp_dir, "batch_results.feather")
 
-    dataframe_to_feather(expression_df, [script_path, "r_scripts", "expression_data.feather"])
-    dataframe_to_feather(labels.to_frame(), [script_path, "r_scripts", "design_matrix.feather"])
+        dataframe_to_feather(expression_df, expression_data_path)
+        dataframe_to_feather(labels.to_frame(), labels_path)
 
-    command = [
-        "Rscript",
-        os.path.join(script_path, "r_scripts", "batchEffectRemovalWorkflow.R"),
-        expression_data_path,
-        labels_path,
-        batch_results_path
-    ]
-    try:
-        subprocess.run(command, check=True)
-    except subprocess.CalledProcessError as e:
-        logger.error("R script execution failed: %s", {e})
-        raise RuntimeError("Failed to execute batch effect removal R script.") from e
+        try:
+            subprocess.run([
+                "Rscript",
+                get_project_directory() / "knowseqpy" / "r_scripts" / "batchEffectRemovalWorkflow.R",
+                expression_data_path,
+                labels_path,
+                batch_results_path
+            ], check=True)
+        except subprocess.CalledProcessError as e:
+            raise RuntimeError(f"Failed to execute batch effect removal R script. {e}") from e
 
-    results = feather_to_dataframe([script_path, "r_scripts", "batch_results.feather"])
-    results.set_index("row_name", inplace=True)
-    results.index.name = None
+        results = feather_to_dataframe(batch_results_path)
+        results.set_index("row_name", inplace=True)
+        results.index.name = None
 
-    os.remove(expression_data_path)
-    os.remove(labels_path)
-    os.remove(batch_results_path)
+        return results
 
-    return results
 
 def _combat(expression_df: pd.DataFrame, labels: pd.Series, batch_groups: pd.Series = None) -> pd.DataFrame:
     raise NotImplementedError("Combat method has not been implemented yet")

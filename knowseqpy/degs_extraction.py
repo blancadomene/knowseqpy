@@ -5,15 +5,15 @@ users to identify significant changes in gene expression across different condit
 module supports both biclass and (planned) multiclass analysis, integrating with the R `limma` package
 for statistical analysis.
 """
-import os
 import subprocess
+import tempfile
+from pathlib import Path
 
 import pandas as pd
 from patsy.highlevel import dmatrix
 from sklearn.model_selection import KFold
 
-from src.log import get_logger
-from src.utils import dataframe_to_feather, feather_to_dataframe
+from .utils import get_logger, get_project_directory, dataframe_to_feather, feather_to_dataframe
 
 logger = get_logger().getChild(__name__)
 
@@ -115,40 +115,33 @@ def run_limma_deg_analysis(data, labels, p_value, lfc, max_genes) -> pd.DataFram
     design_matrix = dmatrix(formula_like="1 + C(sample_class)", data=transposed_data, return_type="dataframe").astype(
         int)
 
-    script_path = os.path.dirname(os.path.abspath(__file__))
-    expression_data_path = os.path.join(script_path, "r_scripts", "expression_data.feather")
-    design_matrix_path = os.path.join(script_path, "r_scripts", "design_matrix.feather")
-    limma_results_path = os.path.join(script_path, "r_scripts", "limma_results.feather")
+    with tempfile.TemporaryDirectory() as temp_dir:
+        expression_data_path = Path(temp_dir, "expression_data.feather")
+        design_matrix_path = Path(temp_dir, "design_matrix.feather")
+        limma_results_path = Path(temp_dir, "limma_results.feather")
 
-    dataframe_to_feather(data, [script_path, "r_scripts", "expression_data.feather"])
-    dataframe_to_feather(design_matrix, [script_path, "r_scripts", "design_matrix.feather"])
+        dataframe_to_feather(data, expression_data_path)
+        dataframe_to_feather(design_matrix, design_matrix_path)
 
-    command = [
-        "Rscript",
-        os.path.join(script_path, "r_scripts", "LimmaDEGsExtractionWorkflow.R"),
-        expression_data_path,
-        design_matrix_path,
-        limma_results_path,
-        str(p_value),
-        str(lfc),
-        str(max_genes)
-    ]
+        try:
+            subprocess.run([
+                "Rscript",
+                get_project_directory() / "knowseqpy" / "r_scripts" / "LimmaDEGsExtractionWorkflow.R",
+                expression_data_path,
+                design_matrix_path,
+                limma_results_path,
+                str(p_value),
+                str(lfc),
+                str(max_genes)
+            ], check=True)
+        except subprocess.CalledProcessError as e:
+            raise RuntimeError(f"Failed to execute DEGs extraction R script. {e}") from e
 
-    try:
-        subprocess.run(command, check=True)
-    except subprocess.CalledProcessError as e:
-        logger.error("R script execution failed: %s", {e})
-        raise RuntimeError("Failed to execute DEGs extraction R script.") from e
+        results = feather_to_dataframe(limma_results_path)
+        results.set_index("row_name", inplace=True)
+        results.index.name = None
 
-    results = feather_to_dataframe([script_path, "r_scripts", "limma_results.feather"])
-    results.set_index("row_name", inplace=True)
-    results.index.name = None
-
-    os.remove(expression_data_path)
-    os.remove(design_matrix_path)
-    os.remove(limma_results_path)
-
-    return results
+        return results
 
 
 def _multiclass_analysis():

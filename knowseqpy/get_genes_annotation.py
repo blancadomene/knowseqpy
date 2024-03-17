@@ -6,16 +6,14 @@ DataFrames, facilitating further data analysis and manipulation.
 """
 
 import io
-import os
 from pathlib import Path
 
 import pandas as pd
 import requests
 
-from src.log import get_logger
-from src.utils import csv_to_dataframe
+from .utils import csv_to_dataframe, get_logger
 
-EXTERNAL_DATA_PATH = os.path.join(str(Path(__file__).resolve().parents[1]), "external_data")
+EXTERNAL_DATA_PATH = Path(__file__).resolve().parents[1] / "external_data"
 ENSEMBL_URL = "http://www.ensembl.org/biomart/martservice"
 GRCH37_ENSEMBL_URL = "https://grch37.ensembl.org/biomart/martservice"
 
@@ -66,7 +64,7 @@ def get_genes_annotation(values: list[str], attributes: list[str] = None, attrib
     base_url, dataset_name, filename = _resolve_dataset_details(not_hsapiens_dataset, reference_genome)
 
     annotation_list = []
-    current_batch_values = values.copy()
+    current_batch_values = values
     max_values_per_query = min(len(values), 900)
 
     while current_batch_values:
@@ -96,9 +94,7 @@ def _resolve_dataset_details(not_hsapiens_dataset: str, reference_genome: int) -
     """
     if not_hsapiens_dataset:
         if not_hsapiens_dataset == "" or not isinstance(not_hsapiens_dataset, str):
-            err_msg = "The 'not_hsapiens_dataset' parameter must be a non-empty string."
-            logger.error(err_msg)
-            raise ValueError(err_msg)
+            raise ValueError("The 'not_hsapiens_dataset' parameter must be a non-empty string.")
 
         return ENSEMBL_URL, not_hsapiens_dataset, f"{not_hsapiens_dataset}.csv"
 

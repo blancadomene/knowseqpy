@@ -4,8 +4,8 @@ import unittest
 
 import pandas as pd
 
-from src.normalization import cqn
-from src.utils import csv_to_dataframe
+from knowseqpy.normalization import cqn
+from knowseqpy.utils import csv_to_dataframe
 
 
 class CqnTest(unittest.TestCase):
@@ -15,7 +15,7 @@ class CqnTest(unittest.TestCase):
             path_components=["../test_fixtures", "golden_breast", "cqn.csv"], index_col=0, header=0)
 
     def test_cqn_values(self):
-        counts_matrix_path = os.path.normpath(os.path.join("../test_fixtures", "golden_breast", "counts_matrix.csv"))
+        counts_matrix_path = os.path.normpath(os.path.join("../test_fixtures", "golden_breast", "counts.csv"))
         counts_matrix = pd.read_csv(counts_matrix_path, header=0, index_col=0)
         annotation_path = os.path.normpath(os.path.join("../test_fixtures", "gene_annotation_breast.csv"))
         annotation = pd.read_csv(annotation_path, header=0, index_col="ensembl_gene_id")

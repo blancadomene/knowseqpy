@@ -1,5 +1,5 @@
 """
-Unit tests for the `common` module in the `src` package.
+Unit tests for the `common` module in the `knowseqpy` package.
 """
 import logging
 import os
@@ -9,7 +9,7 @@ from unittest.mock import patch, mock_open
 
 import pandas as pd
 
-from src.utils.common import csv_to_dataframe, csv_to_list, get_nested_value, dataframe_to_feather, \
+from knowseqpy.utils.common import csv_to_dataframe, csv_to_list, get_nested_value, dataframe_to_feather, \
     feather_to_dataframe
 
 
@@ -29,8 +29,8 @@ class CommonTest(unittest.TestCase):
         mock_read_csv.assert_called_once_with(os.path.join(*path_components), index_col=0, header=None)
 
     def test_csv_to_list(self):
-        with patch("src.utils.common.open", mock_open(read_data=None), create=True):
-            with patch("src.utils.common.csv.reader",
+        with patch("knowseqpy.utils.common.open", mock_open(read_data=None), create=True):
+            with patch("knowseqpy.utils.common.csv.reader",
                        return_value=[["row1item1", "row1item2"], ["row2item1", "row2item2"],
                                      ["row3item1", "row3item2"]]) as mock_csv_reader:
                 result = csv_to_list(["path", "to", "file.csv"])
@@ -40,7 +40,7 @@ class CommonTest(unittest.TestCase):
                                  second=[["row1item1", "row1item2"],
                                          ["row2item1", "row2item2"], ["row3item1", "row3item2"]])
 
-    @mock.patch("src.utils.common.pd.DataFrame.to_feather")
+    @mock.patch("knowseqpy.utils.common.pd.DataFrame.to_feather")
     def test_dataframe_to_feather(self, mock_to_feather):
         data = pd.DataFrame({"col1": [1, 2], "col2": [3, 4]})
         path_components = ["tests", "data", "test.feather"]
@@ -50,7 +50,7 @@ class CommonTest(unittest.TestCase):
         expected_filepath = os.path.normpath(os.path.join(*path_components))
         mock_to_feather.assert_called_once_with(expected_filepath)
 
-    @mock.patch("src.utils.common.pd.read_feather")
+    @mock.patch("knowseqpy.utils.common.pd.read_feather")
     def test_feather_to_dataframe(self, mock_read_feather):
         mock_read_feather.return_value = pd.DataFrame({"col1": [1, 2], "col2": [3, 4]})
 

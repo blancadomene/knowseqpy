@@ -1,11 +1,9 @@
 import logging
-import os
 import unittest
 
 import pandas as pd
 
-from src.get_genes_annotation import get_genes_annotation
-from src.utils import csv_to_dataframe
+from knowseqpy.get_genes_annotation import get_genes_annotation
 
 
 class GetGenesAnnotationTest(unittest.TestCase):
@@ -17,20 +15,21 @@ class GetGenesAnnotationTest(unittest.TestCase):
     def test_get_genes_annotation_valid_input_genome38(self):
         values = ["KRT19", "BRCA1"]
         atrb_filter = "external_gene_name"
-        
+
         golden_data_df = pd.DataFrame({
             "ensembl_gene_id": ["ENSG00000171345", "ENSG00000012048"],
             "external_gene_name": ["KRT19", "BRCA1"],
             "percentage_gene_gc_content": [57.44, 44.09],
             "entrezgene_id": [3880, 672]
         })
-        
+        golden_data_df.set_index("ensembl_gene_id", inplace=True)
+
         res_annotation = get_genes_annotation(values, attribute_filter=atrb_filter)
         res_annotation = res_annotation[golden_data_df.columns]
 
         self.assertIsInstance(res_annotation, pd.DataFrame)
 
-        pd.testing.assert_frame_equal(golden_data_df, res_annotation.reset_index(drop=True),
+        pd.testing.assert_frame_equal(golden_data_df, res_annotation,
                                       check_dtype=False, check_like=False)
 
     def test_get_genes_annotation_valid_input_genome37(self):

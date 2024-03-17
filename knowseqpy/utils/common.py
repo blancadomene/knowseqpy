@@ -2,14 +2,24 @@
 Common utility functions for working with CSV files and data structures.
 """
 import csv
-import os
+from pathlib import Path
 from typing import Any
 
 import pandas as pd
 
-from src.log import get_logger
+from .logger import get_logger
 
 logger = get_logger().getChild(__name__)
+
+
+def get_project_directory() -> Path:
+    """
+    Retrieves the directory of the project.
+
+    Returns:
+        Path: A Path object pointing to the project's root directory.
+    """
+    return Path(__file__).resolve().parent.parent.parent
 
 
 def csv_to_dataframe(path_components: list[str], index_col=None, header=None, **kwargs: Any) -> pd.DataFrame:
@@ -29,7 +39,7 @@ def csv_to_dataframe(path_components: list[str], index_col=None, header=None, **
         FileNotFoundError: If the CSV file is not found at the specified path.
         pd.errors.ParserError: If there is an issue with CSV parsing.
     """
-    filepath = os.path.normpath(os.path.join(*path_components))
+    filepath = Path(*path_components)
     logger.info("Loading CSV file from %s into a dataframe", filepath)
     return pd.read_csv(filepath, index_col=index_col, header=header, **kwargs)
 
@@ -44,39 +54,37 @@ def csv_to_list(path_components: list[str]) -> list:
     Returns:
         A list where each element is a row of the CSV.
     """
-    filepath = os.path.normpath(os.path.join(*path_components))
+    filepath = Path(*path_components)
     logger.info("Loading CSV file from %s into a list", filepath)
-    with open(filepath, newline="", encoding="utf-8") as f:
+    with filepath.open(newline="", encoding="utf-8") as f:
         reader = csv.reader(f)
         return list(reader)
 
 
-def dataframe_to_feather(data: pd.DataFrame, path_components: list[str], **kwargs: Any) -> None:
+def dataframe_to_feather(data: pd.DataFrame, filepath: Path, **kwargs) -> None:
     """
-    Saves a pandas DataFrame to a Feather file.
+    Saves a pandas DataFrame to a Feather file using pathlib paths.
 
     Args:
         data: pandas DataFrame with data.
-        path_components: List of components in the file path.
+        filepath: Pathlib object representing the path to the file.
         **kwargs: Additional keyword arguments to pass to pandas.DataFrame.to_feather().
     """
-    filepath = os.path.normpath(os.path.join(*path_components))
     data.to_feather(filepath, **kwargs)
     logger.info("Exporting Dataframe to Feather file at %s", filepath)
 
 
-def feather_to_dataframe(path_components: list, **kwargs: Any) -> pd.DataFrame:
+def feather_to_dataframe(filepath: Path, **kwargs) -> pd.DataFrame:
     """
-    Loads a Feather file into a pandas DataFrame.
+    Loads a Feather file into a pandas DataFrame using pathlib paths.
 
     Args:
-        path_components: List of components in the file path.
+        filepath: Pathlib object representing the path to the Feather file.
         **kwargs: Additional keyword arguments to pass to pandas.read_feather().
 
     Returns:
         pandas DataFrame containing the Feather file data.
     """
-    filepath = os.path.normpath(os.path.join(*path_components))
     logger.info("Loading Feather file from %s into a dataframe", filepath)
     return pd.read_feather(filepath, **kwargs)
 

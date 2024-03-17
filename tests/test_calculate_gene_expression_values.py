@@ -3,15 +3,15 @@ import unittest
 
 import pandas as pd
 
-from src.calculate_gene_expression_values import calculate_gene_expression_values
-from src.utils import csv_to_dataframe
+from knowseqpy.calculate_gene_expression_values import calculate_gene_expression_values
+from knowseqpy.utils import csv_to_dataframe
 
 
 class CalculateGeneExpressionValuesTest(unittest.TestCase):
     def setUp(self):
         logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(module)s - %(message)s")
         self.counts_df = csv_to_dataframe(
-            path_components=["test_fixtures", "golden_breast", "counts_matrix.csv"], index_col=0, header=0)
+            path_components=["test_fixtures", "golden_breast", "counts.csv"], index_col=0, header=0)
         self.gene_annotation = csv_to_dataframe(
             path_components=["test_fixtures", "gene_annotation_breast.csv"], header=0, index_col="ensembl_gene_id")
         self.golden_gene_expression = csv_to_dataframe(

@@ -9,7 +9,7 @@ import pandas as pd
 from scipy.spatial.distance import pdist, squareform
 from scipy.stats import kstest, median_abs_deviation
 
-from src.log import get_logger
+from .utils import get_logger
 
 logger = get_logger().getChild(__name__)
 
@@ -98,7 +98,7 @@ def _manhattan_distances_outliers(gene_expression_df: pd.DataFrame) -> list:
     gene_expression_df_t = gene_expression_df.transpose()
 
     # Calculate the Manhattan distances between samples and normalize them by the number of genes
-    manhattan_distances = pdist(gene_expression_df_t.values, metric='cityblock')
+    manhattan_distances = pdist(gene_expression_df_t.values, metric="cityblock")
     manhattan_distance_matrix = squareform(manhattan_distances) / gene_expression_df_t.shape[1]
     distance_sum = np.sum(manhattan_distance_matrix, axis=0)
 

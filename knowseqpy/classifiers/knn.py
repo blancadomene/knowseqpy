@@ -9,7 +9,7 @@ from sklearn.model_selection import BaseCrossValidator, GridSearchCV, LeaveOneOu
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import StandardScaler
 
-from src.log import get_logger
+from knowseqpy.utils import get_logger
 
 logger = get_logger().getChild(__name__)
 

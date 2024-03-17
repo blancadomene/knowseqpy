@@ -5,8 +5,8 @@ text files, merge multiple samples into a comprehensive pandas DataFrame, and pe
 such as normalization and identification of metadata tags.
 """
 
-import os
 from concurrent.futures import ProcessPoolExecutor
+from pathlib import Path
 
 import pandas as pd
 
@@ -33,7 +33,7 @@ def read_dge(data_info: pd.DataFrame, counts_path: str, ext: str = ".count", lab
     Raises:
         Exception: If row names (gene identifiers) are not unique within any file.
     """
-    count_files_paths = [os.path.join(counts_path, f"{row['Internal.ID']}{ext}") for _, row in data_info.iterrows()]
+    count_files_paths = [str(Path(counts_path) / f"{row['Internal.ID']}{ext}") for _, row in data_info.iterrows()]
     labels = labels if labels is not None else data_info["Internal.ID"] + ext
 
     logger.info("Merging %s counts files into a pandas DataFrame...", len(count_files_paths))
@@ -71,10 +71,9 @@ def _read_count_file(sample_path: str) -> pd.DataFrame:
     Raises:
         ValueError: If row names are not unique within the file.
     """
-    file_name = os.path.basename(sample_path)
-    file_data = pd.read_csv(sample_path, sep='\t', index_col=0, names=[file_name], engine="python", dtype="Int64")
+    filename = Path(sample_path).name
+    file_data = pd.read_csv(sample_path, sep="\t", index_col=0, names=[filename], engine="python", dtype="Int64")
     if file_data.index.has_duplicates:
-        err = f"Duplicated row names in {file_name}. Row names must be unique."
-        raise ValueError(err)
+        raise ValueError(f"Duplicated row names in {filename}. Row names must be unique.")
 
     return file_data

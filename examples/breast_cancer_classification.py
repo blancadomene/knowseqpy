@@ -2,60 +2,46 @@
 Example pipeline using breast samples.
 """
 
-import logging
-import os
-from datetime import datetime
+from pathlib import Path
 
-from src.batch_effect_removal import batch_effect_removal
-from src.calculate_gene_expression_values import calculate_gene_expression_values
-from src.classifiers import knn
-from src.counts_to_matrix import counts_to_matrix
-from src.degs_extraction import degs_extraction
-from src.feature_selection import feature_selection
-from src.get_genes_annotation import get_genes_annotation
-from src.rna_seq_qa import rna_seq_qa
-from src.utils import plot_boxplot, plot_confusion_matrix, plot_samples_heatmap
+from knowseqpy import (counts_to_dataframe, get_genes_annotation, calculate_gene_expression_values, rna_seq_qa,
+                       batch_effect_removal, degs_extraction, feature_selection)
+from knowseqpy.classifiers import knn
+from knowseqpy.utils import plot_boxplot, plot_confusion_matrix, plot_samples_heatmap
 
 
 def main():
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s - %(levelname)s - %(module)s - %(message)s",
-        filename=f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_knowseq_logs.log",
-        filemode="w"
-    )
-
     # Set and read paths
-    script_path = os.path.dirname(os.path.abspath(__file__))
-    info_path = os.path.join(script_path, "tests", "test_fixtures", "samples_info_breast.csv")
-    counts_path = os.path.join(script_path, "tests", "test_fixtures", "count_files_breast")
+    script_path = Path(__file__).resolve().parent.parent
+    info_path = script_path / "tests" / "test_fixtures" / "samples_info_breast.csv"
+    counts_path = script_path / "tests" / "test_fixtures" / "count_files_breast"
 
     # Execute counts to matrix conversion
-    counts_df, labels_ser = counts_to_matrix(info_path=info_path, counts_path=counts_path)
+    counts, labels = counts_to_dataframe(info_path=info_path, counts_path=counts_path)
 
     # Number of samples per class
-    print(labels_ser.value_counts())
+    print(labels.value_counts())
 
-    gene_annotation_df = get_genes_annotation(values=counts_df.index)
+    gene_annotation = get_genes_annotation(values=counts.index)
 
-    print(gene_annotation_df)
+    print(gene_annotation)
 
-    gene_expression_df = calculate_gene_expression_values(counts_df, gene_annotation_df)
+    gene_expression = calculate_gene_expression_values(counts, gene_annotation)
 
-    qa_df, outliers = rna_seq_qa(gene_expression_df)
-    qa_labels = labels_ser.drop(outliers)
+    qa, outliers = rna_seq_qa(gene_expression)
+    qa_labels = labels.drop(outliers)
 
-    batch_df = batch_effect_removal(qa_df, labels=qa_labels, method="sva")
+    batch = batch_effect_removal(qa, labels=qa_labels, method="sva")
 
-    degs_df = degs_extraction(batch_df, labels=qa_labels, lfc=3.5, p_value=0.001)[0].transpose()
-    fs_ranking = feature_selection(data=degs_df, labels=qa_labels, mode="da",
-                                   vars_selected=degs_df.columns.tolist())
+    degs = degs_extraction(batch, labels=qa_labels, lfc=3.5, p_value=0.001)[0].transpose()
+    selected_features = feature_selection(data=degs, labels=qa_labels, mode="da",
+                                          vars_selected=degs.columns.tolist())
 
-    knn_res = knn(degs_df, qa_labels, fs_ranking)
+    knn_res = knn(degs, qa_labels, selected_features)
 
-    plot_boxplot(degs_df, qa_labels, fs_ranking, top_n_features=3)
+    plot_boxplot(degs, qa_labels, selected_features, top_n_features=3)
     plot_confusion_matrix(knn_res["confusion_matrix"], unique_labels=knn_res["unique_labels"].tolist())
-    plot_samples_heatmap(degs_df, qa_labels, fs_ranking, top_n_features=4)
+    plot_samples_heatmap(degs, qa_labels, selected_features, top_n_features=4)
 
 
 if __name__ == '__main__':

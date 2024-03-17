@@ -8,8 +8,7 @@ from mrmr import mrmr_classif
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.ensemble import RandomForestClassifier
 
-from src.log import get_logger
-from src.utils import csv_to_list
+from .utils import get_logger, csv_to_list
 
 logger = get_logger().getChild(__name__)
 
