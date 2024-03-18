@@ -10,7 +10,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from .utils import dataframe_to_feather, feather_to_dataframe, get_logger, get_project_directory
+from .utils import dataframe_to_feather, feather_to_dataframe, get_logger, get_project_path
 
 logger = get_logger().getChild(__name__)
 
@@ -69,7 +69,7 @@ def calculate_gene_expression_values(counts: pd.DataFrame, gene_annotation: pd.D
         try:
             subprocess.run([
                 "Rscript",
-                get_project_directory() / "knowseqpy" / "r_scripts" / "cqnWorkflow.R",
+                get_project_path() / "knowseqpy" / "r_scripts" / "cqnWorkflow.R",
                 str(counts_path),
                 str(x_path),
                 str(length_path),

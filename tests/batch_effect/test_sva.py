@@ -26,5 +26,5 @@ class BatchEffectRemovalTest(unittest.TestCase):
         pd.testing.assert_frame_equal(res_qa, self.golden_batch, check_dtype=False, check_like=True,
                                       check_exact=False, atol=0.1, rtol=0.1)
 
-    if __name__ == '__main__':
+    if __name__ == "__main__":
         unittest.main()

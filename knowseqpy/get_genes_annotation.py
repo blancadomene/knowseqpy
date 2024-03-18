@@ -100,11 +100,11 @@ def _resolve_dataset_details(not_hsapiens_dataset: str, reference_genome: int) -
 
     if reference_genome == 38:
         logger.info("Using reference genome 38")
-        dataset_name = 'hsapiens_gene_ensembl'
+        dataset_name = "hsapiens_gene_ensembl"
         return ENSEMBL_URL, dataset_name, f"{dataset_name}.csv"
 
     logger.info("Using reference genome 37")
-    dataset_name = 'hsapiens_gene_ensembl'
+    dataset_name = "hsapiens_gene_ensembl"
     return GRCH37_ENSEMBL_URL, dataset_name, f"{dataset_name}.csv"
 
 

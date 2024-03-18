@@ -32,8 +32,6 @@ def cpm(counts: pd.DataFrame, remove_non_numeric: bool = True) -> pd.DataFrame:
     """
     logger.info("Performing CPM on gene expression data")
 
-    counts = counts.dropna()
-
     is_numeric = counts.apply(lambda col: pd.to_numeric(col, errors="coerce").notnull().all())
     if not is_numeric.all():
         if not remove_non_numeric:

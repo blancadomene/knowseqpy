@@ -37,7 +37,7 @@ def main():
     qa_labels = labels.drop(outliers)
 
     # Apply chosen method to correct for batch effects in the data
-    batch = sva(expression_df=cleaned_df, labels=qa_labels)
+    batch = sva(expression_df=cleaned_df, labels=qa_labels)  # TODO over here testing
 
     # Identify differentially expressed genes with specified criteria
     degs = degs_extraction(batch, labels=qa_labels, lfc=3.5, p_value=0.001)[0].transpose()
@@ -54,5 +54,5 @@ def main():
     plot_samples_heatmap(data=degs, labels=qa_labels, fs_ranking=selected_features, top_n_features=4)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

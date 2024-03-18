@@ -64,12 +64,12 @@ class CommonTest(unittest.TestCase):
 
 
 def test_get_nested_value(self):
-    data = {'a': {'b': {'c': 1}}}
+    data = {"a": {"b": {"c": 1}}}
 
-    self.assertEqual(get_nested_value(data_dict=data, keys=['a', 'b', 'c']), 1)
-    self.assertEqual(get_nested_value(data_dict=data, keys=['a', 'x'], default="Not Found"), "Not Found")
+    self.assertEqual(get_nested_value(data_dict=data, keys=["a", "b", "c"]), 1)
+    self.assertEqual(get_nested_value(data_dict=data, keys=["a", "x"], default="Not Found"), "Not Found")
     with self.assertRaises(KeyError):
-        get_nested_value(data, ['a', 'b', 'x'])
+        get_nested_value(data, ["a", "b", "x"])
 
 
 if __name__ == "__main__":

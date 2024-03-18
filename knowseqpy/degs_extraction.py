@@ -13,7 +13,7 @@ import pandas as pd
 from patsy.highlevel import dmatrix
 from sklearn.model_selection import KFold
 
-from .utils import get_logger, get_project_directory, dataframe_to_feather, feather_to_dataframe
+from .utils import get_logger, get_project_path, dataframe_to_feather, feather_to_dataframe
 
 logger = get_logger().getChild(__name__)
 
@@ -92,7 +92,8 @@ def _biclass_analysis(data: pd.DataFrame, labels: pd.Series, p_value: float, lfc
 
 
 def run_limma_deg_analysis(data, labels, p_value, lfc, max_genes) -> pd.DataFrame:
-    """Runs differential expression analysis using R's limma package.
+    """
+    Runs differential expression analysis using R's limma package.
 
     Args:
         data: A pandas DataFrame containing gene expression data.
@@ -126,7 +127,7 @@ def run_limma_deg_analysis(data, labels, p_value, lfc, max_genes) -> pd.DataFram
         try:
             subprocess.run([
                 "Rscript",
-                get_project_directory() / "knowseqpy" / "r_scripts" / "LimmaDEGsExtractionWorkflow.R",
+                get_project_path() / "knowseqpy" / "r_scripts" / "LimmaDEGsExtractionWorkflow.R",
                 expression_data_path,
                 design_matrix_path,
                 limma_results_path,

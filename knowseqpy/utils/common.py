@@ -12,7 +12,7 @@ from .logger import get_logger
 logger = get_logger().getChild(__name__)
 
 
-def get_project_directory() -> Path:
+def get_project_path() -> Path:
     """
     Retrieves the directory of the project.
 
@@ -20,6 +20,17 @@ def get_project_directory() -> Path:
         Path: A Path object pointing to the project's root directory.
     """
     return Path(__file__).resolve().parent.parent.parent
+
+
+def get_test_path() -> Path:
+    """
+    Retrieves the directory of the project's test folder.
+
+    Returns:
+        Path: A Path object pointing to the project's test directory.
+    """
+    project_path = Path(__file__).resolve().parent.parent.parent
+    return project_path / "tests"
 
 
 def csv_to_dataframe(path_components: list[str], index_col=None, header=None, **kwargs: Any) -> pd.DataFrame:

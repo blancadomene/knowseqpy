@@ -10,7 +10,6 @@ from scipy.spatial.distance import pdist, squareform
 from scipy.stats import kstest, median_abs_deviation
 
 from .utils import get_logger
-from .batch_effect import sva
 
 logger = get_logger().getChild(__name__)
 
@@ -27,15 +26,17 @@ def rna_seq_qa(gene_expression_df: pd.DataFrame) -> tuple[pd.DataFrame, list]:
                commonality between at least two of three methods (KS test, MAD, and Manhattan distances),
                and the second element is a list containing the identifiers of the detected outliers.
     """
-    # TODO: Check if there are NA values (manually removed them from the golden_breast while testing)
-
     ks_outliers = _ks_outliers(gene_expression_df)
+    logger.info(f"KS outliers detected: {len(ks_outliers)} samples")
     mad_outliers = _mad_outliers(gene_expression_df)
+    logger.info(f"MAD outliers detected: {len(mad_outliers)} samples")
     manhattan_outliers = _manhattan_distances_outliers(gene_expression_df)
+    logger.info(f"Manhattan distance outliers detected: {len(manhattan_outliers)} samples")
 
     # Get common outliers at least between two of three methods
     common_outliers = set(ks_outliers) & set(mad_outliers) | set(ks_outliers) & set(manhattan_outliers) | set(
         mad_outliers) & set(manhattan_outliers)
+    logger.info(f"{len(common_outliers)} common outliers identified by at least two methods.")
 
     return gene_expression_df.drop(columns=list(common_outliers)), list(common_outliers)
 

@@ -9,8 +9,6 @@ from knowseqpy.get_genes_annotation import get_genes_annotation
 class GetGenesAnnotationTest(unittest.TestCase):
     def setUp(self):
         logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(module)s - %(message)s")
-        """self.golden_annotation_38 = csv_to_dataframe(
-            path_components=["test_fixtures", "golden_breast", "gene_annotations_38.csv"], index_col=0, header=0)"""
 
     def test_get_genes_annotation_valid_input_genome38(self):
         values = ["KRT19", "BRCA1"]
@@ -50,7 +48,6 @@ class GetGenesAnnotationTest(unittest.TestCase):
         pd.testing.assert_frame_equal(golden_data_df, res_annotation.reset_index(drop=True), check_dtype=False)
 
     def test_get_genes_annotation_invalid_input_raises_ValueError(self):
-        # Test with invalid values input
         values = "KRT19"
         attributes = ["ensembl_gene_id", "external_gene_name", "percentage_gene_gc_content", "entrezgene_id"]
         atrb_filter = "external_gene_name"
@@ -60,15 +57,51 @@ class GetGenesAnnotationTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             get_genes_annotation(values, attributes, atrb_filter, not_human_dataset, reference_genome)
 
-        # Test with invalid attributes input
-        values = ["KRT19", "BRCA1"]
-        attributes = "ensembl_gene_id"  # Not a list
-        atrb_filter = "external_gene_name"
-        not_human_dataset = ""
-        reference_genome = 38
+    def test_get_genes_annotation_non_human_dataset(self):
+        values = ["FBgn0267431", "FBgn0003360"]
+        attributes = ["ensembl_gene_id", "external_gene_name"]
+        atrb_filter = "ensembl_gene_id"
+        not_human_dataset = "dmelanogaster_gene_ensembl"
 
-        with self.assertRaises(ValueError):
-            get_genes_annotation(values, attributes, atrb_filter, not_human_dataset, reference_genome)
+        result_annotation = get_genes_annotation(values, attributes=attributes, attribute_filter=atrb_filter,
+                                                 not_hsapiens_dataset=not_human_dataset)
+
+        self.assertIsInstance(result_annotation, pd.DataFrame)
+        self.assertTrue(not result_annotation.empty)
+        self.assertIn("FBgn0267431", result_annotation["ensembl_gene_id"].values)
+
+    def test_get_genes_annotation_non_human_dataset(self):
+        values = ["FBgn0267431", "FBgn0003360"]  # Example Drosophila gene IDs
+        attributes = ["ensembl_gene_id", "external_gene_name"]
+        atrb_filter = "ensembl_gene_id"
+        not_human_dataset = "dmelanogaster_gene_ensembl"
+
+        result_annotation = get_genes_annotation(values, attributes=attributes, attribute_filter=atrb_filter,
+                                                 not_hsapiens_dataset=not_human_dataset)
+
+        self.assertIsInstance(result_annotation, pd.DataFrame)
+        self.assertTrue(not result_annotation.empty)
+        self.assertIn("FBgn0267431", result_annotation["ensembl_gene_id"].values)
+
+    def test_get_genes_annotation_empty_result(self):
+        values = ["NonExistentGene"]
+        atrb_filter = "external_gene_name"
+
+        result_annotation = get_genes_annotation(values, attribute_filter=atrb_filter)
+
+        self.assertIsInstance(result_annotation, pd.DataFrame)
+        self.assertTrue(result_annotation.empty)
+
+    def test_get_genes_annotation_all_genome(self):
+        values = ["allGenome"]
+        atrb_filter = "ensembl_gene_id"
+        expected_columns = {"ensembl_gene_id", "external_gene_name", "percentage_gene_gc_content", "entrezgene_id"}
+
+        result_annotation = get_genes_annotation(values, attribute_filter=atrb_filter)
+
+        self.assertIsInstance(result_annotation, pd.DataFrame)
+        self.assertTrue(not result_annotation.empty)
+        self.assertEqual(set(result_annotation.columns), expected_columns)
 
 
 if __name__ == "__main__":

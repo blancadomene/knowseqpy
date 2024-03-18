@@ -9,7 +9,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from knowseqpy.utils import dataframe_to_feather, feather_to_dataframe, get_logger, get_project_directory
+from knowseqpy.utils import dataframe_to_feather, feather_to_dataframe, get_logger, get_project_path
 
 logger = get_logger().getChild(__name__)
 
@@ -40,7 +40,7 @@ def sva(expression_df: pd.DataFrame, labels: pd.Series) -> pd.DataFrame:
         try:
             subprocess.run([
                 "Rscript",
-                get_project_directory() / "knowseqpy" / "r_scripts" / "batchEffectRemovalWorkflow.R",
+                get_project_path() / "knowseqpy" / "r_scripts" / "batchEffectRemovalWorkflow.R",
                 expression_data_path,
                 labels_path,
                 batch_results_path

@@ -17,7 +17,7 @@ DEFAULT_ROWS_TO_SKIP = ["__no_feature", "__ambiguous", "__too_low_aQual", "__not
 
 
 def counts_to_dataframe(info_path: Union[str, Path], counts_path: Union[str, Path], sep: str = ",", ext: str = ".count",
-                        rows_to_skip: list = None) -> tuple[pd.DataFrame, pd.Series]:
+                        rows_to_skip: list[str] = None) -> tuple[pd.DataFrame, pd.Series]:
     """
     Merges the information of all count files found in `counts_path`, which ID correspond to the one found
     in `info_path["Internal.ID"]`.
@@ -40,6 +40,7 @@ def counts_to_dataframe(info_path: Union[str, Path], counts_path: Union[str, Pat
     data_info = pd.read_csv(info_path, sep=sep, dtype="str", usecols=["Internal.ID", "Sample.Type"])
 
     counts = read_dge(data_info=data_info, counts_path=counts_path, ext=ext)
+    counts = counts.dropna()
     counts_per_million = cpm(counts)
 
     # Unwanted rows are the ones which column-wise cpm sum is < 1, and also the ones in rows_to_skip

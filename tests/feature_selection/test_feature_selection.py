@@ -26,5 +26,5 @@ class FeatureSelectionTest(unittest.TestCase):
 
         self.assertTrue(fs_ranking_df.iloc[:, 0].equals(self.fs_ranking_golden.iloc[:, 0]))
 
-    if __name__ == '__main__':
+    if __name__ == "__main__":
         unittest.main()
