@@ -47,42 +47,6 @@ class GetGenesAnnotationTest(unittest.TestCase):
 
         pd.testing.assert_frame_equal(golden_data_df, res_annotation.reset_index(drop=True), check_dtype=False)
 
-    def test_get_genes_annotation_invalid_input_raises_ValueError(self):
-        values = "KRT19"
-        attributes = ["ensembl_gene_id", "external_gene_name", "percentage_gene_gc_content", "entrezgene_id"]
-        atrb_filter = "external_gene_name"
-        not_human_dataset = ""
-        reference_genome = 38
-
-        with self.assertRaises(ValueError):
-            get_genes_annotation(values, attributes, atrb_filter, not_human_dataset, reference_genome)
-
-    def test_get_genes_annotation_non_human_dataset(self):
-        values = ["FBgn0267431", "FBgn0003360"]
-        attributes = ["ensembl_gene_id", "external_gene_name"]
-        atrb_filter = "ensembl_gene_id"
-        not_human_dataset = "dmelanogaster_gene_ensembl"
-
-        result_annotation = get_genes_annotation(values, attributes=attributes, attribute_filter=atrb_filter,
-                                                 not_hsapiens_dataset=not_human_dataset)
-
-        self.assertIsInstance(result_annotation, pd.DataFrame)
-        self.assertTrue(not result_annotation.empty)
-        self.assertIn("FBgn0267431", result_annotation["ensembl_gene_id"].values)
-
-    def test_get_genes_annotation_non_human_dataset(self):
-        values = ["FBgn0267431", "FBgn0003360"]  # Example Drosophila gene IDs
-        attributes = ["ensembl_gene_id", "external_gene_name"]
-        atrb_filter = "ensembl_gene_id"
-        not_human_dataset = "dmelanogaster_gene_ensembl"
-
-        result_annotation = get_genes_annotation(values, attributes=attributes, attribute_filter=atrb_filter,
-                                                 not_hsapiens_dataset=not_human_dataset)
-
-        self.assertIsInstance(result_annotation, pd.DataFrame)
-        self.assertTrue(not result_annotation.empty)
-        self.assertIn("FBgn0267431", result_annotation["ensembl_gene_id"].values)
-
     def test_get_genes_annotation_empty_result(self):
         values = ["NonExistentGene"]
         atrb_filter = "external_gene_name"

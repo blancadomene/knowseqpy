@@ -19,7 +19,7 @@ def sva(expression_df: pd.DataFrame, labels: pd.Series) -> pd.DataFrame:
     Corrects the batch effect in the expression matrix using sva method.
 
     Args:
-        expression_df: Expression matrix with genes as rows and samples as columns.
+        expression_df: Expression df with genes as rows and samples as columns.
         labels: Labels or factors for the samples in expression_df.
 
     Returns:

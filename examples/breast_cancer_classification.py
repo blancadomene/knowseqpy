@@ -37,7 +37,7 @@ def main():
     qa_labels = labels.drop(outliers)
 
     # Apply chosen method to correct for batch effects in the data
-    batch = sva(expression_df=cleaned_df, labels=qa_labels)  # TODO over here testing
+    batch = sva(expression_df=cleaned_df, labels=qa_labels)
 
     # Identify differentially expressed genes with specified criteria
     degs = degs_extraction(batch, labels=qa_labels, lfc=3.5, p_value=0.001)[0].transpose()

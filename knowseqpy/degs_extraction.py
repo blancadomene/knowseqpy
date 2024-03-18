@@ -19,7 +19,6 @@ logger = get_logger().getChild(__name__)
 
 
 # TODO: Cross validation (CV)
-# TODO: Add notes about Rscript path
 def degs_extraction(data: pd.DataFrame, labels: pd.Series, max_genes: int = float("inf"), p_value: float = 0.05,
                     lfc: float = 1.0, cv: bool = False, k_folds: int = 5) -> list[pd.DataFrame]:
     """
@@ -84,7 +83,6 @@ def _biclass_analysis(data: pd.DataFrame, labels: pd.Series, p_value: float, lfc
 
     degs_table = run_limma_deg_analysis(data, labels, p_value, lfc, max_genes)
 
-    # TODO: Note: Test this additional processing
     if max_genes != float("inf") and len(degs_table) > max_genes:
         degs_table = degs_table.head(max_genes)
 
