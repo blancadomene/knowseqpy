@@ -14,7 +14,7 @@ from knowseqpy.utils import get_logger
 logger = get_logger().getChild(__name__)
 
 
-def knn(data: pd.DataFrame, labels: pd.Series, vars_selected: list, num_fold: int = 10, loocv: bool = False) -> dict:
+def knn(data: pd.DataFrame, labels: pd.Series, vars_selected: list, cv_strategy: BaseCrossValidator = None) -> dict:
     """
     Conducts k-NN classification.
 
@@ -22,8 +22,7 @@ def knn(data: pd.DataFrame, labels: pd.Series, vars_selected: list, num_fold: in
         data: The expression matrix with genes in columns and samples in rows.
         labels: Labels for each sample.
         vars_selected: Selected genes for classification. Can be DEGs or a custom list.
-        num_fold: Number of folds for cross-validation. Defaults to 10.
-        loocv: If True, use Leave-One-Out cross-validation. Otherwise, use KFold. Defaults to False.
+        cv_strategy: CV strategy to use. If None, defaults to RepeatedStratifiedKFold(n_splits=10, n_repeats=3)
 
     Returns:
         A dictionary containing the following key metrics:
@@ -37,7 +36,7 @@ def knn(data: pd.DataFrame, labels: pd.Series, vars_selected: list, num_fold: in
         - y_pred: Array, the predictions made by the model on the dataset.
 
     Optimization Note:
-        Using Leave-One-Out Cross-Validation (LOOCV) can be resource-intensive, particularly for large datasets.
+        Using Leave-One-Out Cross-Validation (loocv) can be resource-intensive, particularly for large datasets.
     """
     label_codes, unique_labels = pd.factorize(labels)
 
@@ -45,12 +44,9 @@ def knn(data: pd.DataFrame, labels: pd.Series, vars_selected: list, num_fold: in
     data = data[vars_selected]
     scaled_data = StandardScaler().fit_transform(data)
 
-    if loocv:
-        logger.info("Running Leave One Out Cross-Validation")
-        cv_strategy = LeaveOneOut()
-    else:
-        logger.info("Running Repeated Stratified K-Fold Cross-Validation with %s folds", num_fold)
-        cv_strategy = RepeatedStratifiedKFold(n_splits=num_fold, n_repeats=3)
+    if not cv_strategy:
+        logger.info("Running Repeated Stratified K-Fold Cross-Validation with 10 folds")
+        cv_strategy = RepeatedStratifiedKFold(n_splits=10, n_repeats=3)
 
     results = _knn_model_evaluation(scaled_data, label_codes, cv_strategy)
 
@@ -59,13 +55,13 @@ def knn(data: pd.DataFrame, labels: pd.Series, vars_selected: list, num_fold: in
     return results
 
 
-def _knn_model_evaluation(data: pd.DataFrame, label_codes: np.array, cv: BaseCrossValidator) -> dict:
+def _knn_model_evaluation(data: pd.DataFrame, label_codes: np.array, cv_strategy: BaseCrossValidator) -> dict:
     """
     Tunes the best k value for the k-NN classifier using grid search with the provided cross-validation strategy
 
     Args:
         data: The expression matrix.
-        cv: Cross-validation strategy.
+        cv_strategy: Cross-validation strategy.
         label_codes (array-like): label_codes for each sample.
 
     Returns:
@@ -77,7 +73,7 @@ def _knn_model_evaluation(data: pd.DataFrame, label_codes: np.array, cv: BaseCro
                "recall": make_scorer(recall_score, average="macro"),
                "f1_score": make_scorer(f1_score, average="macro")}
 
-    grid_search = GridSearchCV(KNeighborsClassifier(), param_grid, cv=cv, scoring=scoring, refit="accuracy")
+    grid_search = GridSearchCV(KNeighborsClassifier(), param_grid, cv=cv_strategy, scoring=scoring, refit="accuracy")
     grid_search.fit(data, label_codes)
 
     logger.info("Optimal k: %s", grid_search.best_estimator_.n_neighbors)

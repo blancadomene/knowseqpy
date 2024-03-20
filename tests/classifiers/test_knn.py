@@ -1,5 +1,9 @@
 import logging
 import unittest
+import pandas as pd
+from sklearn.metrics import accuracy_score, confusion_matrix
+from sklearn.model_selection import LeaveOneOut
+from sklearn.preprocessing import StandardScaler
 
 from knowseqpy.classifiers import knn
 from knowseqpy.utils import csv_to_dataframe, csv_to_list, get_test_path
@@ -30,7 +34,22 @@ class KnnClassifierTest(unittest.TestCase):
         plot_confusion_matrix(knn_res["confusion_matrix"], unique_labels=knn_res["unique_labels"].tolist())
         plot_samples_heatmap(golden_degs_df, quality_labels, fs_ranking_list, top_n_features=4)
 
-        # TODO: assert
+        x_train = pd.DataFrame(golden_degs_df).apply(pd.to_numeric, errors="coerce").fillna(0)
+        x_train = x_train[fs_ranking_list]
+        x_train = StandardScaler().fit_transform(x_train)
+
+        label_codes, unique_labels = pd.factorize(quality_labels)
+        model = knn_res["model"]
+        y_pred = model.predict(x_train)
+        y_train = label_codes
+
+        acc = accuracy_score(y_train, y_pred)
+        self.assertGreaterEqual(acc, 0.95)
+
+    def test_knn_small_dataset(self):
+        data, labels, vars_selected = self.load_small_dataset()
+        results = knn(data, labels, vars_selected)
+        self.assertTrue(results['model'].n_neighbors <= len(data))
 
 
 if __name__ == "__main__":
