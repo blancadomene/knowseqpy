@@ -9,6 +9,8 @@ maximize the separability among known categories or phenotypes.
 
 import pandas as pd
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
 
 from knowseqpy.utils import get_logger
 
@@ -33,7 +35,11 @@ def discriminant_analysis(data: pd.DataFrame, labels: pd.Series, vars_selected: 
 
     logger.info("Calculating the ranking of the most relevant genes using Discriminant Analysis algorithm...")
     da = LinearDiscriminantAnalysis()
-    da.fit(data[vars_selected], labels)
+    pipeline = make_pipeline(
+        StandardScaler(),
+        da
+    )
+    pipeline.fit(data[vars_selected], labels)
     coefficients = da.coef_[0]
     ranked_genes = [gene for _, gene in sorted(zip(coefficients, vars_selected), reverse=True)]
     return ranked_genes[:max_genes]

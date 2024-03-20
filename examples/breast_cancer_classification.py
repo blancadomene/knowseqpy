@@ -3,6 +3,7 @@ Example pipeline using breast samples.
 """
 
 from pathlib import Path
+import random
 
 from knowseqpy import (calculate_gene_expression_values, counts_to_dataframe, degs_extraction, get_genes_annotation,
                        rna_seq_qa)
@@ -13,6 +14,9 @@ from knowseqpy.utils import plot_boxplot, plot_confusion_matrix, plot_samples_he
 
 
 def main():
+    # Set seed for reproducible results
+    random.seed(1234)
+
     # Set and read paths
     script_path = Path(__file__).resolve().parent.parent
     info_path = script_path / "tests" / "test_fixtures" / "samples_info_breast.csv"

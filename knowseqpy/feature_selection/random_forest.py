@@ -9,6 +9,8 @@ genes and the phenotype is nonlinear and complex.
 
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
 
 from knowseqpy.utils import get_logger
 
@@ -33,7 +35,11 @@ def random_forest(data: pd.DataFrame, labels: pd.Series, vars_selected: list, ma
 
     logger.info("Calculating the ranking of the most relevant genes using Random Forest algorithm...")
     rf = RandomForestClassifier(n_estimators=100, random_state=50)
-    rf.fit(data[vars_selected], labels)
+    pipeline = make_pipeline(
+        StandardScaler(),
+        rf
+    )
+    pipeline.fit(data[vars_selected], labels)
     feature_importance = rf.feature_importances_
     ranked_genes = [gene for _, gene in sorted(zip(feature_importance, vars_selected), reverse=True)]
     return ranked_genes[:max_genes]

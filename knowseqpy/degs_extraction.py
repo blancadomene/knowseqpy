@@ -20,7 +20,7 @@ logger = get_logger().getChild(__name__)
 
 # TODO: Cross validation (CV)
 def degs_extraction(data: pd.DataFrame, labels: pd.Series, max_genes: int = float("inf"), p_value: float = 0.05,
-                    lfc: float = 1.0, cv: bool = False, k_folds: int = 5) -> list[pd.DataFrame]:
+                    lfc: float = 1.0, cv: bool = False, k_folds: int = 1) -> list[pd.DataFrame]:
     """
     Performs the analysis to extract Differentially Expressed Genes (DEGs) among classes to compare.
 
@@ -43,8 +43,8 @@ def degs_extraction(data: pd.DataFrame, labels: pd.Series, max_genes: int = floa
     if cv:
         logger.info("Applying DEGs extraction with Cross-Validation")
         kf = KFold(n_splits=k_folds, shuffle=True, random_state=42)
-        for _, test_index in kf.split(data):
-            fold_data = data.iloc[test_index]
+        for train_index, test_index in kf.split(data):
+            fold_data = data.iloc[train_index]
             fold_labels = labels.iloc[test_index]
             cv_datasets.append((fold_data, fold_labels))
     else:
@@ -55,7 +55,8 @@ def degs_extraction(data: pd.DataFrame, labels: pd.Series, max_genes: int = floa
     for cv_data, cv_labels in cv_datasets:
         if len(labels.cat.categories) == 2:
             logger.info("Two classes detected, applying biclass analysis")
-            cv_degs_results.append(_biclass_analysis(cv_data, cv_labels, p_value, lfc, max_genes))
+            deg_res = _biclass_analysis(cv_data, cv_labels, p_value, lfc, max_genes)
+            cv_degs_results.append(deg_res)
         elif len(labels.cat.categories) > 2:
             logger.info("More than two classes detected, applying multiclass analysis")
             cv_degs_results.append(_multiclass_analysis())

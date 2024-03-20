@@ -30,10 +30,6 @@ class KnnClassifierTest(unittest.TestCase):
 
         knn_res = knn(golden_degs_df, quality_labels, fs_ranking_list)
 
-        plot_boxplot(golden_degs_df, quality_labels, fs_ranking_list, top_n_features=3)
-        plot_confusion_matrix(knn_res["confusion_matrix"], unique_labels=knn_res["unique_labels"].tolist())
-        plot_samples_heatmap(golden_degs_df, quality_labels, fs_ranking_list, top_n_features=4)
-
         x_train = pd.DataFrame(golden_degs_df).apply(pd.to_numeric, errors="coerce").fillna(0)
         x_train = x_train[fs_ranking_list]
         x_train = StandardScaler().fit_transform(x_train)
