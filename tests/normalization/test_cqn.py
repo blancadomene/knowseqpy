@@ -8,7 +8,7 @@ from knowseqpy.normalization import cqn
 from knowseqpy.utils import csv_to_dataframe
 
 
-class CqnTest(unittest.TestCase):
+class TestCqn(unittest.TestCase):
     def setUp(self):
         logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(module)s - %(message)s")
         self.golden_cqn = csv_to_dataframe(

@@ -7,7 +7,7 @@ from knowseqpy.normalization import cpm
 from knowseqpy.utils import csv_to_dataframe
 
 
-class CpmTest(unittest.TestCase):
+class TestCpm(unittest.TestCase):
     def setUp(self):
         logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(module)s - %(message)s")
         self.golden_cpm = csv_to_dataframe(

@@ -6,7 +6,7 @@ import pandas as pd
 from knowseqpy.get_genes_annotation import get_genes_annotation
 
 
-class GetGenesAnnotationTest(unittest.TestCase):
+class TestGetGenesAnnotation(unittest.TestCase):
     def setUp(self):
         logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(module)s - %(message)s")
 

@@ -13,7 +13,7 @@ from knowseqpy.utils.common import csv_to_dataframe, csv_to_list, get_nested_val
     feather_to_dataframe
 
 
-class CommonTest(unittest.TestCase):
+class TestCommon(unittest.TestCase):
     def setUp(self):
         logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(module)s - %(message)s")
 

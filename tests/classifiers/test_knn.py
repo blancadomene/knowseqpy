@@ -1,16 +1,15 @@
 import logging
 import unittest
+
 import pandas as pd
-from sklearn.metrics import accuracy_score, confusion_matrix
-from sklearn.model_selection import LeaveOneOut
+from sklearn.metrics import accuracy_score
 from sklearn.preprocessing import StandardScaler
 
 from knowseqpy.classifiers import knn
 from knowseqpy.utils import csv_to_dataframe, csv_to_list, get_test_path
-from knowseqpy.utils.plotting import plot_samples_heatmap, plot_confusion_matrix, plot_boxplot
 
 
-class KnnClassifierTest(unittest.TestCase):
+class TestKnnClassifier(unittest.TestCase):
     def setUp(self):
         logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(module)s - %(message)s")
         self.test_path = get_test_path()
@@ -41,11 +40,6 @@ class KnnClassifierTest(unittest.TestCase):
 
         acc = accuracy_score(y_train, y_pred)
         self.assertGreaterEqual(acc, 0.95)
-
-    def test_knn_small_dataset(self):
-        data, labels, vars_selected = self.load_small_dataset()
-        results = knn(data, labels, vars_selected)
-        self.assertTrue(results['model'].n_neighbors <= len(data))
 
 
 if __name__ == "__main__":

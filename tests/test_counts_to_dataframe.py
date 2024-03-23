@@ -8,7 +8,7 @@ from knowseqpy.counts_to_dataframe import counts_to_dataframe
 from knowseqpy.utils import csv_to_dataframe, get_test_path
 
 
-class CountsToMatrixTest(unittest.TestCase):
+class TestCountsToMatrix(unittest.TestCase):
     def setUp(self):
         logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(module)s - %(message)s")
         self.test_path = get_test_path()

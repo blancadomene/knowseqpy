@@ -7,7 +7,7 @@ from knowseqpy.calculate_gene_expression_values import calculate_gene_expression
 from knowseqpy.utils import csv_to_dataframe, get_test_path
 
 
-class CalculateGeneExpressionValuesTest(unittest.TestCase):
+class TestCalculateGeneExpressionValues(unittest.TestCase):
     def setUp(self):
         logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(module)s - %(message)s")
         self.test_path = get_test_path()

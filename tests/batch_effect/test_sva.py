@@ -7,7 +7,7 @@ from knowseqpy.batch_effect import sva
 from knowseqpy.utils import csv_to_dataframe, get_test_path
 
 
-class BatchEffectRemovalTest(unittest.TestCase):
+class TestBatchEffectRemoval(unittest.TestCase):
     def setUp(self):
         logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(module)s - %(message)s")
         self.test_path = get_test_path()

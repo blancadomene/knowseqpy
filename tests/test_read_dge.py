@@ -9,7 +9,7 @@ from knowseqpy.read_dge import read_dge
 from knowseqpy.utils import csv_to_dataframe
 
 
-class ReadDgeTest(unittest.TestCase):
+class TestReadDge(unittest.TestCase):
     def setUp(self):
         logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(module)s - %(message)s")
         self.script_path = os.path.dirname(os.path.abspath(__file__))
