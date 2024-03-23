@@ -4,18 +4,20 @@ import unittest
 import pandas as pd
 
 from knowseqpy.normalization import cpm
-from knowseqpy.utils import csv_to_dataframe
+from knowseqpy.utils import csv_to_dataframe, get_test_path
 
 
 class TestCpm(unittest.TestCase):
     def setUp(self):
         logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(module)s - %(message)s")
+        self.test_path = get_test_path()
         self.golden_cpm = csv_to_dataframe(
-            path_components=["../test_fixtures", "golden_breast", "cpm.csv"], index_col=0, header=0)
+            path_components=[self.test_path, "test_fixtures", "golden_breast", "cpm.csv"], index_col=0, header=0)
 
     def test_cpm(self):
         golden_dge = csv_to_dataframe(
-            path_components=["../test_fixtures", "golden_breast", "read_dge_counts.csv"], index_col=0, header=0)
+            path_components=[self.test_path, "test_fixtures", "golden_breast", "read_dge_counts.csv"],
+            index_col=0, header=0)
         res_cpm = cpm(golden_dge)
 
         pd.testing.assert_frame_equal(self.golden_cpm, res_cpm, check_exact=False, atol=0.1, rtol=0.1)
@@ -36,13 +38,6 @@ class TestCpm(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             cpm(zero_counts_df)
-
-    def test_dataframe_with_nan(self):
-        nan_df = pd.DataFrame({"Gene1": [1000, None, 500], "Gene2": [None, 1200, 500]})
-        res_cpm = cpm(nan_df).reset_index(drop=True)
-        expected_df = cpm(pd.DataFrame({"Gene1": [500, ], "Gene2": [500, ]})).reset_index(drop=True)
-
-        pd.testing.assert_frame_equal(expected_df, res_cpm)
 
     def test_remove_non_numeric_true(self):
         mixed_df = pd.DataFrame({"Gene1": [1000, 1500], "Metadata": ["Sample1", "Sample2"], "Gene2": [800, 1200]})

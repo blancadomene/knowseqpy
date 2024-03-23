@@ -18,7 +18,6 @@ from .utils import get_logger, get_project_path, dataframe_to_feather, feather_t
 logger = get_logger().getChild(__name__)
 
 
-# TODO: Cross validation (CV)
 def degs_extraction(data: pd.DataFrame, labels: pd.Series, max_genes: int = float("inf"), p_value: float = 0.05,
                     lfc: float = 1.0, cv: bool = False, k_folds: int = 1) -> list[pd.DataFrame]:
     """

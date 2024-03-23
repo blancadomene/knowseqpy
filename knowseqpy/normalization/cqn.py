@@ -10,14 +10,8 @@ VALID_LENGTH_METHOD = {"smooth", "fixed"}
 logger = get_logger().getChild(__name__)
 
 
-def _todo_cqn(counts: pd.DataFrame,
-              x: pd.Series,
-              lengths: pd.Series,
-              size_factors: pd.Series = None,
-              sub_index: list = None,
-              tau: float = 0.5,
-              sqn: bool = True,
-              length_method: str = "smooth") -> tuple:
+def cqn(counts: pd.DataFrame, x: pd.Series, lengths: pd.Series, size_factors: pd.Series = None,
+        sub_index: list = None, tau: float = 0.5, sqn: bool = True, length_method: str = "smooth") -> tuple:
     """
     Performs conditional quantile normalization (CQN) on the given counts' matrix.
 

@@ -98,29 +98,3 @@ def feather_to_dataframe(filepath: Path, **kwargs) -> pd.DataFrame:
     """
     logger.info("Loading Feather file from %s into a dataframe", filepath)
     return pd.read_feather(filepath, **kwargs)
-
-
-def get_nested_value(data_dict: dict, keys: list[str], default: str = None) -> Any:
-    """
-    Access nested elements in a data structure.
-
-    Args:
-        data_dict: The data structure to access.
-        keys: Sequence of keys to access the nested element.
-        default: Default string value to return if any key is not found. Defaults to None.
-
-    Returns:
-        The value from the nested data structure or the default value if not found.
-
-    Raises:
-        KeyError: If a key is not found and default is None.
-    """
-    current_level = data_dict
-    for key in keys:
-        try:
-            current_level = current_level[key]
-        except (KeyError, TypeError, IndexError) as e:
-            if default is None:
-                raise KeyError(f"Key not found: {e}") from None
-            return default
-    return current_level
