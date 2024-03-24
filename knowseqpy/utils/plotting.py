@@ -12,7 +12,6 @@ from .logger import get_logger
 
 # TODO: Can't export to png bc of the use of deprecated setDaemon API in Kaleido (freezes execution).
 #       Opened issue: https://github.com/plotly/Kaleido/issues/171
-# TODO: Revise all plots from R (prob missing some)
 
 logger = get_logger().getChild(__name__)
 

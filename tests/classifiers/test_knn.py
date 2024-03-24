@@ -58,7 +58,7 @@ class TestKnnClassifier(unittest.TestCase):
 
     def test_empty_dataframe(self):
         data = pd.DataFrame()
-        labels = pd.Series(dtype='int')
+        labels = pd.Series(dtype="int")
         vars_selected = []
 
         with self.assertRaises(ValueError):

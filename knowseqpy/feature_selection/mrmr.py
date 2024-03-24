@@ -9,8 +9,9 @@ contribute most to the phenotype of interest.
 
 import pandas as pd
 from mrmr import mrmr_classif
+from sklearn.preprocessing import StandardScaler
 
-from knowseqpy.utils import get_logger, csv_to_list
+from knowseqpy.utils import get_logger
 
 logger = get_logger().getChild(__name__)
 
@@ -34,6 +35,10 @@ def mrmr(data: pd.DataFrame, labels: pd.Series, vars_selected: list, max_genes: 
         max_genes = len(vars_selected)
 
     data_aligned = data[vars_selected].reset_index(drop=True)
-    mrmr_classif(X=data_aligned, y=labels, K=max_genes, relevance="f", redundancy="c", denominator="mean")
 
-    return csv_to_list(["test_fixtures", "golden_breast", "fs_ranking_mrmr.csv"])
+    scaler = StandardScaler()
+    scaled_data_ndarray = scaler.fit_transform(data_aligned)
+    scaled_data_df = pd.DataFrame(scaled_data_ndarray, columns=vars_selected)
+
+    return mrmr_classif(X=scaled_data_df, y=labels, K=max_genes, relevance="f", redundancy="c",
+                        denominator="mean")

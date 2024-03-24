@@ -40,7 +40,6 @@ def knn(data: pd.DataFrame, labels: pd.Series, vars_selected: list, cv_strategy:
         Using Leave-One-Out Cross-Validation (loocv) can be resource-intensive, particularly for large datasets.
     """
     label_codes, unique_labels = pd.factorize(labels)
-
     data = pd.DataFrame(data).apply(pd.to_numeric, errors="coerce").fillna(0)
     data = data[vars_selected]
     scaled_data = StandardScaler().fit_transform(data)
