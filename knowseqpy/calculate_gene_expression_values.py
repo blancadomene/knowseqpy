@@ -3,9 +3,9 @@ This module offers functionality to calculate gene expression values from RNA-se
 It supports both human and non-human gene lengths. It processes a counts and annotation DataFrames
 to produce a DataFrame of gene expression values.
 """
-
 import subprocess
 import tempfile
+import time
 from pathlib import Path
 
 import pandas as pd
@@ -35,7 +35,7 @@ def calculate_gene_expression_values(counts: pd.DataFrame, gene_annotation: pd.D
 
     if not_human_gene_length_csv == "":
         # Load default human gene length data
-        genes_length_path = Path(__file__).resolve().parents[1] / "external_data" / "genes_length_homo_sapiens.csv"
+        genes_length_path = Path(__file__).resolve().parent / "external_data" / "genes_length_homo_sapiens.csv"
         gene_length = pd.read_csv(genes_length_path, header=0, index_col="Gene_stable_ID")
     else:
         if not Path(not_human_gene_length_csv).exists():

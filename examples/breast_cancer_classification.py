@@ -1,7 +1,7 @@
 """
 Example pipeline using breast samples.
 """
-
+import os
 from pathlib import Path
 import random
 
@@ -12,20 +12,19 @@ from knowseqpy.classifiers import knn
 from knowseqpy.feature_selection import discriminant_analysis
 from knowseqpy.utils import plot_boxplot, plot_confusion_matrix, plot_samples_heatmap
 
+SCRIPT_PATH = Path(__file__).resolve().parent.parent
+INFO_PATH = Path(os.getenv("SAMPLES_INFO_BREAST_PATH", f"{SCRIPT_PATH}/tests/test_fixtures/samples_info_breast.csv"))
+COUNTS_PATH = Path(os.getenv("COUNTS_BREAST_PATH", f"{SCRIPT_PATH}/tests/test_fixtures/count_files_breast"))
+
 
 def main():
     # Set seed for reproducible results
     random.seed(1234)
 
-    # Set and read paths
-    script_path = Path(__file__).resolve().parent.parent
-    info_path = script_path / "tests" / "test_fixtures" / "samples_info_breast.csv"
-    counts_path = script_path / "tests" / "test_fixtures" / "count_files_breast"
-
     # Load and preprocess count files to create a counts df
-    counts, labels = counts_to_dataframe(info_path=info_path, counts_path=counts_path)
+    counts, labels = counts_to_dataframe(info_path=INFO_PATH, counts_path=COUNTS_PATH)
 
-    #  Number of samples per class to understand the dataset's distribution
+    # Number of samples per class to understand the dataset's distribution
     print(labels.value_counts())
 
     # Annotate genes: Fetch gene annotations for the genes in the dataset

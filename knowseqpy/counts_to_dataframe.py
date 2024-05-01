@@ -50,7 +50,7 @@ def counts_to_dataframe(info_path: Union[str, Path], counts_path: Union[str, Pat
     # Ignore errors in case any row from rows_to_skip is not present in our dataset
     counts_filtered.drop(rows_to_skip, inplace=True, errors="ignore")
 
-    # Truncate row-names (ex: ENSG00000000005.5 to ENSG00000000005) as annotation in next steps provides truncated name
+    # Truncate Ensembl ID version (ex: ENSG00000000005.5 to ENSG00000000005) as annotation does not provide it
     counts_filtered.index = [row_name.split(".")[0] for row_name in counts_filtered.index]
 
     # Match labels index with counts index, so we can match them later on

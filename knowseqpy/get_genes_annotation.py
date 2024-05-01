@@ -13,7 +13,7 @@ import requests
 
 from .utils import csv_to_dataframe, get_logger
 
-EXTERNAL_DATA_PATH = Path(__file__).resolve().parents[1] / "external_data"
+EXTERNAL_DATA_PATH = Path(__file__).resolve().parent / "external_data"
 ENSEMBL_URL = "http://www.ensembl.org/biomart/martservice"
 GRCH37_ENSEMBL_URL = "https://grch37.ensembl.org/biomart/martservice"
 
@@ -45,7 +45,7 @@ def get_genes_annotation(values: list[str], attributes: list[str] = None, attrib
     # Temporary condition to use the package's GRCh38 annotation. Can remove this once we clarify why
     # external_data\GRCh38Annotation.csv yields different results for approx 360 IDs compared to the BioMart download.
     if reference_genome == 38 and not_hsapiens_dataset is None:
-        annotation_df = csv_to_dataframe(path_components=[str(Path(__file__).resolve().parents[1]),
+        annotation_df = csv_to_dataframe(path_components=[str(Path(__file__).resolve().parent),
                                                           "external_data", "GRCh38Annotation.csv"], header=0)
         if list(values) == ["allGenome"]:
             return annotation_df

@@ -6,4 +6,3 @@ tests/htmlcov
 tests/.coverage
 todo.md
 Makefile
-Dockerfile
