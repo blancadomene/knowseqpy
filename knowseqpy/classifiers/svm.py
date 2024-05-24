@@ -1,23 +1,22 @@
 """
-This module contains functions for performing k-Nearest Neighbors (k-NN) classification and related utility functions.
+This module contains functions for performing SVM classification and related utility functions.
 """
 
-import numpy as np
 import pandas as pd
 from sklearn.metrics import accuracy_score, confusion_matrix, f1_score, make_scorer, precision_score, recall_score
 from sklearn.model_selection import BaseCrossValidator, GridSearchCV, RepeatedStratifiedKFold
-from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
+from sklearn.svm import SVC
 
 from knowseqpy.utils import calculate_specificity, get_logger
 
 logger = get_logger().getChild(__name__)
 
 
-def knn(data: pd.DataFrame, labels: pd.Series, vars_selected: list, cv_strategy: BaseCrossValidator = None) -> dict:
+def svm(data: pd.DataFrame, labels: pd.Series, vars_selected: list, cv_strategy: BaseCrossValidator = None) -> dict:
     """
-    Conducts k-NN classification.
+    Conducts SVM classification.
 
     Args:
         data: The expression matrix with genes in columns and samples in rows.
@@ -27,7 +26,7 @@ def knn(data: pd.DataFrame, labels: pd.Series, vars_selected: list, cv_strategy:
 
     Returns:
         A dictionary containing the following key metrics:
-        - model: The trained KNeighborsClassifier model.
+        - model: The trained SVC model.
         - confusion_matrix: Array, representing the confusion matrix, showing true and false predictions for each class.
         - accuracy: Float, the mean accuracy of the model on the given test data and labels.
         - specificity: Float, the specificity of the model. Measures the proportion of true negatives identified.
@@ -48,21 +47,21 @@ def knn(data: pd.DataFrame, labels: pd.Series, vars_selected: list, cv_strategy:
         logger.info("Running Repeated Stratified K-Fold Cross-Validation with 10 folds")
         cv_strategy = RepeatedStratifiedKFold(n_splits=10, n_repeats=3)
 
-    param_grid = {"n_neighbors": range(1, int(np.sqrt(len(scaled_data))))}
+    param_grid = {"C": [0.1, 1, 10, 100], "gamma": [1, 0.1, 0.01, 0.001], "kernel": ["rbf"]}
     scoring = {"accuracy": make_scorer(accuracy_score),
                "precision": make_scorer(precision_score, average="macro"),
                "recall": make_scorer(recall_score, average="macro"),
                "f1_score": make_scorer(f1_score, average="macro")}
 
     scaler = StandardScaler()
-    grid_search = GridSearchCV(KNeighborsClassifier(), param_grid, cv=cv_strategy, scoring=scoring, refit="accuracy")
+    grid_search = GridSearchCV(SVC(), param_grid, cv=cv_strategy, scoring=scoring, refit="accuracy")
     pipeline = make_pipeline(
         scaler,
         grid_search
     )
     pipeline.fit(scaled_data, label_codes)
 
-    logger.info("Optimal k: %s", grid_search.best_estimator_.n_neighbors)
+    logger.info("Best parameters: %s", grid_search.best_params_)
     best_index = grid_search.best_index_
     cv_results = grid_search.cv_results_
     y_pred = grid_search.best_estimator_.predict(scaled_data)

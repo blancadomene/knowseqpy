@@ -2,6 +2,14 @@
 This module provides functionality for detecting outliers in gene expression data sets using
 the `kolmogorov_smirnov` test, comparing each sample's gene expression distribution against the empirical cumulative
 distribution function (ECDF) derived from the entire dataset.
+
+
+This module provides functionality for detecting outliers in gene expression data sets using
+the `kolmogorov_smirnov` test. It's used to measure the divergence of each sample's gene expression distribution from a
+reference distribution. The reference is the empirical cumulative distribution function (ECDF) derived from
+the entire dataset, providing a basis for comparison.
+
+
 """
 
 import numpy as np
@@ -15,9 +23,9 @@ logger = get_logger().getChild(__name__)
 
 def kolmogorov_smirnov(gene_expression: pd.DataFrame) -> list:
     """
-    Identify outliers in an expression DataFrame using the Kolmogorov-Smirnov (KS) test. Applies the KS test to each
-    sample in the DataFrame to compare the distribution of gene expression values against an empirical distribution
-    function (ECDF) derived from the dataset.
+    Identify outliers in a gene expression DataFrame using the Kolmogorov-Smirnov (KS) test. This function applies
+    the KS test to each sample's gene expression values to evaluate their deviation from a reference ECDF derived
+    from the dataset.
 
     Args:
         gene_expression: DataFrame containing gene expression values with genes as rows and samples as columns.

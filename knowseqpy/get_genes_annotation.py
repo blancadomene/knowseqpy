@@ -42,8 +42,8 @@ def get_genes_annotation(values: list[str], attributes: list[str] = None, attrib
         ValueError: If invalid input is provided for the parameters.
         ValueError: If an error occurs during the query, or the query result is empty or contains an error message.
     """
-    # Temporary condition to use the package's GRCh38 annotation. Can remove this once we clarify why
-    # external_data\GRCh38Annotation.csv yields different results for approx 360 IDs compared to the BioMart download.
+    # TODO: Temporary condition to use the package's GRCh38 annotation. Can remove this once we clarify why
+    #  external_data\GRCh38Annotation.csv yields different results for approx 360 IDs compared to the BioMart download.
     if reference_genome == 38 and not_hsapiens_dataset is None:
         annotation_df = csv_to_dataframe(path_components=[str(Path(__file__).resolve().parent),
                                                           "external_data", "GRCh38Annotation.csv"], header=0)

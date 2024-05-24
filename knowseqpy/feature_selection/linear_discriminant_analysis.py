@@ -17,9 +17,9 @@ from knowseqpy.utils import get_logger
 logger = get_logger().getChild(__name__)
 
 
-def discriminant_analysis(data: pd.DataFrame, labels: pd.Series, vars_selected: list, max_genes: int = None) -> list:
+def linear_discriminant_analysis(data: pd.DataFrame, labels: pd.Series, vars_selected: list, max_genes: int = None) -> list:
     """
-    Perform feature selection using Discriminant Analysis.
+    Perform feature selection using Linear Discriminant Analysis.
 
     Args:
         data: Gene expression matrix with genes in columns and samples in rows.

@@ -5,7 +5,6 @@ to produce a DataFrame of gene expression values.
 """
 import subprocess
 import tempfile
-import time
 from pathlib import Path
 
 import pandas as pd

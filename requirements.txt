@@ -1,10 +1,10 @@
-pyarrow
 numpy
 mrmr_selection
 pandas
 patsy
 plotly
+pyarrow
+requests
 scikit-learn
 scipy
 statsmodels
-requests

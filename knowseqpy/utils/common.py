@@ -5,6 +5,7 @@ import csv
 from pathlib import Path
 from typing import Any
 
+import numpy as np
 import pandas as pd
 
 from .logger import get_logger
@@ -98,3 +99,24 @@ def feather_to_dataframe(filepath: Path, **kwargs) -> pd.DataFrame:
     """
     logger.info("Loading Feather file from %s into a dataframe", filepath)
     return pd.read_feather(filepath, **kwargs)
+
+
+def calculate_specificity(conf_matrix: np.array) -> float:
+    """
+    Calculates specificity for each class in a binary or multiclass classification and returns the average.
+
+    Args:
+        conf_matrix: The confusion matrix of the model.
+
+    Returns:
+        The average specificity across all classes.
+    """
+    class_specificities = []
+    for i, row in enumerate(conf_matrix):
+        true_negatives = sum(np.delete(np.delete(conf_matrix, i, axis=0), i, axis=1))
+        false_positives = sum(np.delete(row, i))
+        total_negatives = true_negatives + false_positives
+        class_specificity = true_negatives / total_negatives if total_negatives > 0 else 0
+        class_specificities.append(class_specificity)
+
+    return np.mean(class_specificities)

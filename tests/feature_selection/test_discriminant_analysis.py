@@ -3,7 +3,7 @@ import unittest
 
 import pandas as pd
 
-from knowseqpy.feature_selection import discriminant_analysis
+from knowseqpy.feature_selection import linear_discriminant_analysis
 from knowseqpy.utils import csv_to_dataframe, get_test_path
 
 

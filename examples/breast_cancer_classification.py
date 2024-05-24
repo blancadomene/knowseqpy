@@ -2,14 +2,14 @@
 Example pipeline using breast samples.
 """
 import os
-from pathlib import Path
 import random
+from pathlib import Path
 
 from knowseqpy import (calculate_gene_expression_values, counts_to_dataframe, degs_extraction, get_genes_annotation,
                        rna_seq_qa)
 from knowseqpy.batch_effect import sva
-from knowseqpy.classifiers import knn
-from knowseqpy.feature_selection import discriminant_analysis
+from knowseqpy.classifiers import knn, gradient_boosting, rf, svm
+from knowseqpy.feature_selection import linear_discriminant_analysis
 from knowseqpy.utils import plot_boxplot, plot_confusion_matrix, plot_samples_heatmap
 
 SCRIPT_PATH = Path(__file__).resolve().parent.parent
@@ -40,16 +40,19 @@ def main():
     qa_labels = labels.drop(outliers)
 
     # Apply chosen method to correct for batch effects in the data
-    batch = sva(expression_df=cleaned_df, labels=qa_labels)
+    batch_cleaned_df = sva(expression_df=cleaned_df, labels=qa_labels)
 
     # Identify differentially expressed genes with specified criteria
-    degs = degs_extraction(batch, labels=qa_labels, lfc=3.5, p_value=0.001)[0].transpose()
+    degs = degs_extraction(data=batch_cleaned_df, labels=qa_labels, lfc=3.5, p_value=0.001)[0].transpose()
 
     # Select features (genes) for downstream analysis based on specified criteria
-    selected_features = discriminant_analysis(data=degs, labels=qa_labels, vars_selected=degs.columns.tolist())
+    selected_features = linear_discriminant_analysis(data=degs, labels=qa_labels, vars_selected=degs.columns.tolist())
 
     # Classifier training and prediction
     knn_res = knn(degs, qa_labels, selected_features)
+    rf_res = rf(degs, qa_labels, selected_features)
+    svm_res = svm(degs, qa_labels, selected_features)
+    ga_res = gradient_boosting(degs, qa_labels, selected_features)
 
     # Visualization
     plot_boxplot(data=degs, labels=qa_labels, fs_ranking=selected_features, top_n_features=3)
