@@ -13,9 +13,14 @@ from knowseqpy.feature_selection import linear_discriminant_analysis
 from knowseqpy.utils import plot_boxplot, plot_confusion_matrix, plot_samples_heatmap
 
 SCRIPT_PATH = Path(__file__).resolve().parent.parent
-INFO_PATH = Path(os.getenv("SAMPLES_INFO_BREAST_PATH", f"{SCRIPT_PATH}/tests/test_fixtures/samples_info_breast.csv"))
-COUNTS_PATH = Path(os.getenv("COUNTS_BREAST_PATH", f"{SCRIPT_PATH}/tests/test_fixtures/count_files_breast"))
 
+INFO_PATH_DEFAULT = f"{SCRIPT_PATH}/tests/test_fixtures/samples_info_breast.csv"
+INFO_PATH_ENV = os.getenv("SAMPLES_INFO_BREAST_PATH")
+INFO_PATH = Path(INFO_PATH_ENV if INFO_PATH_ENV else INFO_PATH_DEFAULT)
+
+COUNTS_PATH_DEFAULT = f"{SCRIPT_PATH}/tests/test_fixtures/count_files_breast"
+COUNTS_PATH_ENV = os.getenv("COUNTS_BREAST_PATH")
+COUNTS_PATH = Path(COUNTS_PATH_ENV if COUNTS_PATH_ENV else COUNTS_PATH_DEFAULT)
 
 def main():
     # Set seed for reproducible results

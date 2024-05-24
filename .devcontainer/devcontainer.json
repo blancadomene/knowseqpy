@@ -1,0 +1,36 @@
+{
+    "name": "knowseqpy",
+    "features": {
+        "ghcr.io/devcontainers/features/git": "latest"
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-python.python",
+                "ms-azuretools.vscode-docker"
+            ],
+            "settings": {
+                "python.defaultInterpreterPath": "/opt/venv/bin/python3"
+            }
+        }
+    },
+    "containerEnv": {
+        // Add project mountpoint (i.e. workspace) to PYTHONPATH so we can `import knowseqpy`
+        "PYTHONPATH": "${containerWorkspaceFolder}"
+    },
+    "build": {
+        "dockerfile": "Dockerfile"
+    }
+
+    // If using this devcontainer in your own project,
+    // remove the "build":{...} field above and replace by:
+    //
+    // "image": "bdomene/knowseqpy:latest",
+    // "mounts": [
+    //    {
+    //        "source": "<PATH_TO_EXTERNAL_BREAT_DATA>",
+    //        "target": "/knowseqpy/external_data/breast",
+    //        "type": "volume"
+    //    }
+    // ] */
+}
