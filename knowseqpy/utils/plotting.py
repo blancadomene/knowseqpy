@@ -121,7 +121,7 @@ def plot_samples_heatmap(data: pd.DataFrame, labels: pd.Series, fs_ranking: list
 
 def plot_decision_boundary(model: Pipeline, data: pd.DataFrame, labels: pd.Series, vars_selected: list):
     """
-    Plots the decision boundary of a logistic regression model using Plotly.
+    Plots the decision boundary of a logistic regression model.
 
     Args:
         model: A trained logistic regression model pipeline.
@@ -152,7 +152,7 @@ def plot_decision_boundary(model: Pipeline, data: pd.DataFrame, labels: pd.Serie
         y=np.linspace(y_min, y_max, 100),
         z=Z,
         showscale=False,
-        colorscale=[[0, '#636EFA'], [1, '#EF553B']],
+        colorscale=[[0, 'red'], [1, 'green']],
         opacity=0.3
     ))
 
@@ -164,17 +164,17 @@ def plot_decision_boundary(model: Pipeline, data: pd.DataFrame, labels: pd.Serie
         z=Z,
         showscale=False,
         contours_coloring='lines',
-        line_width=2
+        line_width=1
     ))
 
     # Add scatter plot for the data points
-    for label, code in zip(unique_labels, range(len(unique_labels))):
+    for label, color in zip(unique_labels, ['red', 'green']):
         fig.add_trace(go.Scatter(
             x=data.iloc[:, 0][labels == label],
             y=data.iloc[:, 1][labels == label],
             mode='markers',
             name=f'Class {label}',
-            marker=dict(size=10)
+            marker=dict(size=10, color=color)
         ))
 
     # Add layout details

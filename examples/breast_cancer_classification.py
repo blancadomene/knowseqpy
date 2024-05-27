@@ -5,12 +5,19 @@ import os
 import random
 from pathlib import Path
 
-from knowseqpy import (calculate_gene_expression_values, counts_to_dataframe, degs_extraction, get_genes_annotation,
-                       rna_seq_qa)
+import pandas as pd
+from sklearn.model_selection import train_test_split, RepeatedStratifiedKFold
+
+from knowseqpy import counts_to_dataframe, get_genes_annotation, calculate_gene_expression_values, rna_seq_qa, \
+    degs_extraction
 from knowseqpy.batch_effect import sva
-from knowseqpy.classifiers import knn, gradient_boosting, rf, svm
-from knowseqpy.feature_selection import linear_discriminant_analysis
-from knowseqpy.utils import plot_boxplot, plot_confusion_matrix, plot_samples_heatmap
+from knowseqpy.classifiers import rf, decision_tree, logistic_regression, knn, svm, gradient_boosting, nn
+from knowseqpy.evaluate_model import evaluate_model
+from knowseqpy.feature_selection import random_forest
+from knowseqpy.utils import plot_boxplot, plot_decision_boundary, plot_confusion_matrix, plot_samples_heatmap
+
+from sklearn.inspection import DecisionBoundaryDisplay
+import matplotlib.pyplot as plt
 
 SCRIPT_PATH = Path(__file__).resolve().parent.parent
 
@@ -22,9 +29,11 @@ COUNTS_PATH_DEFAULT = f"{SCRIPT_PATH}/tests/test_fixtures/count_files_breast"
 COUNTS_PATH_ENV = os.getenv("COUNTS_BREAST_PATH")
 COUNTS_PATH = Path(COUNTS_PATH_ENV if COUNTS_PATH_ENV else COUNTS_PATH_DEFAULT)
 
+
 def main():
     # Set seed for reproducible results
-    random.seed(1234)
+    seed = 1234
+    random.seed(seed)
 
     # Load and preprocess count files to create a counts df
     counts, labels = counts_to_dataframe(info_path=INFO_PATH, counts_path=COUNTS_PATH)
@@ -51,18 +60,25 @@ def main():
     degs = degs_extraction(data=batch_cleaned_df, labels=qa_labels, lfc=3.5, p_value=0.001)[0].transpose()
 
     # Select features (genes) for downstream analysis based on specified criteria
-    selected_features = linear_discriminant_analysis(data=degs, labels=qa_labels, vars_selected=degs.columns.tolist())
+    selected_features = random_forest(data=degs, labels=qa_labels, vars_selected=degs.columns.tolist())
+    selected_features = selected_features[:2]
 
-    # Classifier training and prediction
-    knn_res = knn(degs, qa_labels, selected_features)
-    rf_res = rf(degs, qa_labels, selected_features)
-    svm_res = svm(degs, qa_labels, selected_features)
-    ga_res = gradient_boosting(degs, qa_labels, selected_features)
+    # Split data into training and testing sets (80% training, 20% testing)
+    degs_train, degs_test, labels_train, labels_test = train_test_split(degs, qa_labels, test_size=0.2,
+                                                                        random_state=seed, stratify=qa_labels)
+
+    # Classifier training and prediction (can use rf, svm and gradient_boosting as well)
+    lr_model = logistic_regression(data=degs_train, labels=labels_train, vars_selected=selected_features,
+                                   cv_strategy=RepeatedStratifiedKFold(n_splits=2, n_repeats=3))
+
+    lr_pred = evaluate_model(model=lr_model, data_test=degs_test, labels_test=labels_test,
+                             vars_selected=selected_features)
 
     # Visualization
-    plot_boxplot(data=degs, labels=qa_labels, fs_ranking=selected_features, top_n_features=3)
-    plot_confusion_matrix(conf_matrix=knn_res["confusion_matrix"], unique_labels=knn_res["unique_labels"].tolist())
-    plot_samples_heatmap(data=degs, labels=qa_labels, fs_ranking=selected_features, top_n_features=4)
+    plot_decision_boundary(model=lr_model, data=degs_test, labels=labels_test, vars_selected=selected_features)
+    plot_boxplot(data=degs, labels=qa_labels, fs_ranking=selected_features, top_n_features=10)
+    plot_confusion_matrix(conf_matrix=lr_pred["confusion_matrix"], unique_labels=lr_pred["unique_labels"].tolist())
+    plot_samples_heatmap(data=degs, labels=qa_labels, fs_ranking=selected_features, top_n_features=10)
 
 
 if __name__ == "__main__":
