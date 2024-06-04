@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>knowseqpy.feature_selection package &mdash; KnowSeqPy  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            KnowSeqPy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">knowseqpy.feature_selection package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-knowseqpy.feature_selection.linear_discriminant_analysis">knowseqpy.feature_selection.linear_discriminant_analysis module</a><ul>
+<li><a class="reference internal" href="#knowseqpy.feature_selection.linear_discriminant_analysis.linear_discriminant_analysis"><code class="docutils literal notranslate"><span class="pre">linear_discriminant_analysis()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-knowseqpy.feature_selection.mrmr">knowseqpy.feature_selection.mrmr module</a><ul>
+<li><a class="reference internal" href="#knowseqpy.feature_selection.mrmr.mrmr"><code class="docutils literal notranslate"><span class="pre">mrmr()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-knowseqpy.feature_selection.random_forest">knowseqpy.feature_selection.random_forest module</a><ul>
+<li><a class="reference internal" href="#knowseqpy.feature_selection.random_forest.random_forest"><code class="docutils literal notranslate"><span class="pre">random_forest()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-knowseqpy.feature_selection">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">KnowSeqPy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">knowseqpy.feature_selection package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/knowseqpy.feature_selection.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="knowseqpy-feature-selection-package">
+<h1>knowseqpy.feature_selection package<a class="headerlink" href="#knowseqpy-feature-selection-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-knowseqpy.feature_selection.linear_discriminant_analysis">
+<span id="knowseqpy-feature-selection-linear-discriminant-analysis-module"></span><h2>knowseqpy.feature_selection.linear_discriminant_analysis module<a class="headerlink" href="#module-knowseqpy.feature_selection.linear_discriminant_analysis" title="Link to this heading"></a></h2>
+<p>Feature Selection using Discriminant Analysis.</p>
+<p>This module applies Linear Discriminant Analysis (LDA) for feature selection in gene expression data.
+It ranks genes based on the coefficients obtained from LDA, which aims to find a linear combination of features that
+characterizes or separates two or more classes of samples. This technique is suited for situations where the goal is to
+maximize the separability among known categories or phenotypes.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="knowseqpy.feature_selection.linear_discriminant_analysis.linear_discriminant_analysis">
+<span class="sig-prename descclassname"><span class="pre">knowseqpy.feature_selection.linear_discriminant_analysis.</span></span><span class="sig-name descname"><span class="pre">linear_discriminant_analysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars_selected</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_genes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="_modules/knowseqpy/feature_selection/linear_discriminant_analysis.html#linear_discriminant_analysis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#knowseqpy.feature_selection.linear_discriminant_analysis.linear_discriminant_analysis" title="Link to this definition"></a></dt>
+<dd><p>Perform feature selection using Linear Discriminant Analysis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – Gene expression matrix with genes in columns and samples in rows.</p></li>
+<li><p><strong>labels</strong> – Labels for each sample.</p></li>
+<li><p><strong>vars_selected</strong> – Genes selected for the feature selection process.</p></li>
+<li><p><strong>max_genes</strong> – Maximum number of genes to return.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of genes ranked by their coefficients determined by the Discriminant Analysis.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-knowseqpy.feature_selection.mrmr">
+<span id="knowseqpy-feature-selection-mrmr-module"></span><h2>knowseqpy.feature_selection.mrmr module<a class="headerlink" href="#module-knowseqpy.feature_selection.mrmr" title="Link to this heading"></a></h2>
+<p>Feature Selection using the mRMR Algorithm.</p>
+<p>This module implements the Minimum Redundancy Maximum Relevance (mRMR) algorithm for feature selection in gene
+expression data. It ranks genes based on their relevance to the response variable while minimizing redundancy among
+the features. This approach is particularly useful in bioinformatics for identifying a subset of genes that
+contribute most to the phenotype of interest.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="knowseqpy.feature_selection.mrmr.mrmr">
+<span class="sig-prename descclassname"><span class="pre">knowseqpy.feature_selection.mrmr.</span></span><span class="sig-name descname"><span class="pre">mrmr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars_selected</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_genes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="_modules/knowseqpy/feature_selection/mrmr.html#mrmr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#knowseqpy.feature_selection.mrmr.mrmr" title="Link to this definition"></a></dt>
+<dd><p>Perform feature selection using the mRMR algorithm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – Gene expression matrix with genes in columns and samples in rows.</p></li>
+<li><p><strong>labels</strong> – Labels for each sample.</p></li>
+<li><p><strong>vars_selected</strong> – Genes selected for the feature selection process.</p></li>
+<li><p><strong>max_genes</strong> – Maximum number of genes to return.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of genes ranked by their relevance determined by the mRMR algorithm.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-knowseqpy.feature_selection.random_forest">
+<span id="knowseqpy-feature-selection-random-forest-module"></span><h2>knowseqpy.feature_selection.random_forest module<a class="headerlink" href="#module-knowseqpy.feature_selection.random_forest" title="Link to this heading"></a></h2>
+<p>Feature Selection using the Random Forest Algorithm.</p>
+<p>This module leverages the Random Forest classifier for feature selection in gene expression data.
+By analyzing the importance of each feature (gene) in the construction of the random forest, it ranks genes according
+to their contribution to sample classification. This method is effective in scenarios where the relationship between
+genes and the phenotype is nonlinear and complex.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="knowseqpy.feature_selection.random_forest.random_forest">
+<span class="sig-prename descclassname"><span class="pre">knowseqpy.feature_selection.random_forest.</span></span><span class="sig-name descname"><span class="pre">random_forest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars_selected</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_genes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="_modules/knowseqpy/feature_selection/random_forest.html#random_forest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#knowseqpy.feature_selection.random_forest.random_forest" title="Link to this definition"></a></dt>
+<dd><p>Perform feature selection using the Random Forest algorithm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – Gene expression matrix with genes in columns and samples in rows.</p></li>
+<li><p><strong>labels</strong> – Labels for each sample.</p></li>
+<li><p><strong>vars_selected</strong> – Genes selected for the feature selection process.</p></li>
+<li><p><strong>max_genes</strong> – Maximum number of genes to return.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of genes ranked by their importance determined by the Random Forest algorithm.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-knowseqpy.feature_selection">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-knowseqpy.feature_selection" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Blanca Domene.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
