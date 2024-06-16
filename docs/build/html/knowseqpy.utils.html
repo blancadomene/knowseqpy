@@ -62,7 +62,7 @@
 </ul>
 </li>
 <li><a class="reference internal" href="#module-knowseqpy.utils.plotting">knowseqpy.utils.plotting module</a><ul>
-<li><a class="reference internal" href="#knowseqpy.utils.plotting.another_plot_decision_tree"><code class="docutils literal notranslate"><span class="pre">another_plot_decision_tree()</span></code></a></li>
+<li><a class="reference internal" href="#knowseqpy.utils.plotting.get_tree_data"><code class="docutils literal notranslate"><span class="pre">get_tree_data()</span></code></a></li>
 <li><a class="reference internal" href="#knowseqpy.utils.plotting.plot_boxplot"><code class="docutils literal notranslate"><span class="pre">plot_boxplot()</span></code></a></li>
 <li><a class="reference internal" href="#knowseqpy.utils.plotting.plot_confusion_matrix"><code class="docutils literal notranslate"><span class="pre">plot_confusion_matrix()</span></code></a></li>
 <li><a class="reference internal" href="#knowseqpy.utils.plotting.plot_decision_boundary"><code class="docutils literal notranslate"><span class="pre">plot_decision_boundary()</span></code></a></li>
@@ -238,18 +238,34 @@
 <span id="knowseqpy-utils-plotting-module"></span><h2>knowseqpy.utils.plotting module<a class="headerlink" href="#module-knowseqpy.utils.plotting" title="Link to this heading"></a></h2>
 <p>Data Visualization Module using Plotly.</p>
 <dl class="py function">
-<dt class="sig sig-object py" id="knowseqpy.utils.plotting.another_plot_decision_tree">
-<span class="sig-prename descclassname"><span class="pre">knowseqpy.utils.plotting.</span></span><span class="sig-name descname"><span class="pre">another_plot_decision_tree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Pipeline</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars_selected</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/knowseqpy/utils/plotting.html#another_plot_decision_tree"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#knowseqpy.utils.plotting.another_plot_decision_tree" title="Link to this definition"></a></dt>
-<dd><p>Plots the decision tree from the trained model pipeline.</p>
+<dt class="sig sig-object py" id="knowseqpy.utils.plotting.get_tree_data">
+<span class="sig-prename descclassname"><span class="pre">knowseqpy.utils.plotting.</span></span><span class="sig-name descname"><span class="pre">get_tree_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tree</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DecisionTreeClassifier</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">class_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/knowseqpy/utils/plotting.html#get_tree_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#knowseqpy.utils.plotting.get_tree_data" title="Link to this definition"></a></dt>
+<dd><p>Extracts and structures data from a decision tree for visualization.</p>
+<p>This function traverses the decision tree recursively from the root to the leaves, collecting
+data about each node and the connecting edges. These details include the splitting feature,
+threshold value, Gini impurity, number of samples at the node, and classification outcomes,
+which are used to visualize the tree structure.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>model</strong> – A trained model pipeline that includes preprocessing and the classifier.</p></li>
-<li><p><strong>vars_selected</strong> – List of feature names used in training.</p></li>
+<li><p><strong>tree</strong> – The decision tree classifier from which to extract structure data.</p></li>
+<li><p><strong>feature_names</strong> – Names of the features used in the decision tree.</p></li>
+<li><p><strong>class_names</strong> – Names of the possible output classes in the decision tree.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>None. Displays the plot of the decision tree.</p>
+<dd class="field-even"><p><dl class="simple">
+<dt>A tuple containing:</dt><dd><ul class="simple">
+<li><p>A list of node details.</p></li>
+<li><p>A list of edge details, specifying the connection between nodes and the condition.</p></li>
+<li><p>The maximum depth of the tree.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple[List[Tuple], List[Tuple], int]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -306,18 +322,15 @@ If not None, the plot is exported with the given name. Defaults to None.</p></li
 
 <dl class="py function">
 <dt class="sig sig-object py" id="knowseqpy.utils.plotting.plot_decision_tree">
-<span class="sig-prename descclassname"><span class="pre">knowseqpy.utils.plotting.</span></span><span class="sig-name descname"><span class="pre">plot_decision_tree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Pipeline</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars_selected</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/knowseqpy/utils/plotting.html#plot_decision_tree"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#knowseqpy.utils.plotting.plot_decision_tree" title="Link to this definition"></a></dt>
-<dd><p>Plots the decision tree from the trained model pipeline using plotly.</p>
+<span class="sig-prename descclassname"><span class="pre">knowseqpy.utils.plotting.</span></span><span class="sig-name descname"><span class="pre">plot_decision_tree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Pipeline</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars_selected</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/knowseqpy/utils/plotting.html#plot_decision_tree"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#knowseqpy.utils.plotting.plot_decision_tree" title="Link to this definition"></a></dt>
+<dd><p>Generates and displays an interactive plot of a decision tree using Plotly.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>model</strong> – A trained model pipeline that includes preprocessing and the classifier.</p></li>
-<li><p><strong>labels</strong> – True labels for the test data.</p></li>
-<li><p><strong>vars_selected</strong> – Selected genes for classification. Can be DEGs or a custom list.</p></li>
+<li><p><strong>model</strong> – A sklearn Pipeline, which includes the decision tree classifier and preprocessing steps.</p></li>
+<li><p><strong>labels</strong> – The series of true labels used to train the classifier, required for naming the classes in the plot.</p></li>
+<li><p><strong>vars_selected</strong> – List of feature names used in the decision tree, which are selected for classification.</p></li>
 </ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>None. Displays the plot of the decision tree.</p>
 </dd>
 </dl>
 </dd></dl>

@@ -71,6 +71,7 @@
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Data Visualization Module using Plotly.</span>
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -78,7 +79,7 @@
 <span class="kn">import</span> <span class="nn">plotly.figure_factory</span> <span class="k">as</span> <span class="nn">ff</span>
 <span class="kn">import</span> <span class="nn">plotly.graph_objects</span> <span class="k">as</span> <span class="nn">go</span>
 <span class="kn">from</span> <span class="nn">sklearn.pipeline</span> <span class="kn">import</span> <span class="n">Pipeline</span>
-<span class="kn">from</span> <span class="nn">sklearn.tree</span> <span class="kn">import</span> <span class="n">export_text</span><span class="p">,</span> <span class="n">plot_tree</span>
+<span class="kn">from</span> <span class="nn">sklearn.tree</span> <span class="kn">import</span> <span class="n">_tree</span><span class="p">,</span> <span class="n">DecisionTreeClassifier</span>
 
 <span class="kn">from</span> <span class="nn">.logger</span> <span class="kn">import</span> <span class="n">get_logger</span>
 
@@ -269,62 +270,173 @@
 
 
 
-<div class="viewcode-block" id="another_plot_decision_tree">
-<a class="viewcode-back" href="../../../knowseqpy.utils.html#knowseqpy.utils.plotting.another_plot_decision_tree">[docs]</a>
-<span class="k">def</span> <span class="nf">another_plot_decision_tree</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">Pipeline</span><span class="p">,</span> <span class="n">vars_selected</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Plots the decision tree from the trained model pipeline.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        model: A trained model pipeline that includes preprocessing and the classifier.</span>
-<span class="sd">        vars_selected: List of feature names used in training.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        None. Displays the plot of the decision tree.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">decision_tree</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">named_steps</span><span class="o">.</span><span class="n">decisiontreeclassifier</span>
-    <span class="n">tree_text</span> <span class="o">=</span> <span class="n">export_text</span><span class="p">(</span><span class="n">decision_tree</span><span class="p">,</span> <span class="n">feature_names</span><span class="o">=</span><span class="n">vars_selected</span><span class="p">)</span>
-
-    <span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
-        <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-        <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-        <span class="n">text</span><span class="o">=</span><span class="p">[</span><span class="n">tree_text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;br&gt;&quot;</span><span class="p">)],</span>
-        <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;text&quot;</span>
-    <span class="p">)])</span>
-
-    <span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span>
-        <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Decision Tree&quot;</span><span class="p">,</span>
-        <span class="n">xaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
-        <span class="n">yaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
-        <span class="n">margin</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">l</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
-        <span class="n">height</span><span class="o">=</span><span class="mi">600</span>
-    <span class="p">)</span>
-
-    <span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
-
-
-
-<div class="viewcode-block" id="plot_decision_tree">
-<a class="viewcode-back" href="../../../knowseqpy.utils.html#knowseqpy.utils.plotting.plot_decision_tree">[docs]</a>
-<span class="k">def</span> <span class="nf">plot_decision_tree</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">Pipeline</span><span class="p">,</span> <span class="n">labels</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">vars_selected</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">def plot_decision_tree(model: Pipeline, labels: pd.Series, vars_selected: list) -&gt; None:</span>
+<span class="sd">    &quot;</span>
 <span class="sd">    Plots the decision tree from the trained model pipeline using plotly.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        model: A trained model pipeline that includes preprocessing and the classifier.</span>
 <span class="sd">        labels: True labels for the test data.</span>
-<span class="sd">        vars_selected: Selected genes for classification. Can be DEGs or a custom list.</span>
+<span class="sd">        vars_selected: Selected genes for classification.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        None. Displays the plot of the decision tree.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-    <span class="n">y_true_test</span><span class="p">,</span> <span class="n">unique_labels</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">factorize</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="sd">    &quot;</span>
+<span class="sd">    from matplotlib import pyplot as plt</span>
+<span class="sd">    y_true_test, unique_labels = pd.factorize(labels, sort=True)</span>
 
-    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
-    <span class="n">plot_tree</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">named_steps</span><span class="o">.</span><span class="n">decisiontreeclassifier</span><span class="p">,</span> <span class="n">filled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">feature_names</span><span class="o">=</span><span class="n">vars_selected</span><span class="p">,</span>
-              <span class="n">class_names</span><span class="o">=</span><span class="n">unique_labels</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">),</span> <span class="n">rounded</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+<span class="sd">    plt.figure(figsize=(20, 10))</span>
+<span class="sd">    plot_tree(model.named_steps.decisiontreeclassifier, filled=True, feature_names=vars_selected,</span>
+<span class="sd">              class_names=unique_labels.astype(str), rounded=True)</span>
+<span class="sd">    plt.show()</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="get_tree_data">
+<a class="viewcode-back" href="../../../knowseqpy.utils.html#knowseqpy.utils.plotting.get_tree_data">[docs]</a>
+<span class="k">def</span> <span class="nf">get_tree_data</span><span class="p">(</span><span class="n">tree</span><span class="p">:</span> <span class="n">DecisionTreeClassifier</span><span class="p">,</span> <span class="n">feature_names</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">class_names</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span>
+    <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">],</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Extracts and structures data from a decision tree for visualization.</span>
+
+<span class="sd">    This function traverses the decision tree recursively from the root to the leaves, collecting</span>
+<span class="sd">    data about each node and the connecting edges. These details include the splitting feature,</span>
+<span class="sd">    threshold value, Gini impurity, number of samples at the node, and classification outcomes,</span>
+<span class="sd">    which are used to visualize the tree structure.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        tree: The decision tree classifier from which to extract structure data.</span>
+<span class="sd">        feature_names: Names of the features used in the decision tree.</span>
+<span class="sd">        class_names: Names of the possible output classes in the decision tree.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Tuple[List[Tuple], List[Tuple], int]: A tuple containing:</span>
+<span class="sd">            - A list of node details.</span>
+<span class="sd">            - A list of edge details, specifying the connection between nodes and the condition.</span>
+<span class="sd">            - The maximum depth of the tree.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">tree_</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">tree_</span>
+    <span class="n">feature_name</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">feature_names</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">_tree</span><span class="o">.</span><span class="n">TREE_UNDEFINED</span> <span class="k">else</span> <span class="s2">&quot;undefined!&quot;</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tree_</span><span class="o">.</span><span class="n">feature</span>
+    <span class="p">]</span>
+    <span class="n">node_depth</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">nodes</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">edges</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">recurse</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">depth</span><span class="p">,</span> <span class="n">x_offset</span><span class="p">):</span>
+        <span class="n">node_depth</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">node_depth</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">depth</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">tree_</span><span class="o">.</span><span class="n">value</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">samples</span> <span class="o">=</span> <span class="n">tree_</span><span class="o">.</span><span class="n">n_node_samples</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
+        <span class="n">class_idx</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">argmax</span><span class="p">()</span>
+        <span class="n">class_name</span> <span class="o">=</span> <span class="n">class_names</span><span class="p">[</span><span class="n">class_idx</span><span class="p">]</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;red&#39;</span> <span class="k">if</span> <span class="n">class_name</span> <span class="o">==</span> <span class="s1">&#39;Primary Tumor&#39;</span> <span class="k">else</span> <span class="s1">&#39;green&#39;</span>
+
+        <span class="k">if</span> <span class="n">node</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;lightblue&#39;</span>
+
+        <span class="k">if</span> <span class="n">tree_</span><span class="o">.</span><span class="n">feature</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">!=</span> <span class="n">_tree</span><span class="o">.</span><span class="n">TREE_UNDEFINED</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">feature_name</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
+            <span class="n">threshold</span> <span class="o">=</span> <span class="n">tree_</span><span class="o">.</span><span class="n">threshold</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
+            <span class="n">gini</span> <span class="o">=</span> <span class="n">tree_</span><span class="o">.</span><span class="n">impurity</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
+
+            <span class="n">left_child</span> <span class="o">=</span> <span class="n">tree_</span><span class="o">.</span><span class="n">children_left</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
+            <span class="n">right_child</span> <span class="o">=</span> <span class="n">tree_</span><span class="o">.</span><span class="n">children_right</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
+
+            <span class="n">node_text</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> &lt;= </span><span class="si">{</span><span class="n">threshold</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&lt;br&gt;gini = </span><span class="si">{</span><span class="n">gini</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&lt;br&gt;&quot;</span>
+                         <span class="sa">f</span><span class="s2">&quot;samples = </span><span class="si">{</span><span class="n">samples</span><span class="si">}</span><span class="s2">&lt;br&gt;values = </span><span class="si">{</span><span class="n">value</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">gini</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mf">0.5</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">[</span><span class="mi">70</span><span class="p">,</span><span class="w"> </span><span class="mi">70</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">node</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># Exclude class name for root node</span>
+                <span class="n">node_text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;&lt;br&gt;class = </span><span class="si">{</span><span class="n">class_name</span><span class="si">}</span><span class="s2">&quot;</span>
+
+            <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">node</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">samples</span><span class="p">,</span> <span class="n">depth</span><span class="p">,</span> <span class="s2">&quot;internal&quot;</span><span class="p">,</span> <span class="n">class_name</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">x_offset</span><span class="p">,</span> <span class="n">gini</span><span class="p">,</span>
+                          <span class="n">node_text</span><span class="p">))</span>
+            <span class="n">edges</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">node</span><span class="p">,</span> <span class="n">left_child</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">))</span>
+            <span class="n">edges</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">node</span><span class="p">,</span> <span class="n">right_child</span><span class="p">,</span> <span class="s2">&quot;False&quot;</span><span class="p">))</span>
+
+            <span class="n">recurse</span><span class="p">(</span><span class="n">left_child</span><span class="p">,</span> <span class="n">depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">x_offset</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">**</span> <span class="p">(</span><span class="n">depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="n">recurse</span><span class="p">(</span><span class="n">right_child</span><span class="p">,</span> <span class="n">depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">x_offset</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">**</span> <span class="p">(</span><span class="n">depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">class_name</span> <span class="o">=</span> <span class="s2">&quot;Primary Tumor&quot;</span> <span class="k">if</span> <span class="n">color</span> <span class="o">==</span> <span class="s1">&#39;red&#39;</span> <span class="k">else</span> <span class="s2">&quot;Solid Tissue Normal&quot;</span>
+            <span class="n">node_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;samples = </span><span class="si">{</span><span class="n">samples</span><span class="si">}</span><span class="s2">&lt;br&gt;class = </span><span class="si">{</span><span class="n">class_name</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">node</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">samples</span><span class="p">,</span> <span class="n">depth</span><span class="p">,</span> <span class="s2">&quot;leaf&quot;</span><span class="p">,</span> <span class="n">class_name</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">x_offset</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">node_text</span><span class="p">))</span>
+
+    <span class="n">recurse</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">nodes</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">node_depth</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="plot_decision_tree">
+<a class="viewcode-back" href="../../../knowseqpy.utils.html#knowseqpy.utils.plotting.plot_decision_tree">[docs]</a>
+<span class="k">def</span> <span class="nf">plot_decision_tree</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">Pipeline</span><span class="p">,</span> <span class="n">labels</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">vars_selected</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generates and displays an interactive plot of a decision tree using Plotly.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        model: A sklearn Pipeline, which includes the decision tree classifier and preprocessing steps.</span>
+<span class="sd">        labels: The series of true labels used to train the classifier, required for naming the classes in the plot.</span>
+<span class="sd">        vars_selected: List of feature names used in the decision tree, which are selected for classification.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">y_true_test</span><span class="p">,</span> <span class="n">class_names</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">factorize</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">tree</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">named_steps</span><span class="o">.</span><span class="n">decisiontreeclassifier</span>
+    <span class="n">nodes</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">max_depth</span> <span class="o">=</span> <span class="n">get_tree_data</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span> <span class="n">vars_selected</span><span class="p">,</span> <span class="n">class_names</span><span class="p">)</span>
+
+    <span class="n">x</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">samples</span><span class="p">,</span> <span class="n">depth</span><span class="p">,</span> <span class="n">node_type</span><span class="p">,</span> <span class="n">class_name</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">x_offset</span><span class="p">,</span> <span class="n">gini</span><span class="p">,</span> <span class="n">node_text</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
+        <span class="n">x</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x_offset</span><span class="p">)</span>
+        <span class="n">y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">depth</span><span class="p">)</span>
+        <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node_text</span><span class="p">)</span>
+
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">()</span>
+
+    <span class="c1"># Add edges first to ensure they appear at the back</span>
+    <span class="k">for</span> <span class="n">parent</span><span class="p">,</span> <span class="n">child</span><span class="p">,</span> <span class="n">condition</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">:</span>
+        <span class="n">parent_idx</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span> <span class="k">if</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">parent</span><span class="p">)</span>
+        <span class="n">child_idx</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span> <span class="k">if</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">child</span><span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="n">parent_idx</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="n">child_idx</span><span class="p">]],</span>
+            <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="n">y</span><span class="p">[</span><span class="n">parent_idx</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">child_idx</span><span class="p">]],</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+            <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;lightgrey&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+            <span class="n">opacity</span><span class="o">=</span><span class="mf">0.7</span>
+        <span class="p">))</span>
+
+    <span class="c1"># Add nodes to ensure they appear on top of the lines</span>
+    <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">samples</span><span class="p">,</span> <span class="n">depth</span><span class="p">,</span> <span class="n">node_type</span><span class="p">,</span> <span class="n">class_name</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">x_offset</span><span class="p">,</span> <span class="n">gini</span><span class="p">,</span> <span class="n">node_text</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="n">x_offset</span><span class="p">],</span>
+            <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="n">depth</span><span class="p">],</span>
+            <span class="n">text</span><span class="o">=</span><span class="p">[</span><span class="n">node_text</span><span class="p">],</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;markers+text&#39;</span><span class="p">,</span>
+            <span class="n">textposition</span><span class="o">=</span><span class="s2">&quot;bottom center&quot;</span><span class="p">,</span>
+            <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+        <span class="p">))</span>
+
+    <span class="c1"># Adding text for conditions ensuring visibility</span>
+    <span class="k">for</span> <span class="n">parent</span><span class="p">,</span> <span class="n">child</span><span class="p">,</span> <span class="n">condition</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">:</span>
+        <span class="n">parent_idx</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span> <span class="k">if</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">parent</span><span class="p">)</span>
+        <span class="n">child_idx</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span> <span class="k">if</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">child</span><span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">=</span><span class="p">[(</span><span class="n">x</span><span class="p">[</span><span class="n">parent_idx</span><span class="p">]</span> <span class="o">+</span> <span class="n">x</span><span class="p">[</span><span class="n">child_idx</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span><span class="p">],</span>  <span class="c1"># Position text in the middle of the line</span>
+            <span class="n">y</span><span class="o">=</span><span class="p">[(</span><span class="n">y</span><span class="p">[</span><span class="n">parent_idx</span><span class="p">]</span> <span class="o">+</span> <span class="n">y</span><span class="p">[</span><span class="n">child_idx</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span><span class="p">],</span>
+            <span class="n">text</span><span class="o">=</span><span class="p">[</span><span class="n">condition</span><span class="p">],</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;text&#39;</span><span class="p">,</span>
+            <span class="n">textfont</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">),</span>
+            <span class="n">textposition</span><span class="o">=</span><span class="s2">&quot;top center&quot;</span>
+        <span class="p">))</span>
+
+    <span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span>
+        <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Decision Tree&quot;</span><span class="p">,</span>
+        <span class="n">xaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Node&quot;</span><span class="p">,</span> <span class="n">showgrid</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">zeroline</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+        <span class="n">yaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Depth&quot;</span><span class="p">,</span> <span class="n">showgrid</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">zeroline</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">autorange</span><span class="o">=</span><span class="s2">&quot;reversed&quot;</span><span class="p">),</span>
+        <span class="n">showlegend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">height</span><span class="o">=</span><span class="mi">800</span>
+    <span class="p">)</span>
+
+    <span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
 </pre></div>
 

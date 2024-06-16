@@ -54,9 +54,9 @@
 <li><a class="reference internal" href="#knowseqpy.classifiers.gradient_boosting.gradient_boosting"><code class="docutils literal notranslate"><span class="pre">gradient_boosting()</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#module-knowseqpy.classifiers.keras_nn">knowseqpy.classifiers.keras_nn module</a><ul>
-<li><a class="reference internal" href="#knowseqpy.classifiers.keras_nn.create_nn_model"><code class="docutils literal notranslate"><span class="pre">create_nn_model()</span></code></a></li>
-<li><a class="reference internal" href="#knowseqpy.classifiers.keras_nn.nn"><code class="docutils literal notranslate"><span class="pre">nn()</span></code></a></li>
+<li><a class="reference internal" href="#module-knowseqpy.classifiers.neural_network">knowseqpy.classifiers.neural_network module</a><ul>
+<li><a class="reference internal" href="#knowseqpy.classifiers.neural_network.create_model"><code class="docutils literal notranslate"><span class="pre">create_model()</span></code></a></li>
+<li><a class="reference internal" href="#knowseqpy.classifiers.neural_network.neural_network"><code class="docutils literal notranslate"><span class="pre">neural_network()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-knowseqpy.classifiers.knn">knowseqpy.classifiers.knn module</a><ul>
@@ -155,28 +155,43 @@
 </dd></dl>
 
 </section>
-<section id="module-knowseqpy.classifiers.keras_nn">
-<span id="knowseqpy-classifiers-keras-nn-module"></span><h2>knowseqpy.classifiers.keras_nn module<a class="headerlink" href="#module-knowseqpy.classifiers.keras_nn" title="Link to this heading"></a></h2>
+<section id="module-knowseqpy.classifiers.neural_network">
+<span id="knowseqpy-classifiers-neural-network-module"></span><h2>knowseqpy.classifiers.neural_network module<a class="headerlink" href="#module-knowseqpy.classifiers.neural_network" title="Link to this heading"></a></h2>
+<p>This module contains functions for performing Keras neural network classification.</p>
 <dl class="py function">
-<dt class="sig sig-object py" id="knowseqpy.classifiers.keras_nn.create_nn_model">
-<span class="sig-prename descclassname"><span class="pre">knowseqpy.classifiers.keras_nn.</span></span><span class="sig-name descname"><span class="pre">create_nn_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dim</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/knowseqpy/classifiers/keras_nn.html#create_nn_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#knowseqpy.classifiers.keras_nn.create_nn_model" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="knowseqpy.classifiers.neural_network.create_model">
+<span class="sig-prename descclassname"><span class="pre">knowseqpy.classifiers.neural_network.</span></span><span class="sig-name descname"><span class="pre">create_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">meta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dense_layers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activation_func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'sigmoid'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Sequential</span></span></span><a class="reference internal" href="_modules/knowseqpy/classifiers/neural_network.html#create_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#knowseqpy.classifiers.neural_network.create_model" title="Link to this definition"></a></dt>
+<dd><p>Creates a Keras Sequential model based on provided parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>meta</strong> – Metadata containing information about the input features.</p></li>
+<li><p><strong>dense_layers</strong> – Tuple specifying the number of units in each dense layer.</p></li>
+<li><p><strong>activation_func</strong> – Activation function to use in the dense layers.</p></li>
+<li><p><strong>dropout</strong> – Whether to include dropout layers after each dense layer.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A compiled Keras Sequential model.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="knowseqpy.classifiers.keras_nn.nn">
-<span class="sig-prename descclassname"><span class="pre">knowseqpy.classifiers.keras_nn.</span></span><span class="sig-name descname"><span class="pre">nn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars_selected</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv_strategy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BaseCrossValidator</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Pipeline</span></span></span><a class="reference internal" href="_modules/knowseqpy/classifiers/keras_nn.html#nn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#knowseqpy.classifiers.keras_nn.nn" title="Link to this definition"></a></dt>
-<dd><p>Conducts neural network classification using Keras.</p>
+<dt class="sig sig-object py" id="knowseqpy.classifiers.neural_network.neural_network">
+<span class="sig-prename descclassname"><span class="pre">knowseqpy.classifiers.neural_network.</span></span><span class="sig-name descname"><span class="pre">neural_network</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars_selected</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv_strategy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">RepeatedStratifiedKFold</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Pipeline</span></span></span><a class="reference internal" href="_modules/knowseqpy/classifiers/neural_network.html#neural_network"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#knowseqpy.classifiers.neural_network.neural_network" title="Link to this definition"></a></dt>
+<dd><p>Conducts classification using a Keras neural network model with grid search.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> – The expression matrix with genes in columns and samples in rows.</p></li>
 <li><p><strong>labels</strong> – Labels for each sample.</p></li>
 <li><p><strong>vars_selected</strong> – Selected genes for classification. Can be DEGs or a custom list.</p></li>
-<li><p><strong>cv_strategy</strong> – CV strategy to use. If None, defaults to RepeatedStratifiedKFold(n_splits=10, n_repeats=3)</p></li>
+<li><p><strong>cv_strategy</strong> – CV strategy to use. If None, defaults to RepeatedStratifiedKFold(n_splits=10, n_repeats=3).</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A trained neural network model pipeline.</p>
+<dd class="field-even"><p>A trained KerasClassifier model pipeline.</p>
 </dd>
 </dl>
 </dd></dl>

@@ -20,10 +20,10 @@ knowseqpy.classifiers.gradient\_boosting module
    :undoc-members:
    :show-inheritance:
 
-knowseqpy.classifiers.keras\_nn module
---------------------------------------
+knowseqpy.classifiers.neural\_network module
+--------------------------------------------
 
-.. automodule:: knowseqpy.classifiers.keras_nn
+.. automodule:: knowseqpy.classifiers.neural_network
    :members:
    :undoc-members:
    :show-inheritance:
