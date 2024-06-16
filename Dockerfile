@@ -42,14 +42,15 @@ COPY setup.py ./setup.py
 RUN pip install .
 
 # Copy examples and configure external data
-# To run the examples, mount the following paths into the container:
+# To run the examples, mount the following paths into the container (use ${pwd} in powershell):
 # docker run -it
 #    -v $(pwd)/tests/test_fixtures/count_files_breast:/knowseqpy/external_data/breast/count_files_breast
 #    -v $(pwd)/tests/test_fixtures/samples_info_breast.csv:/knowseqpy/external_data/breast/samples_info_breast.csv
+# bdomene/knowseqpy:latest
 
 COPY examples ./examples
 VOLUME /knowseqpy/external_data/breast
-ENV SAMPLES_INFO_BREAST_PATH=/knowseqpy/external_data/breast/sºamples_info_breast.csv
+ENV SAMPLES_INFO_BREAST_PATH=/knowseqpy/external_data/breast/samples_info_breast.csv
 ENV COUNTS_BREAST_PATH=/knowseqpy/external_data/breast/count_files_breast
 
 WORKDIR /knowseqpy/examples

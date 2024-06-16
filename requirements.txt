@@ -1,3 +1,4 @@
+keras
 numpy
 mrmr_selection
 pandas
@@ -6,5 +7,7 @@ plotly
 pyarrow
 requests
 scikit-learn
+scikeras
 scipy
 statsmodels
+tensorflow

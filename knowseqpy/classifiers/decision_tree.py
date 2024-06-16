@@ -7,7 +7,7 @@ from sklearn.metrics import accuracy_score, f1_score, make_scorer, precision_sco
 from sklearn.model_selection import BaseCrossValidator, GridSearchCV, RepeatedStratifiedKFold
 from sklearn.pipeline import make_pipeline, Pipeline
 from sklearn.preprocessing import StandardScaler
-from sklearn.tree import DecisionTreeClassifier, plot_tree
+from sklearn.tree import DecisionTreeClassifier
 
 from knowseqpy.utils import get_logger
 
@@ -44,18 +44,13 @@ def decision_tree(data: pd.DataFrame, labels: pd.Series, vars_selected: list,
                "f1_score": make_scorer(f1_score, average="macro")}
 
     scaler = StandardScaler()
-    grid_search = GridSearchCV(DecisionTreeClassifier(), param_grid, cv=cv_strategy, scoring=scoring, refit="accuracy")
+    grid_search = GridSearchCV(estimator=DecisionTreeClassifier(), param_grid=param_grid, cv=cv_strategy,
+                               scoring=scoring, refit="accuracy")
     pipeline = make_pipeline(
         scaler,
         grid_search
     )
     pipeline.fit(data, label_codes)
     logger.info("Best parameters: %s", grid_search.best_params_)
-
-    import matplotlib.pyplot as plt
-    plt.figure(figsize=(20, 10))
-    plot_tree(grid_search.best_estimator_, filled=True, feature_names=vars_selected,
-              class_names=unique_labels.astype(str), rounded=True)
-    plt.show()
 
     return make_pipeline(scaler, grid_search.best_estimator_)
