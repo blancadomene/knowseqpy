@@ -189,7 +189,7 @@ def plot_decision_boundary(model: Pipeline, data: pd.DataFrame, labels: pd.Serie
 
 
 """
-def plot_decision_tree(model: Pipeline, labels: pd.Series, vars_selected: list) -> None:
+def plot_decision_tree_plt(model: Pipeline, labels: pd.Series, vars_selected: list) -> None:
     "
     Plots the decision tree from the trained model pipeline using plotly.
 
