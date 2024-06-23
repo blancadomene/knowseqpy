@@ -15,7 +15,7 @@ from knowseqpy.classifiers import decision_tree, logistic_regression
 from knowseqpy.evaluate_model import evaluate_model
 from knowseqpy.feature_selection import random_forest
 from knowseqpy.utils import plot_boxplot, plot_confusion_matrix, plot_samples_heatmap
-from knowseqpy.utils.plotting import plot_decision_boundary, plot_decision_tree_plt
+from knowseqpy.utils.plotting import plot_decision_boundary, plot_decision_tree
 
 SCRIPT_PATH = Path(__file__).resolve().parent.parent
 
@@ -82,7 +82,7 @@ def main():
                              vars_selected=selected_features)
 
     # Visualization
-    plot_decision_tree_plt(dt_model, qa_labels, selected_features)
+    plot_decision_tree(dt_model, qa_labels, selected_features)
     plot_boxplot(data=degs, labels=qa_labels, fs_ranking=selected_features, top_n_features=10)
     plot_confusion_matrix(conf_matrix=dt_pred["confusion_matrix"], unique_labels=dt_pred["unique_labels"].tolist())
     plot_samples_heatmap(data=degs, labels=qa_labels, fs_ranking=selected_features, top_n_features=10)
