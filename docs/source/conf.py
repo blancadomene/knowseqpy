@@ -17,7 +17,9 @@ author = 'Blanca Domene'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon', 'sphinx.ext.viewcode', 'sphinx.ext.imgmath']
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon', 'sphinx.ext.viewcode', 'sphinx.ext.imgmath', 'rst2pdf.pdfbuilder']
+
+pdf_documents = [('index', u'rst2pdf', u'Sample rst2pdf doc', u'Blanca Domene'),]
 
 templates_path = ['_templates']
 exclude_patterns = []
