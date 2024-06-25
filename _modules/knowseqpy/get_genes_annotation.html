@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>knowseqpy.get_genes_annotation &mdash; KnowSeqPy  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            KnowSeqPy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">KnowSeqPy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">knowseqpy.get_genes_annotation</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for knowseqpy.get_genes_annotation</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module provides functionality to retrieve gene annotations from the Ensembl biomart database. It supports querying</span>
+<span class="sd">for specific genes or the entire genome, with customizable attributes and filters. Annotations can be fetched for both</span>
+<span class="sd">human and non-human species, accommodating different reference genomes (GRCh37, GRCh38). Results are returned as pandas</span>
+<span class="sd">DataFrames, facilitating further data analysis and manipulation.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">io</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">csv_to_dataframe</span><span class="p">,</span> <span class="n">get_logger</span>
+
+<span class="n">EXTERNAL_DATA_PATH</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;external_data&quot;</span>
+<span class="n">ENSEMBL_URL</span> <span class="o">=</span> <span class="s2">&quot;http://www.ensembl.org/biomart/martservice&quot;</span>
+<span class="n">GRCH37_ENSEMBL_URL</span> <span class="o">=</span> <span class="s2">&quot;https://grch37.ensembl.org/biomart/martservice&quot;</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">()</span><span class="o">.</span><span class="n">getChild</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="get_genes_annotation">
+<a class="viewcode-back" href="../../knowseqpy.html#knowseqpy.get_genes_annotation.get_genes_annotation">[docs]</a>
+<span class="k">def</span> <span class="nf">get_genes_annotation</span><span class="p">(</span><span class="n">values</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">attributes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">attribute_filter</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ensembl_gene_id&quot;</span><span class="p">,</span>
+                         <span class="n">not_hsapiens_dataset</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">reference_genome</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">38</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retrieves gene annotations from the Ensembl biomart database.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        values: A list of genes that can contain Ensembl IDs, gene names, or &quot;allGenome&quot;</span>
+<span class="sd">                to indicate all genes.</span>
+<span class="sd">        attributes: A list of desired attributes or information to retrieve from Ensembl biomart.</span>
+<span class="sd">                    Default is [&#39;ensembl_gene_id&#39;, &#39;external_gene_name&#39;, &#39;percentage_gene_gc_content&#39;, &#39;entrezgene_id&#39;].</span>
+<span class="sd">        attribute_filter: An attribute used as a filter to return the rest of the attributes.</span>
+<span class="sd">                          Default is &#39;ensembl_gene_id&#39;.</span>
+<span class="sd">        not_hsapiens_dataset: The dataset identification for non-human annotations. Default is None.</span>
+<span class="sd">        reference_genome: The reference genome to use. It must be 37 or 38. Default is 38.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A DataFrame containing the requested gene annotations.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If invalid input is provided for the parameters.</span>
+<span class="sd">        ValueError: If an error occurs during the query, or the query result is empty or contains an error message.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># TODO: Temporary condition to use the package&#39;s GRCh38 annotation. Can remove this once we clarify why</span>
+    <span class="c1">#  external_data\GRCh38Annotation.csv yields different results for approx 360 IDs compared to the BioMart download.</span>
+    <span class="k">if</span> <span class="n">reference_genome</span> <span class="o">==</span> <span class="mi">38</span> <span class="ow">and</span> <span class="n">not_hsapiens_dataset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">annotation_df</span> <span class="o">=</span> <span class="n">csv_to_dataframe</span><span class="p">(</span><span class="n">path_components</span><span class="o">=</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span><span class="p">),</span>
+                                                          <span class="s2">&quot;external_data&quot;</span><span class="p">,</span> <span class="s2">&quot;GRCh38Annotation.csv&quot;</span><span class="p">],</span> <span class="n">header</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">list</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;allGenome&quot;</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="n">annotation_df</span>
+
+        <span class="c1"># Filtered len(annotation_df) can be greater than len(values) since we usually have duplicated ensembl_gene_id</span>
+        <span class="n">filtered_annotation_df</span> <span class="o">=</span> <span class="n">annotation_df</span><span class="p">[</span><span class="n">annotation_df</span><span class="p">[</span><span class="n">attribute_filter</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">values</span><span class="p">)]</span>
+        <span class="n">filtered_annotation_df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;ensembl_gene_id&quot;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">filtered_annotation_df</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">attributes</span><span class="p">:</span>
+        <span class="n">attributes</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ensembl_gene_id&quot;</span><span class="p">,</span> <span class="s2">&quot;external_gene_name&quot;</span><span class="p">,</span> <span class="s2">&quot;percentage_gene_gc_content&quot;</span><span class="p">,</span> <span class="s2">&quot;entrezgene_id&quot;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">attribute_filter</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">attributes</span><span class="p">:</span>
+        <span class="n">attributes</span> <span class="o">+=</span> <span class="p">[</span><span class="n">attribute_filter</span><span class="p">]</span>
+
+    <span class="n">base_url</span><span class="p">,</span> <span class="n">dataset_name</span><span class="p">,</span> <span class="n">filename</span> <span class="o">=</span> <span class="n">_resolve_dataset_details</span><span class="p">(</span><span class="n">not_hsapiens_dataset</span><span class="p">,</span> <span class="n">reference_genome</span><span class="p">)</span>
+
+    <span class="n">annotation_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">current_batch_values</span> <span class="o">=</span> <span class="n">values</span>
+    <span class="n">max_values_per_query</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">),</span> <span class="mi">900</span><span class="p">)</span>
+
+    <span class="k">while</span> <span class="n">current_batch_values</span><span class="p">:</span>
+        <span class="n">batch_values</span> <span class="o">=</span> <span class="n">current_batch_values</span><span class="p">[:</span><span class="n">max_values_per_query</span><span class="p">]</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">_build_query</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">,</span> <span class="n">attributes</span><span class="p">,</span> <span class="n">attribute_filter</span><span class="p">,</span> <span class="n">batch_values</span><span class="p">,</span> <span class="n">max_values_per_query</span><span class="p">)</span>
+        <span class="n">annotation_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_fetch_annotation</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">base_url</span><span class="p">,</span> <span class="n">attributes</span><span class="p">))</span>
+        <span class="n">current_batch_values</span> <span class="o">=</span> <span class="n">current_batch_values</span><span class="p">[</span><span class="n">max_values_per_query</span><span class="p">:]</span>
+
+    <span class="n">annotation_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">annotation_list</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">if</span> <span class="n">annotation_list</span> <span class="k">else</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">annotation_df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+        <span class="n">annotation_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">EXTERNAL_DATA_PATH</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">annotation_df</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">_resolve_dataset_details</span><span class="p">(</span><span class="n">not_hsapiens_dataset</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">reference_genome</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Determines the dataset name and base URL based on the provided parameters.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        not_hsapiens_dataset: The dataset identification for non-human annotations.</span>
+<span class="sd">        reference_genome: The reference genome to use.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A tuple containing the base URL, the dataset name, and the filename.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">not_hsapiens_dataset</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">not_hsapiens_dataset</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">not_hsapiens_dataset</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The &#39;not_hsapiens_dataset&#39; parameter must be a non-empty string.&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ENSEMBL_URL</span><span class="p">,</span> <span class="n">not_hsapiens_dataset</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">not_hsapiens_dataset</span><span class="si">}</span><span class="s2">.csv&quot;</span>
+
+    <span class="k">if</span> <span class="n">reference_genome</span> <span class="o">==</span> <span class="mi">38</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Using reference genome 38&quot;</span><span class="p">)</span>
+        <span class="n">dataset_name</span> <span class="o">=</span> <span class="s2">&quot;hsapiens_gene_ensembl&quot;</span>
+        <span class="k">return</span> <span class="n">ENSEMBL_URL</span><span class="p">,</span> <span class="n">dataset_name</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dataset_name</span><span class="si">}</span><span class="s2">.csv&quot;</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Using reference genome 37&quot;</span><span class="p">)</span>
+    <span class="n">dataset_name</span> <span class="o">=</span> <span class="s2">&quot;hsapiens_gene_ensembl&quot;</span>
+    <span class="k">return</span> <span class="n">GRCH37_ENSEMBL_URL</span><span class="p">,</span> <span class="n">dataset_name</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dataset_name</span><span class="si">}</span><span class="s2">.csv&quot;</span>
+
+
+<span class="k">def</span> <span class="nf">_build_query</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">attributes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">attribute_filter</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                 <span class="n">values</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">max_values</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Builds the query XML for the Ensembl biomart request.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dataset_name: The name of the dataset to query.</span>
+<span class="sd">        attributes: A list of attributes to retrieve.</span>
+<span class="sd">        attribute_filter: The filter to apply to the query.</span>
+<span class="sd">        values: The values to filter by.</span>
+<span class="sd">        max_values: The maximum number of values to include in a single query.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A string representing the XML query.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&lt;?xml version=&#39;1.0&#39; encoding=&#39;UTF-8&#39;?&gt;&lt;!DOCTYPE Query&gt;&quot;</span> \
+            <span class="sa">f</span><span class="s2">&quot;&lt;Query virtualSchemaName=&#39;default&#39; formatter=&#39;CSV&#39; header=&#39;0&#39; uniqueRows=&#39;0&#39; count=&#39;&#39; &quot;</span> \
+            <span class="sa">f</span><span class="s2">&quot;datasetConfigVersion=&#39;0.6&#39;&gt; &lt;Dataset name=&#39;</span><span class="si">{</span><span class="n">dataset_name</span><span class="si">}</span><span class="s2">&#39; interface=&#39;default&#39;&gt;&quot;</span>
+
+    <span class="k">if</span> <span class="s2">&quot;allGenome&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">values</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">query</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;&lt;Filter name=&#39;</span><span class="si">{</span><span class="n">attribute_filter</span><span class="si">}</span><span class="s2">&#39; value=&#39;&quot;</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">values</span><span class="p">[:</span><span class="n">max_values</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;&#39; /&gt;&quot;</span>
+
+    <span class="k">for</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="n">attributes</span><span class="p">:</span>
+        <span class="n">query</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;&lt;Attribute name=&#39;</span><span class="si">{</span><span class="n">attribute</span><span class="si">}</span><span class="s2">&#39; /&gt;&quot;</span>
+
+    <span class="n">query</span> <span class="o">+=</span> <span class="s2">&quot;&lt;/Dataset&gt;&lt;/Query&gt;&quot;</span>
+    <span class="k">return</span> <span class="n">query</span>
+
+
+<span class="k">def</span> <span class="nf">_fetch_annotation</span><span class="p">(</span><span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">base_url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">attributes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fetches the gene annotation based on the constructed query and parses it into a DataFrame.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        query: The query XML string.</span>
+<span class="sd">        base_url: The base URL for the Ensembl biomart service.</span>
+<span class="sd">        attributes: The list of attributes to include in the DataFrame.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A DataFrame containing the gene annotations.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If there&#39;s an error with the query or network issues occur.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">base_url</span><span class="si">}</span><span class="s2">?query=</span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">),</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">attributes</span>
+        <span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">empty</span> <span class="ow">or</span> <span class="s2">&quot;ERROR&quot;</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]:</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="s2">&quot;Error in query. Please check attributes and filter.&quot;</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">df</span>
+
+    <span class="n">err</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Failed to fetch data, HTTP status code: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Blanca Domene.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

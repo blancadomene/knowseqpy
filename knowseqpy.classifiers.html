@@ -46,14 +46,36 @@
               <div class="local-toc"><ul>
 <li><a class="reference internal" href="#">knowseqpy.classifiers package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#knowseqpy-classifiers-decision-tree-module">knowseqpy.classifiers.decision_tree module</a></li>
-<li><a class="reference internal" href="#knowseqpy-classifiers-gradient-boosting-module">knowseqpy.classifiers.gradient_boosting module</a></li>
-<li><a class="reference internal" href="#knowseqpy-classifiers-neural-network-module">knowseqpy.classifiers.neural_network module</a></li>
-<li><a class="reference internal" href="#knowseqpy-classifiers-knn-module">knowseqpy.classifiers.knn module</a></li>
-<li><a class="reference internal" href="#knowseqpy-classifiers-logistic-regression-module">knowseqpy.classifiers.logistic_regression module</a></li>
-<li><a class="reference internal" href="#knowseqpy-classifiers-rf-module">knowseqpy.classifiers.rf module</a></li>
-<li><a class="reference internal" href="#knowseqpy-classifiers-svm-module">knowseqpy.classifiers.svm module</a></li>
-<li><a class="reference internal" href="#module-contents">Module contents</a></li>
+<li><a class="reference internal" href="#module-knowseqpy.classifiers.decision_tree">knowseqpy.classifiers.decision_tree module</a><ul>
+<li><a class="reference internal" href="#knowseqpy.classifiers.decision_tree.decision_tree"><code class="docutils literal notranslate"><span class="pre">decision_tree()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-knowseqpy.classifiers.gradient_boosting">knowseqpy.classifiers.gradient_boosting module</a><ul>
+<li><a class="reference internal" href="#knowseqpy.classifiers.gradient_boosting.gradient_boosting"><code class="docutils literal notranslate"><span class="pre">gradient_boosting()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-knowseqpy.classifiers.neural_network">knowseqpy.classifiers.neural_network module</a><ul>
+<li><a class="reference internal" href="#knowseqpy.classifiers.neural_network.create_model"><code class="docutils literal notranslate"><span class="pre">create_model()</span></code></a></li>
+<li><a class="reference internal" href="#knowseqpy.classifiers.neural_network.neural_network"><code class="docutils literal notranslate"><span class="pre">neural_network()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-knowseqpy.classifiers.knn">knowseqpy.classifiers.knn module</a><ul>
+<li><a class="reference internal" href="#knowseqpy.classifiers.knn.knn"><code class="docutils literal notranslate"><span class="pre">knn()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-knowseqpy.classifiers.logistic_regression">knowseqpy.classifiers.logistic_regression module</a><ul>
+<li><a class="reference internal" href="#knowseqpy.classifiers.logistic_regression.logistic_regression"><code class="docutils literal notranslate"><span class="pre">logistic_regression()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-knowseqpy.classifiers.rf">knowseqpy.classifiers.rf module</a><ul>
+<li><a class="reference internal" href="#knowseqpy.classifiers.rf.rf"><code class="docutils literal notranslate"><span class="pre">rf()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-knowseqpy.classifiers.svm">knowseqpy.classifiers.svm module</a><ul>
+<li><a class="reference internal" href="#knowseqpy.classifiers.svm.svm"><code class="docutils literal notranslate"><span class="pre">svm()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-knowseqpy.classifiers">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -87,29 +109,188 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
 </section>
-<section id="knowseqpy-classifiers-decision-tree-module">
-<h2>knowseqpy.classifiers.decision_tree module<a class="headerlink" href="#knowseqpy-classifiers-decision-tree-module" title="Link to this heading"></a></h2>
+<section id="module-knowseqpy.classifiers.decision_tree">
+<span id="knowseqpy-classifiers-decision-tree-module"></span><h2>knowseqpy.classifiers.decision_tree module<a class="headerlink" href="#module-knowseqpy.classifiers.decision_tree" title="Link to this heading"></a></h2>
+<p>This module contains functions for performing Decision Tree classification and related utility functions.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="knowseqpy.classifiers.decision_tree.decision_tree">
+<span class="sig-prename descclassname"><span class="pre">knowseqpy.classifiers.decision_tree.</span></span><span class="sig-name descname"><span class="pre">decision_tree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars_selected</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv_strategy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BaseCrossValidator</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Pipeline</span></span></span><a class="reference internal" href="_modules/knowseqpy/classifiers/decision_tree.html#decision_tree"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#knowseqpy.classifiers.decision_tree.decision_tree" title="Link to this definition"></a></dt>
+<dd><p>Conducts Decision Tree classification.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – The expression matrix with genes in columns and samples in rows.</p></li>
+<li><p><strong>labels</strong> – Labels for each sample.</p></li>
+<li><p><strong>vars_selected</strong> – Selected genes for classification. Can be DEGs or a custom list.</p></li>
+<li><p><strong>cv_strategy</strong> – CV strategy to use. If None, defaults to RepeatedStratifiedKFold(n_splits=10, n_repeats=3)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A trained DecisionTreeClassifier model pipeline.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
-<section id="knowseqpy-classifiers-gradient-boosting-module">
-<h2>knowseqpy.classifiers.gradient_boosting module<a class="headerlink" href="#knowseqpy-classifiers-gradient-boosting-module" title="Link to this heading"></a></h2>
+<section id="module-knowseqpy.classifiers.gradient_boosting">
+<span id="knowseqpy-classifiers-gradient-boosting-module"></span><h2>knowseqpy.classifiers.gradient_boosting module<a class="headerlink" href="#module-knowseqpy.classifiers.gradient_boosting" title="Link to this heading"></a></h2>
+<p>This module contains functions for performing Gradient Boosting Machine (GBM) classification and related utility functions.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="knowseqpy.classifiers.gradient_boosting.gradient_boosting">
+<span class="sig-prename descclassname"><span class="pre">knowseqpy.classifiers.gradient_boosting.</span></span><span class="sig-name descname"><span class="pre">gradient_boosting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars_selected</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv_strategy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BaseCrossValidator</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Pipeline</span></span></span><a class="reference internal" href="_modules/knowseqpy/classifiers/gradient_boosting.html#gradient_boosting"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#knowseqpy.classifiers.gradient_boosting.gradient_boosting" title="Link to this definition"></a></dt>
+<dd><p>Conducts Gradient Boosting Machine classification.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – The expression matrix with genes in columns and samples in rows.</p></li>
+<li><p><strong>labels</strong> – Labels for each sample.</p></li>
+<li><p><strong>vars_selected</strong> – Selected genes for classification. Can be DEGs or a custom list.</p></li>
+<li><p><strong>cv_strategy</strong> – CV strategy to use. If None, defaults to RepeatedStratifiedKFold(n_splits=10, n_repeats=3)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A trained GradientBoostingClassifier model pipeline.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
-<section id="knowseqpy-classifiers-neural-network-module">
-<h2>knowseqpy.classifiers.neural_network module<a class="headerlink" href="#knowseqpy-classifiers-neural-network-module" title="Link to this heading"></a></h2>
+<section id="module-knowseqpy.classifiers.neural_network">
+<span id="knowseqpy-classifiers-neural-network-module"></span><h2>knowseqpy.classifiers.neural_network module<a class="headerlink" href="#module-knowseqpy.classifiers.neural_network" title="Link to this heading"></a></h2>
+<p>This module contains functions for performing Keras neural network classification.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="knowseqpy.classifiers.neural_network.create_model">
+<span class="sig-prename descclassname"><span class="pre">knowseqpy.classifiers.neural_network.</span></span><span class="sig-name descname"><span class="pre">create_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">meta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dense_layers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activation_func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'sigmoid'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Sequential</span></span></span><a class="reference internal" href="_modules/knowseqpy/classifiers/neural_network.html#create_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#knowseqpy.classifiers.neural_network.create_model" title="Link to this definition"></a></dt>
+<dd><p>Creates a Keras Sequential model based on provided parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>meta</strong> – Metadata containing information about the input features.</p></li>
+<li><p><strong>dense_layers</strong> – Tuple specifying the number of units in each dense layer.</p></li>
+<li><p><strong>activation_func</strong> – Activation function to use in the dense layers.</p></li>
+<li><p><strong>dropout</strong> – Whether to include dropout layers after each dense layer.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A compiled Keras Sequential model.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="knowseqpy.classifiers.neural_network.neural_network">
+<span class="sig-prename descclassname"><span class="pre">knowseqpy.classifiers.neural_network.</span></span><span class="sig-name descname"><span class="pre">neural_network</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars_selected</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv_strategy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">RepeatedStratifiedKFold</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Pipeline</span></span></span><a class="reference internal" href="_modules/knowseqpy/classifiers/neural_network.html#neural_network"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#knowseqpy.classifiers.neural_network.neural_network" title="Link to this definition"></a></dt>
+<dd><p>Conducts classification using a Keras neural network model with grid search.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – The expression matrix with genes in columns and samples in rows.</p></li>
+<li><p><strong>labels</strong> – Labels for each sample.</p></li>
+<li><p><strong>vars_selected</strong> – Selected genes for classification. Can be DEGs or a custom list.</p></li>
+<li><p><strong>cv_strategy</strong> – CV strategy to use. If None, defaults to RepeatedStratifiedKFold(n_splits=10, n_repeats=3).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A trained KerasClassifier model pipeline.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
-<section id="knowseqpy-classifiers-knn-module">
-<h2>knowseqpy.classifiers.knn module<a class="headerlink" href="#knowseqpy-classifiers-knn-module" title="Link to this heading"></a></h2>
+<section id="module-knowseqpy.classifiers.knn">
+<span id="knowseqpy-classifiers-knn-module"></span><h2>knowseqpy.classifiers.knn module<a class="headerlink" href="#module-knowseqpy.classifiers.knn" title="Link to this heading"></a></h2>
+<p>This module contains functions for performing k-Nearest Neighbors (k-NN) classification and related utility functions.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="knowseqpy.classifiers.knn.knn">
+<span class="sig-prename descclassname"><span class="pre">knowseqpy.classifiers.knn.</span></span><span class="sig-name descname"><span class="pre">knn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars_selected</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv_strategy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BaseCrossValidator</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Pipeline</span></span></span><a class="reference internal" href="_modules/knowseqpy/classifiers/knn.html#knn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#knowseqpy.classifiers.knn.knn" title="Link to this definition"></a></dt>
+<dd><p>Conducts k-NN classification.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – The expression matrix with genes in columns and samples in rows.</p></li>
+<li><p><strong>labels</strong> – Labels for each sample.</p></li>
+<li><p><strong>vars_selected</strong> – Selected genes for classification. Can be DEGs or a custom list.</p></li>
+<li><p><strong>cv_strategy</strong> – CV strategy to use. If None, defaults to RepeatedStratifiedKFold(n_splits=10, n_repeats=3)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A trained KNeighborsClassifier model pipeline.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
-<section id="knowseqpy-classifiers-logistic-regression-module">
-<h2>knowseqpy.classifiers.logistic_regression module<a class="headerlink" href="#knowseqpy-classifiers-logistic-regression-module" title="Link to this heading"></a></h2>
+<section id="module-knowseqpy.classifiers.logistic_regression">
+<span id="knowseqpy-classifiers-logistic-regression-module"></span><h2>knowseqpy.classifiers.logistic_regression module<a class="headerlink" href="#module-knowseqpy.classifiers.logistic_regression" title="Link to this heading"></a></h2>
+<p>This module contains functions for performing Logistic Regression classification and related utility functions.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="knowseqpy.classifiers.logistic_regression.logistic_regression">
+<span class="sig-prename descclassname"><span class="pre">knowseqpy.classifiers.logistic_regression.</span></span><span class="sig-name descname"><span class="pre">logistic_regression</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars_selected</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv_strategy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BaseCrossValidator</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Pipeline</span></span></span><a class="reference internal" href="_modules/knowseqpy/classifiers/logistic_regression.html#logistic_regression"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#knowseqpy.classifiers.logistic_regression.logistic_regression" title="Link to this definition"></a></dt>
+<dd><p>Conducts Logistic Regression classification.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – The feature matrix with features in columns and samples in rows.</p></li>
+<li><p><strong>labels</strong> – Labels for each sample.</p></li>
+<li><p><strong>vars_selected</strong> – Selected features for classification.</p></li>
+<li><p><strong>cv_strategy</strong> – CV strategy to use. If None, defaults to RepeatedStratifiedKFold(n_splits=10, n_repeats=3).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A trained LogisticRegression model pipeline.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
-<section id="knowseqpy-classifiers-rf-module">
-<h2>knowseqpy.classifiers.rf module<a class="headerlink" href="#knowseqpy-classifiers-rf-module" title="Link to this heading"></a></h2>
+<section id="module-knowseqpy.classifiers.rf">
+<span id="knowseqpy-classifiers-rf-module"></span><h2>knowseqpy.classifiers.rf module<a class="headerlink" href="#module-knowseqpy.classifiers.rf" title="Link to this heading"></a></h2>
+<p>This module contains functions for performing Random Forest classification and related utility functions.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="knowseqpy.classifiers.rf.rf">
+<span class="sig-prename descclassname"><span class="pre">knowseqpy.classifiers.rf.</span></span><span class="sig-name descname"><span class="pre">rf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars_selected</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv_strategy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BaseCrossValidator</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Pipeline</span></span></span><a class="reference internal" href="_modules/knowseqpy/classifiers/rf.html#rf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#knowseqpy.classifiers.rf.rf" title="Link to this definition"></a></dt>
+<dd><p>Conducts Random Forest classification.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – The expression matrix with genes in columns and samples in rows.</p></li>
+<li><p><strong>labels</strong> – Labels for each sample.</p></li>
+<li><p><strong>vars_selected</strong> – Selected genes for classification. Can be DEGs or a custom list.</p></li>
+<li><p><strong>cv_strategy</strong> – CV strategy to use. If None, defaults to RepeatedStratifiedKFold(n_splits=10, n_repeats=3)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A trained RandomForestClassifier model pipeline.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
-<section id="knowseqpy-classifiers-svm-module">
-<h2>knowseqpy.classifiers.svm module<a class="headerlink" href="#knowseqpy-classifiers-svm-module" title="Link to this heading"></a></h2>
+<section id="module-knowseqpy.classifiers.svm">
+<span id="knowseqpy-classifiers-svm-module"></span><h2>knowseqpy.classifiers.svm module<a class="headerlink" href="#module-knowseqpy.classifiers.svm" title="Link to this heading"></a></h2>
+<p>This module contains functions for performing SVM classification and related utility functions.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="knowseqpy.classifiers.svm.svm">
+<span class="sig-prename descclassname"><span class="pre">knowseqpy.classifiers.svm.</span></span><span class="sig-name descname"><span class="pre">svm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars_selected</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv_strategy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BaseCrossValidator</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Pipeline</span></span></span><a class="reference internal" href="_modules/knowseqpy/classifiers/svm.html#svm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#knowseqpy.classifiers.svm.svm" title="Link to this definition"></a></dt>
+<dd><p>Conducts SVM classification.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – The expression matrix with genes in columns and samples in rows.</p></li>
+<li><p><strong>labels</strong> – Labels for each sample.</p></li>
+<li><p><strong>vars_selected</strong> – Selected genes for classification. Can be DEGs or a custom list.</p></li>
+<li><p><strong>cv_strategy</strong> – CV strategy to use. If None, defaults to RepeatedStratifiedKFold(n_splits=10, n_repeats=3)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A trained SVC model pipeline.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
-<section id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
+<section id="module-knowseqpy.classifiers">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-knowseqpy.classifiers" title="Link to this heading"></a></h2>
 </section>
 </section>
 

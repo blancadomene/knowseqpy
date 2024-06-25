@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>knowseqpy.counts_to_dataframe &mdash; KnowSeqPy  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            KnowSeqPy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">KnowSeqPy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">knowseqpy.counts_to_dataframe</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for knowseqpy.counts_to_dataframe</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module contains functions for processing RNA-Seq gene expression count files, compiling gene count data from</span>
+<span class="sd">multiple files into a single DataFrame, using CPM and filtering out unwanted data based on specified criteria.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">.normalization</span> <span class="kn">import</span> <span class="n">cpm</span>
+<span class="kn">from</span> <span class="nn">.read_dge</span> <span class="kn">import</span> <span class="n">read_dge</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">get_logger</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">()</span><span class="o">.</span><span class="n">getChild</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">DEFAULT_ROWS_TO_SKIP</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;__no_feature&quot;</span><span class="p">,</span> <span class="s2">&quot;__ambiguous&quot;</span><span class="p">,</span> <span class="s2">&quot;__too_low_aQual&quot;</span><span class="p">,</span> <span class="s2">&quot;__not_aligned&quot;</span><span class="p">,</span> <span class="s2">&quot;__alignment_not_unique&quot;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="counts_to_dataframe">
+<a class="viewcode-back" href="../../knowseqpy.html#knowseqpy.counts_to_dataframe.counts_to_dataframe">[docs]</a>
+<span class="k">def</span> <span class="nf">counts_to_dataframe</span><span class="p">(</span><span class="n">info_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span> <span class="n">counts_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span> <span class="n">sep</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="n">ext</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;.count&quot;</span><span class="p">,</span>
+                        <span class="n">rows_to_skip</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Merges the information of all count files found in `counts_path`, which ID correspond to the one found</span>
+<span class="sd">    in `info_path[&quot;Internal.ID&quot;]`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        info_path: path to CSV file that holds metadata for biological samples. Each row represents a unique sample</span>
+<span class="sd">                   with various identifiers and descriptors. The expected columns are `Internal.ID` and `Sample.Type`.</span>
+<span class="sd">        counts_path: The directory path where `.count` files are stored. Each file contains gene expression data</span>
+<span class="sd">                     in count format for a sample identified by Internal.ID.</span>
+<span class="sd">        sep: The separator character of the `info_path` content.</span>
+<span class="sd">        ext: The extension of the count file.</span>
+<span class="sd">        rows_to_skip: List of rows to skip during processing. Defaults to common RNA-Seq metadata rows.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Pandas dataframe with gene ids (ensemble ID) as rows and sample ids of each count file as columns.</span>
+<span class="sd">        Pandas series with the classes that correspond to each sample.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">rows_to_skip</span> <span class="o">=</span> <span class="n">rows_to_skip</span> <span class="k">if</span> <span class="n">rows_to_skip</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">DEFAULT_ROWS_TO_SKIP</span>
+
+    <span class="n">data_info</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">info_path</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="n">sep</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;str&quot;</span><span class="p">,</span> <span class="n">usecols</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Internal.ID&quot;</span><span class="p">,</span> <span class="s2">&quot;Sample.Type&quot;</span><span class="p">])</span>
+
+    <span class="n">counts</span> <span class="o">=</span> <span class="n">read_dge</span><span class="p">(</span><span class="n">data_info</span><span class="o">=</span><span class="n">data_info</span><span class="p">,</span> <span class="n">counts_path</span><span class="o">=</span><span class="n">counts_path</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="n">ext</span><span class="p">)</span>
+    <span class="n">counts</span> <span class="o">=</span> <span class="n">counts</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+    <span class="n">counts_per_million</span> <span class="o">=</span> <span class="n">cpm</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span>
+
+    <span class="c1"># Unwanted rows are the ones which column-wise cpm sum is &lt; 1, and also the ones in rows_to_skip</span>
+    <span class="n">counts_to_keep</span> <span class="o">=</span> <span class="n">counts_per_million</span><span class="p">[</span><span class="n">counts_per_million</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">counts_filtered</span> <span class="o">=</span> <span class="n">counts</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">counts_to_keep</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># Ignore errors in case any row from rows_to_skip is not present in our dataset</span>
+    <span class="n">counts_filtered</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">rows_to_skip</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Truncate Ensembl ID version (ex: ENSG00000000005.5 to ENSG00000000005) as annotation does not provide it</span>
+    <span class="n">counts_filtered</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="p">[</span><span class="n">row_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">row_name</span> <span class="ow">in</span> <span class="n">counts_filtered</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+
+    <span class="c1"># Match labels index with counts index, so we can match them later on</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="n">data_info</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;Internal.ID&quot;</span><span class="p">)[</span><span class="s2">&quot;Sample.Type&quot;</span><span class="p">]</span>
+    <span class="n">labels</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">labels</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">x</span><span class="si">}{</span><span class="n">ext</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">counts_filtered</span><span class="p">,</span> <span class="n">labels</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Blanca Domene.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
