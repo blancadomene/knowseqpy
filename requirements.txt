@@ -11,3 +11,4 @@ scikeras
 scipy
 statsmodels
 tensorflow
+sphinx-rtd-theme
