@@ -17,27 +17,10 @@ author = 'Blanca Domene'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon', 'sphinx.ext.viewcode', 'sphinx.ext.imgmath', 'rst2pdf.pdfbuilder']
-
-pdf_documents = [('index', u'rst2pdf', u'Sample rst2pdf doc', u'Blanca Domene'),]
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon', 'sphinx.ext.viewcode', 'sphinx.ext.imgmath']
 
 templates_path = ['_templates']
 exclude_patterns = []
-
-# Configure LaTeX elements
-latex_elements = {
-    'papersize': 'a4paper',
-    'pointsize': '10pt',
-    'preamble': '',
-    'figure_align': 'htbp',
-}
-
-# Grouping the document tree into LaTeX files. List of tuples
-# (source start file, target name, title, author, documentclass [howto, manual, or own class]).
-latex_documents = [
-    ('index', 'KnowSeqPy.tex', 'KnowSeqPy Documentation',
-     'Blanca Domene', 'manual'),
-]
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
