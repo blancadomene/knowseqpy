@@ -5,7 +5,10 @@ from datetime import datetime
 _logger_configured = False
 
 
-def get_logger():
+def get_logger() -> logging.Logger:
+    """
+    Retrieves the configured logger instance. If the logger hasn't been configured yet, it sets it up first.
+    """
     global _logger_configured
     if not _logger_configured:
         set_logger()
@@ -13,7 +16,16 @@ def get_logger():
     return logging.getLogger()
 
 
-def set_logger(enable_file_logging=False, log_level=logging.INFO, propagate=True):
+def set_logger(enable_file_logging: bool = False, log_level: int = logging.INFO, propagate: bool = True):
+    """
+    Configures the logging system. This function sets up a logger with a stream handler,
+    and optionally a file handler if enabled.
+
+    Args:
+        enable_file_logging: If True, logs will also be saved to a file with a timestamped filename.
+        log_level: The logging level (default: logging.INFO).
+        propagate: If False, prevents logs from propagating to the root logger to avoid duplicate logs.
+    """
     global _logger_configured
     logger = logging.getLogger()
     logger.setLevel(log_level)
@@ -31,7 +43,6 @@ def set_logger(enable_file_logging=False, log_level=logging.INFO, propagate=True
             file_handler.setFormatter(formatter)
             logger.addHandler(file_handler)
 
-    # If set to False, prevent logs from propagating to the root logger to avoid duplicate logs
     logger.propagate = propagate
 
     _logger_configured = True
