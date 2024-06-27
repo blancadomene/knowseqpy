@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>knowseqpy.utils package &mdash; KnowSeqPy  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            KnowSeqPy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">knowseqpy.utils package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-knowseqpy.utils.common">knowseqpy.utils.common module</a><ul>
+<li><a class="reference internal" href="#knowseqpy.utils.common.calculate_specificity"><code class="docutils literal notranslate"><span class="pre">calculate_specificity()</span></code></a></li>
+<li><a class="reference internal" href="#knowseqpy.utils.common.csv_to_dataframe"><code class="docutils literal notranslate"><span class="pre">csv_to_dataframe()</span></code></a></li>
+<li><a class="reference internal" href="#knowseqpy.utils.common.csv_to_list"><code class="docutils literal notranslate"><span class="pre">csv_to_list()</span></code></a></li>
+<li><a class="reference internal" href="#knowseqpy.utils.common.dataframe_to_feather"><code class="docutils literal notranslate"><span class="pre">dataframe_to_feather()</span></code></a></li>
+<li><a class="reference internal" href="#knowseqpy.utils.common.feather_to_dataframe"><code class="docutils literal notranslate"><span class="pre">feather_to_dataframe()</span></code></a></li>
+<li><a class="reference internal" href="#knowseqpy.utils.common.get_project_path"><code class="docutils literal notranslate"><span class="pre">get_project_path()</span></code></a></li>
+<li><a class="reference internal" href="#knowseqpy.utils.common.get_test_path"><code class="docutils literal notranslate"><span class="pre">get_test_path()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-knowseqpy.utils.logger">knowseqpy.utils.logger module</a><ul>
+<li><a class="reference internal" href="#knowseqpy.utils.logger.get_logger"><code class="docutils literal notranslate"><span class="pre">get_logger()</span></code></a></li>
+<li><a class="reference internal" href="#knowseqpy.utils.logger.set_logger"><code class="docutils literal notranslate"><span class="pre">set_logger()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-knowseqpy.utils.plotting">knowseqpy.utils.plotting module</a><ul>
+<li><a class="reference internal" href="#knowseqpy.utils.plotting.get_tree_data"><code class="docutils literal notranslate"><span class="pre">get_tree_data()</span></code></a></li>
+<li><a class="reference internal" href="#knowseqpy.utils.plotting.plot_boxplot"><code class="docutils literal notranslate"><span class="pre">plot_boxplot()</span></code></a></li>
+<li><a class="reference internal" href="#knowseqpy.utils.plotting.plot_confusion_matrix"><code class="docutils literal notranslate"><span class="pre">plot_confusion_matrix()</span></code></a></li>
+<li><a class="reference internal" href="#knowseqpy.utils.plotting.plot_decision_boundary"><code class="docutils literal notranslate"><span class="pre">plot_decision_boundary()</span></code></a></li>
+<li><a class="reference internal" href="#knowseqpy.utils.plotting.plot_decision_tree"><code class="docutils literal notranslate"><span class="pre">plot_decision_tree()</span></code></a></li>
+<li><a class="reference internal" href="#knowseqpy.utils.plotting.plot_samples_heatmap"><code class="docutils literal notranslate"><span class="pre">plot_samples_heatmap()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-knowseqpy.utils">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">KnowSeqPy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">knowseqpy.utils package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/knowseqpy.utils.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="knowseqpy-utils-package">
+<h1>knowseqpy.utils package<a class="headerlink" href="#knowseqpy-utils-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-knowseqpy.utils.common">
+<span id="knowseqpy-utils-common-module"></span><h2>knowseqpy.utils.common module<a class="headerlink" href="#module-knowseqpy.utils.common" title="Link to this heading"></a></h2>
+<p>Common utility functions for working with CSV files and data structures.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="knowseqpy.utils.common.calculate_specificity">
+<span class="sig-prename descclassname"><span class="pre">knowseqpy.utils.common.</span></span><span class="sig-name descname"><span class="pre">calculate_specificity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conf_matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">array</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/knowseqpy/utils/common.html#calculate_specificity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#knowseqpy.utils.common.calculate_specificity" title="Link to this definition"></a></dt>
+<dd><p>Calculates specificity for each class in a binary or multiclass classification and returns the average.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>conf_matrix</strong> – The confusion matrix of the model.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The average specificity across all classes.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="knowseqpy.utils.common.csv_to_dataframe">
+<span class="sig-prename descclassname"><span class="pre">knowseqpy.utils.common.</span></span><span class="sig-name descname"><span class="pre">csv_to_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_components</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/knowseqpy/utils/common.html#csv_to_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#knowseqpy.utils.common.csv_to_dataframe" title="Link to this definition"></a></dt>
+<dd><p>Loads a CSV file into a pandas DataFrame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path_components</strong> – List of components in the file path.</p></li>
+<li><p><strong>index_col</strong> – Column(s) to use as the row labels (index). Defaults to None.</p></li>
+<li><p><strong>header</strong> – Row number(s) to use as the column names. Defaults to None.</p></li>
+<li><p><strong>**kwargs</strong> – Additional keyword arguments to pass to pandas.read_csv().</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>pandas DataFrame containing the CSV data.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>FileNotFoundError</strong> – If the CSV file is not found at the specified path.</p></li>
+<li><p><strong>pd.errors.ParserError</strong> – If there is an issue with CSV parsing.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="knowseqpy.utils.common.csv_to_list">
+<span class="sig-prename descclassname"><span class="pre">knowseqpy.utils.common.</span></span><span class="sig-name descname"><span class="pre">csv_to_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_components</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="_modules/knowseqpy/utils/common.html#csv_to_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#knowseqpy.utils.common.csv_to_list" title="Link to this definition"></a></dt>
+<dd><p>Loads a CSV file into a list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path_components</strong> – List of components in the file path.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list where each element is a row of the CSV.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="knowseqpy.utils.common.dataframe_to_feather">
+<span class="sig-prename descclassname"><span class="pre">knowseqpy.utils.common.</span></span><span class="sig-name descname"><span class="pre">dataframe_to_feather</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/knowseqpy/utils/common.html#dataframe_to_feather"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#knowseqpy.utils.common.dataframe_to_feather" title="Link to this definition"></a></dt>
+<dd><p>Saves a pandas DataFrame to a Feather file using pathlib paths.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – pandas DataFrame with data.</p></li>
+<li><p><strong>filepath</strong> – Pathlib object representing the path to the file.</p></li>
+<li><p><strong>**kwargs</strong> – Additional keyword arguments to pass to pandas.DataFrame.to_feather().</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="knowseqpy.utils.common.feather_to_dataframe">
+<span class="sig-prename descclassname"><span class="pre">knowseqpy.utils.common.</span></span><span class="sig-name descname"><span class="pre">feather_to_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/knowseqpy/utils/common.html#feather_to_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#knowseqpy.utils.common.feather_to_dataframe" title="Link to this definition"></a></dt>
+<dd><p>Loads a Feather file into a pandas DataFrame using pathlib paths.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filepath</strong> – Pathlib object representing the path to the Feather file.</p></li>
+<li><p><strong>**kwargs</strong> – Additional keyword arguments to pass to pandas.read_feather().</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>pandas DataFrame containing the Feather file data.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="knowseqpy.utils.common.get_project_path">
+<span class="sig-prename descclassname"><span class="pre">knowseqpy.utils.common.</span></span><span class="sig-name descname"><span class="pre">get_project_path</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Path</span></span></span><a class="reference internal" href="_modules/knowseqpy/utils/common.html#get_project_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#knowseqpy.utils.common.get_project_path" title="Link to this definition"></a></dt>
+<dd><p>Retrieves the directory of the project.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A Path object pointing to the project’s root directory.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Path</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="knowseqpy.utils.common.get_test_path">
+<span class="sig-prename descclassname"><span class="pre">knowseqpy.utils.common.</span></span><span class="sig-name descname"><span class="pre">get_test_path</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Path</span></span></span><a class="reference internal" href="_modules/knowseqpy/utils/common.html#get_test_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#knowseqpy.utils.common.get_test_path" title="Link to this definition"></a></dt>
+<dd><p>Retrieves the directory of the project’s test folder.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A Path object pointing to the project’s test directory.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Path</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-knowseqpy.utils.logger">
+<span id="knowseqpy-utils-logger-module"></span><h2>knowseqpy.utils.logger module<a class="headerlink" href="#module-knowseqpy.utils.logger" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="knowseqpy.utils.logger.get_logger">
+<span class="sig-prename descclassname"><span class="pre">knowseqpy.utils.logger.</span></span><span class="sig-name descname"><span class="pre">get_logger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Logger</span></span></span><a class="reference internal" href="_modules/knowseqpy/utils/logger.html#get_logger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#knowseqpy.utils.logger.get_logger" title="Link to this definition"></a></dt>
+<dd><p>Retrieves the configured logger instance. If the logger hasn’t been configured yet, it sets it up first.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="knowseqpy.utils.logger.set_logger">
+<span class="sig-prename descclassname"><span class="pre">knowseqpy.utils.logger.</span></span><span class="sig-name descname"><span class="pre">set_logger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enable_file_logging</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">propagate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/knowseqpy/utils/logger.html#set_logger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#knowseqpy.utils.logger.set_logger" title="Link to this definition"></a></dt>
+<dd><p>Configures the logging system. This function sets up a logger with a stream handler,
+and optionally a file handler if enabled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>enable_file_logging</strong> – If True, logs will also be saved to a file with a timestamped filename.</p></li>
+<li><p><strong>log_level</strong> – The logging level (default: logging.INFO).</p></li>
+<li><p><strong>propagate</strong> – If False, prevents logs from propagating to the root logger to avoid duplicate logs.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-knowseqpy.utils.plotting">
+<span id="knowseqpy-utils-plotting-module"></span><h2>knowseqpy.utils.plotting module<a class="headerlink" href="#module-knowseqpy.utils.plotting" title="Link to this heading"></a></h2>
+<p>Data Visualization Module using Plotly.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="knowseqpy.utils.plotting.get_tree_data">
+<span class="sig-prename descclassname"><span class="pre">knowseqpy.utils.plotting.</span></span><span class="sig-name descname"><span class="pre">get_tree_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tree</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DecisionTreeClassifier</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">class_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/knowseqpy/utils/plotting.html#get_tree_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#knowseqpy.utils.plotting.get_tree_data" title="Link to this definition"></a></dt>
+<dd><p>Extracts and structures data from a decision tree for visualization.</p>
+<p>This function traverses the decision tree recursively from the root to the leaves, collecting
+data about each node and the connecting edges. These details include the splitting feature,
+threshold value, Gini impurity, number of samples at the node, and classification outcomes,
+which are used to visualize the tree structure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tree</strong> – The decision tree classifier from which to extract structure data.</p></li>
+<li><p><strong>feature_names</strong> – Names of the features used in the decision tree.</p></li>
+<li><p><strong>class_names</strong> – Names of the possible output classes in the decision tree.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>A tuple containing:</dt><dd><ul class="simple">
+<li><p>A list of node details.</p></li>
+<li><p>A list of edge details, specifying the connection between nodes and the condition.</p></li>
+<li><p>The maximum depth of the tree.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple[List[Tuple], List[Tuple], int]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="knowseqpy.utils.plotting.plot_boxplot">
+<span class="sig-prename descclassname"><span class="pre">knowseqpy.utils.plotting.</span></span><span class="sig-name descname"><span class="pre">plot_boxplot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs_ranking</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top_n_features</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">png_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/knowseqpy/utils/plotting.html#plot_boxplot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#knowseqpy.utils.plotting.plot_boxplot" title="Link to this definition"></a></dt>
+<dd><p>Plots a boxplot of the top N features from the feature selection ranking.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – Data containing samples in rows and features in columns.</p></li>
+<li><p><strong>labels</strong> – Labels for the samples.</p></li>
+<li><p><strong>fs_ranking</strong> – List of feature names ordered by ranking.</p></li>
+<li><p><strong>top_n_features</strong> – Number of top features to include in the boxplot. Defaults to 5.</p></li>
+<li><p><strong>png_filename</strong> – Filename for the exported PNG file.
+If not None, the plot is exported with the given name. Defaults to None.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="knowseqpy.utils.plotting.plot_confusion_matrix">
+<span class="sig-prename descclassname"><span class="pre">knowseqpy.utils.plotting.</span></span><span class="sig-name descname"><span class="pre">plot_confusion_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conf_matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unique_labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">png_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/knowseqpy/utils/plotting.html#plot_confusion_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#knowseqpy.utils.plotting.plot_confusion_matrix" title="Link to this definition"></a></dt>
+<dd><p>Plots a confusion matrix of classified samples.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>conf_matrix</strong> (<em>array-like</em>) – The confusion matrix to be plotted.</p></li>
+<li><p><strong>unique_labels</strong> – Labels for the samples.</p></li>
+<li><p><strong>png_filename</strong> – Filename for the exported PNG file.
+If not None, the plot is exported with the given name. Defaults to None.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="knowseqpy.utils.plotting.plot_decision_boundary">
+<span class="sig-prename descclassname"><span class="pre">knowseqpy.utils.plotting.</span></span><span class="sig-name descname"><span class="pre">plot_decision_boundary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Pipeline</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars_selected</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/knowseqpy/utils/plotting.html#plot_decision_boundary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#knowseqpy.utils.plotting.plot_decision_boundary" title="Link to this definition"></a></dt>
+<dd><p>Plots the decision boundary of a logistic regression model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> – A trained logistic regression model pipeline.</p></li>
+<li><p><strong>data</strong> – The feature matrix.</p></li>
+<li><p><strong>labels</strong> – True labels for the data.</p></li>
+<li><p><strong>vars_selected</strong> – Selected features for classification.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="knowseqpy.utils.plotting.plot_decision_tree">
+<span class="sig-prename descclassname"><span class="pre">knowseqpy.utils.plotting.</span></span><span class="sig-name descname"><span class="pre">plot_decision_tree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Pipeline</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars_selected</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/knowseqpy/utils/plotting.html#plot_decision_tree"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#knowseqpy.utils.plotting.plot_decision_tree" title="Link to this definition"></a></dt>
+<dd><p>Generates and displays an interactive plot of a decision tree using Plotly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> – A sklearn Pipeline, which includes the decision tree classifier and preprocessing steps.</p></li>
+<li><p><strong>labels</strong> – The series of true labels used to train the classifier, required for naming the classes in the plot.</p></li>
+<li><p><strong>vars_selected</strong> – List of feature names used in the decision tree, which are selected for classification.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="knowseqpy.utils.plotting.plot_samples_heatmap">
+<span class="sig-prename descclassname"><span class="pre">knowseqpy.utils.plotting.</span></span><span class="sig-name descname"><span class="pre">plot_samples_heatmap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs_ranking</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top_n_features</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">png_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/knowseqpy/utils/plotting.html#plot_samples_heatmap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#knowseqpy.utils.plotting.plot_samples_heatmap" title="Link to this definition"></a></dt>
+<dd><p>Plots a heatmap of the top N features from the feature selection ranking.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – Data containing samples in rows and features in columns.</p></li>
+<li><p><strong>labels</strong> – Labels for the samples.</p></li>
+<li><p><strong>fs_ranking</strong> – List of feature names ordered by ranking.</p></li>
+<li><p><strong>top_n_features</strong> – Number of top features to include in the heatmap. Defaults to 5.</p></li>
+<li><p><strong>png_filename</strong> – Filename for the exported PNG file.
+If not None, the plot is exported with the given name. Defaults to None.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-knowseqpy.utils">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-knowseqpy.utils" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Blanca Domene.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
