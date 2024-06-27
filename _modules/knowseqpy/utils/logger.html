@@ -77,7 +77,10 @@
 
 <div class="viewcode-block" id="get_logger">
 <a class="viewcode-back" href="../../../knowseqpy.utils.html#knowseqpy.utils.logger.get_logger">[docs]</a>
-<span class="k">def</span> <span class="nf">get_logger</span><span class="p">():</span>
+<span class="k">def</span> <span class="nf">get_logger</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retrieves the configured logger instance. If the logger hasn&#39;t been configured yet, it sets it up first.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">_logger_configured</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">_logger_configured</span><span class="p">:</span>
         <span class="n">set_logger</span><span class="p">()</span>
@@ -88,7 +91,16 @@
 
 <div class="viewcode-block" id="set_logger">
 <a class="viewcode-back" href="../../../knowseqpy.utils.html#knowseqpy.utils.logger.set_logger">[docs]</a>
-<span class="k">def</span> <span class="nf">set_logger</span><span class="p">(</span><span class="n">enable_file_logging</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">log_level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span> <span class="n">propagate</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">set_logger</span><span class="p">(</span><span class="n">enable_file_logging</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">log_level</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span> <span class="n">propagate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Configures the logging system. This function sets up a logger with a stream handler,</span>
+<span class="sd">    and optionally a file handler if enabled.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        enable_file_logging: If True, logs will also be saved to a file with a timestamped filename.</span>
+<span class="sd">        log_level: The logging level (default: logging.INFO).</span>
+<span class="sd">        propagate: If False, prevents logs from propagating to the root logger to avoid duplicate logs.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">_logger_configured</span>
     <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">log_level</span><span class="p">)</span>
@@ -106,7 +118,6 @@
             <span class="n">file_handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">formatter</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">file_handler</span><span class="p">)</span>
 
-    <span class="c1"># If set to False, prevent logs from propagating to the root logger to avoid duplicate logs</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">propagate</span> <span class="o">=</span> <span class="n">propagate</span>
 
     <span class="n">_logger_configured</span> <span class="o">=</span> <span class="kc">True</span></div>

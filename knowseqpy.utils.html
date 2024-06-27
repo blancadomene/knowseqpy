@@ -225,13 +225,25 @@
 <span id="knowseqpy-utils-logger-module"></span><h2>knowseqpy.utils.logger module<a class="headerlink" href="#module-knowseqpy.utils.logger" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="knowseqpy.utils.logger.get_logger">
-<span class="sig-prename descclassname"><span class="pre">knowseqpy.utils.logger.</span></span><span class="sig-name descname"><span class="pre">get_logger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/knowseqpy/utils/logger.html#get_logger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#knowseqpy.utils.logger.get_logger" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-prename descclassname"><span class="pre">knowseqpy.utils.logger.</span></span><span class="sig-name descname"><span class="pre">get_logger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Logger</span></span></span><a class="reference internal" href="_modules/knowseqpy/utils/logger.html#get_logger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#knowseqpy.utils.logger.get_logger" title="Link to this definition"></a></dt>
+<dd><p>Retrieves the configured logger instance. If the logger hasn’t been configured yet, it sets it up first.</p>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="knowseqpy.utils.logger.set_logger">
-<span class="sig-prename descclassname"><span class="pre">knowseqpy.utils.logger.</span></span><span class="sig-name descname"><span class="pre">set_logger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enable_file_logging</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">propagate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/knowseqpy/utils/logger.html#set_logger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#knowseqpy.utils.logger.set_logger" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-prename descclassname"><span class="pre">knowseqpy.utils.logger.</span></span><span class="sig-name descname"><span class="pre">set_logger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enable_file_logging</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">propagate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/knowseqpy/utils/logger.html#set_logger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#knowseqpy.utils.logger.set_logger" title="Link to this definition"></a></dt>
+<dd><p>Configures the logging system. This function sets up a logger with a stream handler,
+and optionally a file handler if enabled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>enable_file_logging</strong> – If True, logs will also be saved to a file with a timestamped filename.</p></li>
+<li><p><strong>log_level</strong> – The logging level (default: logging.INFO).</p></li>
+<li><p><strong>propagate</strong> – If False, prevents logs from propagating to the root logger to avoid duplicate logs.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 </section>
 <section id="module-knowseqpy.utils.plotting">
